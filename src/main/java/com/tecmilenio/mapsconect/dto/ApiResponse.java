@@ -16,6 +16,10 @@ public class ApiResponse<T> {
     private T data;
     private String timestamp;
 
+    public static <T> ApiResponse<T> success(T data) {
+        return success(data, "OK");
+    }
+
     public static <T> ApiResponse<T> success(T data, String message) {
         return ApiResponse.<T>builder()
                 .status(200)
@@ -23,6 +27,10 @@ public class ApiResponse<T> {
                 .data(data)
                 .timestamp(java.time.LocalDateTime.now().toString())
                 .build();
+    }
+
+    public static <T> ApiResponse<T> error(String message) {
+        return error(501, message);
     }
 
     public static <T> ApiResponse<T> error(int status, String message) {

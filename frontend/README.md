@@ -1,61 +1,39 @@
 # Frontend - MAPS Connect
 
-Estructura lista para desarrollar. **HTML5 | CSS3 | JavaScript Vanilla**
+Entorno listo para programar. La estructura de archivos está definida; el contenido de cada módulo lo implementan ustedes.
 
-## 📁 Estructura
+## Estructura
 
 ```
 frontend/
-├── index.html          # Punto de entrada
-├── css/
-│   └── styles.css      # Estilos
+├── index.html, login.html, registro.html
+├── css/          base.css, layout.css, components.css
 ├── js/
-│   └── app.js          # Lógica principal + API
-├── pages/              # Futuras páginas
-└── assets/             # Imágenes
+│   ├── api.js     Cliente HTTP base
+│   ├── auth.js    Sesión JWT
+│   ├── utils.js   Helpers mínimos
+│   ├── layout.js  Menú lateral
+│   └── pages/     Un .js por pantalla
+├── pages/         8 módulos (HTML vacío + layout)
+└── assets/        Imágenes
 ```
 
-## 🚀 Iniciar
+## Iniciar
 
-### 1. Abrir en Visual Studio Code
-```bash
-code frontend/
-```
+1. Live Server en `index.html` → `http://localhost:5500`
+2. Backend en `http://localhost:8080/api`
 
-### 2. Live Server
-- Instalar extensión "Live Server" en VS Code
-- Clic derecho en `index.html` → "Open with Live Server"
-- Abre en `http://localhost:5500`
+## Por módulo
 
-### 3. Verificar Backend
-```bash
-curl http://localhost:8080/api/health
-```
+| Pantalla | HTML | JS |
+|----------|------|-----|
+| Inicio | `pages/inicio.html` | `js/pages/inicio.js` |
+| Perfil | `pages/perfil.html` | `js/pages/perfil.js` |
+| Foro | `pages/foro.html` | `js/pages/foro.js` |
+| Tips | `pages/tips.html` | `js/pages/tips.js` |
+| Apuntes | `pages/recursos.html` | `js/pages/recursos.js` |
+| Mensajes | `pages/mensajes.html` | `js/pages/mensajes.js` |
+| Empresarial | `pages/empresarial.html` | `js/pages/empresarial.js` |
+| Círculos | `pages/circulos.html` | `js/pages/circulos.js` |
 
-## 🔗 API Base URL
-```javascript
-http://localhost:8080/api
-```
-
-## 📝 Usar API
-
-```javascript
-// En app.js está disponible el objeto API
-await API.login(email, password);
-await API.register(nombre, email, password, rol);
-
-// O hacer requests custom
-await API.request('/endpoint', { method: 'POST', body: JSON.stringify({...}) });
-```
-
-## 🎨 Colores (en CSS)
-```css
---primary-color: #1e40af
---secondary-color: #7c3aed
---success-color: #10b981
---danger-color: #ef4444
-```
-
----
-
-**¡Listo para programar! 🚀**
+El contenido de cada pantalla va en `#main-content`.
