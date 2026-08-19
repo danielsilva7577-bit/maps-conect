@@ -27,7 +27,7 @@ const Auth = {
     logout() {
         localStorage.removeItem(this.TOKEN_KEY);
         localStorage.removeItem(this.USER_KEY);
-        window.location.href = Auth.resolvePath('login.html');
+        window.location.href = Auth.resolvePath('index.html');
     },
 
     /** Redirige a login si no hay sesión. Usar en páginas protegidas. */

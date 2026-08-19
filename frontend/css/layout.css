@@ -7,21 +7,25 @@
 
 .sidebar {
     width: var(--sidebar-width);
-    background: var(--gray-900);
-    color: white;
+    background: var(--sidebar-bg);
+    color: var(--sidebar-text-hover);
     flex-shrink: 0;
     transition: transform 0.3s ease;
 }
 
 .sidebar-header {
     padding: 1.25rem;
-    border-bottom: 1px solid var(--gray-800);
+    border-bottom: 1px solid var(--sidebar-border);
 }
 
 .sidebar-header h1 {
-    color: white;
+    color: var(--sidebar-text-hover);
     font-size: 1.25rem;
     margin: 0;
+}
+
+.sidebar-header small {
+    color: var(--sidebar-text);
 }
 
 .sidebar-nav {
@@ -32,20 +36,22 @@
 .sidebar-nav a {
     display: block;
     padding: 0.75rem 1.25rem;
-    color: var(--gray-300);
+    color: var(--sidebar-text);
     text-decoration: none;
     border-left: 3px solid transparent;
 }
 
-.sidebar-nav a:hover,
-.sidebar-nav a.active {
-    background: var(--gray-800);
-    color: white;
+.sidebar-nav a:hover {
+    background: var(--sidebar-item-hover-bg);
+    color: var(--sidebar-text-hover);
     text-decoration: none;
 }
 
 .sidebar-nav a.active {
-    border-left-color: var(--primary-color);
+    background: var(--sidebar-item-active-bg);
+    color: var(--sidebar-text-hover);
+    border-left-color: var(--sidebar-accent);
+    text-decoration: none;
 }
 
 .main-wrapper {
@@ -57,7 +63,8 @@
 
 .topbar {
     height: var(--header-height);
-    background: white;
+    background: var(--topbar-bg);
+    color: var(--topbar-text);
     border-bottom: 1px solid var(--gray-200);
     display: flex;
     align-items: center;
@@ -71,7 +78,7 @@
     border: none;
     font-size: 1.5rem;
     cursor: pointer;
-    color: var(--gray-800);
+    color: var(--topbar-text);
 }
 
 .main-content {
@@ -86,6 +93,19 @@
     align-items: center;
     justify-content: center;
     padding: 1rem;
+}
+
+/*fondo de pantalla de inicio de sesion y registro*/
+
+.login-page .auth-layout,
+.register-page .auth-layout {
+    background-image: linear-gradient(
+        rgba(0, 0, 0, 0.35),
+        rgba(0, 0, 0, 0.35)
+    ), url("../assets/bg-login.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 .auth-card {
