@@ -1,5 +1,5 @@
 /**
- * MAPS Connect - Layout compartido (sidebar + topbar)
+ * MAPS Connect - Layout compartido (menú lateral plegable)
  */
 
 const NAV_ITEMS = [
@@ -38,7 +38,12 @@ const Layout = {
                 <small>${user?.nombre || 'Usuario'}</small>
             </div>
             <ul class="sidebar-nav">${navLinks}</ul>
+            <div class="sidebar-footer">
+                <button class="btn btn-sm btn-outline" id="btn-logout">Cerrar sesión</button>
+            </div>
         `;
+
+        document.getElementById('btn-logout')?.addEventListener('click', () => Auth.logout());
     },
 
     renderTopbar() {
@@ -46,17 +51,22 @@ const Layout = {
         if (!topbar) return;
 
         topbar.innerHTML = `
-            <button class="topbar-toggle" id="sidebar-toggle" aria-label="Menú">Menú</button>
-            <span id="topbar-title"></span>
-            <button class="btn btn-sm btn-outline" id="btn-logout">Cerrar sesión</button>
+            <button class="menu-toggle" id="sidebar-toggle" type="button"
+                aria-label="Abrir menú" aria-controls="sidebar" aria-expanded="false">
+                <span aria-hidden="true">☰</span>
+            </button>
+            <span id="topbar-title" class="visually-hidden"></span>
         `;
-
-        document.getElementById('btn-logout')?.addEventListener('click', () => Auth.logout());
     },
 
     bindToggle() {
-        document.getElementById('sidebar-toggle')?.addEventListener('click', () => {
-            document.getElementById('sidebar')?.classList.toggle('open');
+        const toggle = document.getElementById('sidebar-toggle');
+        const sidebar = document.getElementById('sidebar');
+
+        toggle?.addEventListener('click', () => {
+            const isOpen = sidebar?.classList.toggle('open') ?? false;
+            toggle.setAttribute('aria-expanded', String(isOpen));
+            toggle.setAttribute('aria-label', isOpen ? 'Cerrar menú' : 'Abrir menú');
         });
     },
 
