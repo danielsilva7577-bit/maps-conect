@@ -18,7 +18,7 @@
     --border-radius: 4px;
 
     /* Texto del contenido (independiente del sidebar) */
-    --text-color: #000205;
+    --text-color: #000000;
     --heading-color: #111827;
     --link-color: #087527;
 
@@ -37,7 +37,7 @@
 
     /* Botones */
     --btn-primary-bg: var(--primary-color);
-    --btn-primary-text: #064913;
+    --btn-primary-text: #2db849;
     --btn-outline-border: var(--primary-color);
     --btn-outline-text: var(--primary-color);
 }

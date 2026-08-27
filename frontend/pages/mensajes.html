@@ -13,7 +13,72 @@
         <aside class="sidebar" id="sidebar"></aside>
         <div class="main-wrapper">
             <header class="topbar" id="topbar"></header>
-            <main class="main-content" id="main-content"></main>
+            <main class="main-content" id="main-content">
+
+                <section class="mensaje">
+
+                    <div class="mensajes-encabezado">
+                        <h2>Mensajes</h2>
+
+                        <button class="notificaciones-btn">
+                            Notificaciones
+                        </button>
+                    </div>
+
+                    <div class="mensajes-contenedor">
+
+                        <aside class="conversaciones">
+
+                            <h3>Conversaciones</h3>
+
+                            <div class="conversaciom">
+                                <p class="conversacion-nombre">Profesor</p>
+                                <p class="conversacion-preview">
+                                    Ultimo mensaje
+                                </p>
+                            </div>
+
+                            <div class="conversacion">
+                                <p class="conversacion-nombre">Compañero</p>
+                                <p class="conversacion-previw">
+                                    Nos vemos manñana
+                                </p>
+                            </div>
+
+                        </aside>
+
+                        <section class="chat">
+
+                            <div class="chat-emcabezado">
+                                <h3>Selecciona una conversacion</h3>
+                            </div>
+
+                            <div class="chat-mensajes" id="chat-mensajes">
+
+                                <p>Aqui van a aparecer los mensajes</p>
+
+                            </div>
+
+                            <div class="chat-escribir">
+
+                                <input
+                                    type="text"
+                                    id="mensaje-input"
+                                    placeholder="Escribe un mensaje">
+
+                                <button id="enviar-mensaje">
+                                    Enviar
+                                </button>
+
+                            </div>
+
+                        </section>
+
+                    </div>
+
+                </section>
+
+            </main>
         </div>
     </div>
     <script src="../js/api.js"></script>
