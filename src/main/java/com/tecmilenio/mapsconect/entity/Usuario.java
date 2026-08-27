@@ -18,9 +18,10 @@ public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id_usuario")
+    private Integer id;
 
-    @Column(nullable = false, unique = true, length = 100)
+    @Column(name = "correo", nullable = false, unique = true, length = 100)
     private String email;
 
     @Column(nullable = false, length = 100)
@@ -29,15 +30,17 @@ public class Usuario {
     @Column(nullable = false, length = 100)
     private String apellido;
 
-    @Column(nullable = false)
+    @Column(name = "contrasena_hash", nullable = false)
     private String contrasena;
 
     @Enumerated(EnumType.STRING)
     private Rol rol;
 
+    @Builder.Default
     @Column(nullable = false)
     private Boolean activo = true;
 
+    @Builder.Default
     @Column(nullable = false)
     private LocalDateTime fechaCreacion = LocalDateTime.now();
 
