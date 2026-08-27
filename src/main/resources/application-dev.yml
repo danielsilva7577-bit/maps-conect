@@ -2,11 +2,11 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/maps_conect_dev
     username: root
-    password: 
+    password: Haloymega59!
   
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: validate
     show-sql: true
     properties:
       hibernate:

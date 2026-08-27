@@ -37,7 +37,7 @@ logging:
     console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
 
 jwt:
-  secret: your-secret-key-change-in-production
+  secret: mapsconnect-tecmilenio-super-secret-key-2024-desarrollo-local-minimo-64-caracteres-seguro
   expiration: 86400000
 
 app:
