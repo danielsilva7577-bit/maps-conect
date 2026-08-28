@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../css/base.css">
     <link rel="stylesheet" href="../css/layout.css">
     <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/perfil.css">
 </head>
 <body>
     <div class="app-layout">
@@ -15,45 +16,49 @@
             <header class="topbar" id="topbar"></header>
             <main class="main-content" id="main-content">
 
-                <section class="perfil">
+                <section class="perfil-container" id="perfil-root">
 
-
-                    <div class="perfil-encabezado">
-
-                        <img
-                                id="perfil-foto"
-                                class="perfil-foto"
-                                src="../assets/default-avatar.png"
-                                alt="Foto de perfil"
-                        >
-
-                        <h2 id="perfil-nombre">
-                            Nombre del estudiante
-                        </h2>
-
+                    <!-- 1. CABECERA DE PERFIL -->
+                    <div class="card profile-header-card">
+                        <div class="profile-main-info" id="profile-header-info">
+                            <!-- Avatar, nombre y datos se renderizan desde el backend (o sesión) -->
+                        </div>
+                        <div>
+                            <button class="btn-clean" type="button" id="btn-editar-proposito">Editar Propósito</button>
+                        </div>
                     </div>
 
-                    <div class="perfil-info">
+                    <!-- 2. LAYOUT A DOS COLUMNAS -->
+                    <div class="profile-grid">
 
-                        <div class="perfil-dato">
-                            <span>Correo</span>
-                            <p id="perfil-correo">correo@tecmilenio.mx</p>
-                        </div>
+                        <!-- COLUMNA IZQUIERDA: TRAYECTORIA ACADÉMICA MAPS -->
+                        <section class="card">
+                            <h3 class="section-heading">Identidad y Ruta MAPS</h3>
 
-                        <div class="perfil-dato">
-                            <span>Matrícula</span>
-                            <p id="perfil-matricula">00000000</p>
-                        </div>
+                            <div class="purpose-box" id="profile-purpose" hidden>
+                                <strong>Propósito de Vida</strong>
+                                <p id="profile-purpose-text"></p>
+                            </div>
 
-                        <div class="perfil-dato">
-                            <span>Semestre</span>
-                            <p id="perfil-semestre">1</p>
-                        </div>
+                            <h4 class="sub-heading">Certificados del Plan de Estudios</h4>
+                            <div id="profile-certificados">
+                                <!-- Los certificados se renderizan aquí solo cuando el backend responde -->
+                            </div>
+                        </section>
 
-                        <div class="perfil-dato">
-                            <span>Carrera</span>
-                            <p id="perfil-carrera">Carrera</p>
-                        </div>
+                        <!-- COLUMNA DERECHA: REPUTACIÓN Y ACTIVIDAD COMUNITARIA -->
+                        <aside class="card">
+                            <h3 class="section-heading">Aportaciones en la Comunidad</h3>
+
+                            <div class="stats-summary" id="profile-stats">
+                                <!-- Las estadísticas se renderizan aquí solo cuando el backend responde -->
+                            </div>
+
+                            <h4 class="sub-heading">Actividad Reciente</h4>
+                            <ul class="activity-list" id="profile-actividad">
+                                <!-- La actividad se renderiza aquí solo cuando el backend responde -->
+                            </ul>
+                        </aside>
 
                     </div>
 

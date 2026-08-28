@@ -5,9 +5,7 @@
 const NAV_ITEMS = [
     { href: 'inicio.html', label: 'Inicio' },
     { href: 'perfil.html', label: 'Mi Perfil' },
-    { href: 'foro.html', label: 'Foro de Dudas' },
-    { href: 'tips.html', label: 'Tips Académicos' },
-    { href: 'recursos.html', label: 'Apuntes' },
+    { href: 'comunidad.html', label: 'Comunidad y Recursos' },
     { href: 'mensajes.html', label: 'Mensajes' },
     { href: 'empresarial.html', label: 'Semestre Empresarial' },
     { href: 'circulos.html', label: 'Círculos de Estudio' }

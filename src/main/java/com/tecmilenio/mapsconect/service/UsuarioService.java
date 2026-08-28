@@ -31,8 +31,7 @@ public class UsuarioService {
 
         Usuario usuario = Usuario.builder()
                 .email(registroDTO.getEmail())
-                .nombre(registroDTO.getNombre())
-                .apellido(registroDTO.getApellido())
+                .nombreCompleto(registroDTO.getNombre() + " " + registroDTO.getApellido())
                 .contrasena(passwordEncoder.encode(registroDTO.getContrasena()))
                 .rol(Usuario.Rol.ESTUDIANTE)
                 .activo(true)
@@ -77,8 +76,7 @@ public class UsuarioService {
         return UsuarioDTO.builder()
                 .id(usuario.getId())
                 .email(usuario.getEmail())
-                .nombre(usuario.getNombre())
-                .apellido(usuario.getApellido())
+                .nombre(usuario.getNombreCompleto())
                 .rol(usuario.getRol().toString())
                 .activo(usuario.getActivo())
                 .build();

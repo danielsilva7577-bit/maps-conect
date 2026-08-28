@@ -43,7 +43,7 @@ function renderDashboard(content, data) {
 
     document.getElementById('quick-question-form')?.addEventListener('submit', event => {
         event.preventDefault();
-        window.location.href = 'foro.html';
+        window.location.href = 'comunidad.html#foro-dudas';
     });
 }
 
@@ -87,7 +87,7 @@ function renderPost(post) {
             <div class="post-header"><div class="user-block"><div class="avatar ${post.verificadoDocente ? 'prof' : ''}">${escapeHtml(initials)}</div><div class="user-data"><strong>${escapeHtml(author.nombre || 'Usuario')}</strong><span>${escapeHtml(post.fechaRelativa || '')}</span></div></div><div class="badges-wrap">${tags}</div></div>
             <h2 class="post-title">${escapeHtml(post.titulo || '')}</h2>
             ${post.contenido ? `<p class="post-body">${escapeHtml(post.contenido)}</p>` : ''}
-            <div class="post-footer"><div class="action-links"><a class="btn-action" href="foro.html">💬 ${Number(post.respuestas) || 0} respuestas</a></div><span class="post-status">${post.solucionAceptada ? 'Resuelto' : ''}</span></div>
+            <div class="post-footer"><div class="action-links"><a class="btn-action" href="comunidad.html#foro-dudas">💬 ${Number(post.respuestas) || 0} respuestas</a></div><span class="post-status">${post.solucionAceptada ? 'Resuelto' : ''}</span></div>
         </article>
     `;
 }
@@ -106,7 +106,7 @@ function renderAccessCards(data) {
 }
 
 function renderEmptyFeed() {
-    return '<section class="card empty-state"><h2>Aún no hay actividad</h2><p>Las dudas, avisos y recursos de tu comunidad aparecerán aquí cuando estén disponibles.</p><a class="side-link" href="foro.html">Ir al foro →</a></section>';
+    return '<section class="card empty-state"><h2>Aún no hay actividad</h2><p>Las dudas, avisos y recursos de tu comunidad aparecerán aquí cuando estén disponibles.</p><a class="side-link" href="comunidad.html#foro-dudas">Ir al foro →</a></section>';
 }
 
 function escapeHtml(value) {

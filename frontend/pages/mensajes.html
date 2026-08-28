@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../css/base.css">
     <link rel="stylesheet" href="../css/layout.css">
     <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/mensajes.css">
 </head>
 <body>
     <div class="app-layout">
@@ -15,66 +16,37 @@
             <header class="topbar" id="topbar"></header>
             <main class="main-content" id="main-content">
 
-                <section class="mensaje">
+                <section class="messages-container">
 
-                    <div class="mensajes-encabezado">
-                        <h2>Mensajes</h2>
+                    <!-- 1. BANDEJA LATERAL IZQUIERDA -->
+                    <aside class="chat-sidebar">
+                        <div class="chat-search-box">
+                            <input type="text" id="chat-search" placeholder="Buscar compañero o profesor...">
+                        </div>
+                        <div class="conversation-list" id="conversacion-list">
+                            <!-- Las conversaciones se renderizan aquí solo cuando el backend responde -->
+                        </div>
+                    </aside>
 
-                        <button class="notificaciones-btn">
-                            Notificaciones
-                        </button>
-                    </div>
+                    <!-- 2. VENTANA DE CHAT DERECHA -->
+                    <section class="chat-window">
 
-                    <div class="mensajes-contenedor">
+                        <header class="chat-header" id="chat-header">
+                            <!-- Cabecera del chat: se renderiza al seleccionar una conversación -->
+                        </header>
 
-                        <aside class="conversaciones">
+                        <div class="chat-body" id="chat-body">
+                            <div class="chat-empty" id="chat-empty">Selecciona una conversación para ver los mensajes.</div>
+                            <!-- Los mensajes se renderizan aquí solo cuando el backend responde -->
+                        </div>
 
-                            <h3>Conversaciones</h3>
+                        <footer class="chat-input-bar">
+                            <button class="btn-clean" type="button" id="btn-adjuntar" title="Adjuntar archivo o apunte">📎</button>
+                            <input type="text" id="mensaje-input" placeholder="Escribe un mensaje..." disabled>
+                            <button class="btn-solid" type="button" id="enviar-mensaje" disabled>Enviar</button>
+                        </footer>
 
-                            <div class="conversaciom">
-                                <p class="conversacion-nombre">Profesor</p>
-                                <p class="conversacion-preview">
-                                    Ultimo mensaje
-                                </p>
-                            </div>
-
-                            <div class="conversacion">
-                                <p class="conversacion-nombre">Compañero</p>
-                                <p class="conversacion-previw">
-                                    Nos vemos manñana
-                                </p>
-                            </div>
-
-                        </aside>
-
-                        <section class="chat">
-
-                            <div class="chat-emcabezado">
-                                <h3>Selecciona una conversacion</h3>
-                            </div>
-
-                            <div class="chat-mensajes" id="chat-mensajes">
-
-                                <p>Aqui van a aparecer los mensajes</p>
-
-                            </div>
-
-                            <div class="chat-escribir">
-
-                                <input
-                                    type="text"
-                                    id="mensaje-input"
-                                    placeholder="Escribe un mensaje">
-
-                                <button id="enviar-mensaje">
-                                    Enviar
-                                </button>
-
-                            </div>
-
-                        </section>
-
-                    </div>
+                    </section>
 
                 </section>
 

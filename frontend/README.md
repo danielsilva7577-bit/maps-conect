@@ -29,11 +29,11 @@ frontend/
 |----------|------|-----|
 | Inicio | `pages/inicio.html` | `js/pages/inicio.js` |
 | Perfil | `pages/perfil.html` | `js/pages/perfil.js` |
-| Foro | `pages/foro.html` | `js/pages/foro.js` |
-| Tips | `pages/tips.html` | `js/pages/tips.js` |
-| Apuntes | `pages/recursos.html` | `js/pages/recursos.js` |
+| Comunidad y Recursos | `pages/comunidad.html` | `js/pages/comunidad.js` |
 | Mensajes | `pages/mensajes.html` | `js/pages/mensajes.js` |
 | Empresarial | `pages/empresarial.html` | `js/pages/empresarial.js` |
 | Círculos | `pages/circulos.html` | `js/pages/circulos.js` |
+
+> "Comunidad y Recursos" integra en pestañas Foro de Dudas, Repositorio de Apuntes y Tips Académicos. Cada pestaña solo renderiza contenido cuando el backend (`/foro`, `/recursos`, `/tips`) devuelve datos.
 
 El contenido de cada pantalla va en `#main-content`.

@@ -1,0 +1,323 @@
+/* MAPS Connect - Comunidad y Recursos (Foro + Apuntes + Tips) */
+
+.academic-hub-container {
+    --hub-accent: #005a2b;
+    --hub-accent-dark: #004420;
+    --hub-accent-soft: #e8f5e9;
+    --hub-border: #dcdfe6;
+    --hub-bg: #f4f6f8;
+    --hub-text: #1a1a1a;
+    --hub-muted: #666;
+
+    max-width: 1050px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* Bordes rectos institucionales (scopeado a la página) */
+.academic-hub-container .card,
+.academic-hub-container .input-search,
+.academic-hub-container .select-materia,
+.academic-hub-container .btn-solid,
+.academic-hub-container .btn-clean,
+.academic-hub-container .badge,
+.academic-hub-container .file-icon,
+.academic-hub-container .solved-box {
+    border-radius: 0;
+}
+
+.academic-hub-container .card {
+    background: #ffffff;
+    border: 1px solid var(--hub-border);
+    padding: 20px;
+    margin-bottom: 16px;
+}
+
+/* --- 1. BARRA DE BÚSQUEDA Y FILTRO SUPERIOR --- */
+.hub-filter-bar {
+    display: grid;
+    grid-template-columns: 2fr 1.2fr auto;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+    .hub-filter-bar {
+        grid-template-columns: 1fr;
+    }
+}
+
+.input-search,
+.select-materia {
+    padding: 10px 14px;
+    border: 1px solid var(--hub-border);
+    background: #ffffff;
+    font-size: 0.9rem;
+    outline: none;
+    color: var(--hub-text);
+}
+
+.input-search:focus,
+.select-materia:focus {
+    border-color: var(--hub-accent);
+}
+
+.btn-solid {
+    background-color: var(--hub-accent);
+    color: #ffffff;
+    border: none;
+    padding: 10px 18px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.btn-solid:hover {
+    background-color: var(--hub-accent-dark);
+}
+
+.btn-clean {
+    background-color: transparent;
+    color: var(--hub-accent);
+    border: 1px solid var(--hub-accent);
+    padding: 6px 14px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-clean:hover {
+    background-color: var(--hub-accent-soft);
+}
+
+/* --- 2. PESTAÑAS DE SUB-NAVEGACIÓN --- */
+.hub-tabs {
+    display: flex;
+    border-bottom: 2px solid var(--hub-border);
+    margin-bottom: 20px;
+    background: #ffffff;
+}
+
+.tab-button {
+    flex: 1;
+    padding: 14px;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    font-size: 0.95rem;
+    font-weight: bold;
+    color: var(--hub-muted);
+    cursor: pointer;
+    text-align: center;
+}
+
+.tab-button:hover {
+    color: var(--hub-accent);
+}
+
+.tab-button.active {
+    color: var(--hub-accent);
+    border-bottom-color: var(--hub-accent);
+    background-color: #fafafa;
+}
+
+/* Paneles de contenido */
+.tab-panel {
+    display: none;
+}
+
+.tab-panel.active {
+    display: block;
+}
+
+/* Badges */
+.hub-badge {
+    padding: 3px 8px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    display: inline-block;
+}
+
+.badge-materia {
+    background-color: var(--hub-accent-soft);
+    color: var(--hub-accent);
+    border: 1px solid #c8e6c9;
+}
+
+.badge-solved {
+    background-color: #dcfce7;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+
+.badge-verified {
+    background-color: #e0f2fe;
+    color: #0284c7;
+    border: 1px solid #bae6fd;
+}
+
+/* --- ESTILOS: FORO DE DUDAS --- */
+.post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.post-meta {
+    font-size: 0.8rem;
+    color: #888;
+}
+
+.post-title {
+    font-size: 1.1rem;
+    color: #111;
+    margin-bottom: 6px;
+}
+
+.post-desc {
+    font-size: 0.9rem;
+    color: #444;
+    line-height: 1.4;
+    margin-bottom: 12px;
+}
+
+.post-desc code {
+    background: #f3f4f6;
+    padding: 1px 5px;
+    font-size: 0.85em;
+}
+
+.solved-box {
+    background-color: #f9fafb;
+    border-left: 3px solid var(--hub-accent);
+    padding: 10px 12px;
+    margin: 10px 0;
+    font-size: 0.85rem;
+}
+
+.post-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #f0f0f0;
+    padding-top: 10px;
+    margin-top: 10px;
+    font-size: 0.82rem;
+    color: var(--hub-muted);
+}
+
+.post-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.btn-link {
+    background: none;
+    border: none;
+    color: #555;
+    font-weight: 600;
+    font-size: 0.82rem;
+    cursor: pointer;
+}
+
+.btn-link:hover {
+    color: var(--hub-accent);
+}
+
+/* --- ESTILOS: APUNTES Y REPOSITORIO --- */
+.apunte-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.apunte-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.file-icon {
+    width: 44px;
+    height: 44px;
+    background-color: var(--hub-accent-soft);
+    color: var(--hub-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.85rem;
+    border: 1px solid #c8e6c9;
+    flex-shrink: 0;
+}
+
+.apunte-details h4 {
+    font-size: 1rem;
+    color: #111;
+    margin-bottom: 4px;
+}
+
+.apunte-details p {
+    font-size: 0.82rem;
+    color: var(--hub-muted);
+}
+
+/* --- ESTILOS: TIPS ACADÉMICOS --- */
+.tip-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+@media (max-width: 768px) {
+    .tip-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.tip-card {
+    border-top: 3px solid var(--hub-accent);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.tip-card .tip-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.tip-title {
+    font-size: 1.05rem;
+    color: #111;
+    margin: 8px 0;
+}
+
+.tip-text {
+    font-size: 0.88rem;
+    color: #444;
+    line-height: 1.4;
+    margin-bottom: 12px;
+}
+
+.tip-text code {
+    background: #f3f4f6;
+    padding: 1px 5px;
+    font-size: 0.85em;
+}
+
+.vote-badge {
+    font-size: 0.82rem;
+    font-weight: bold;
+    color: var(--hub-accent);
+}

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comunidad y Recursos | MAPS Connect</title>
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/comunidad.css">
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar"></aside>
+        <div class="main-wrapper">
+            <header class="topbar" id="topbar"></header>
+            <main class="main-content" id="main-content">
+
+                <section class="academic-hub-container">
+
+                    <!-- 1. BARRA SUPERIOR DE FILTROS Y ACCIÓN CONTEXTUAL -->
+                    <div class="hub-filter-bar">
+                        <input type="text" class="input-search" id="hub-search" placeholder="Buscar por tema, duda, apunte o concepto clave...">
+
+                        <select class="select-materia" id="hub-materia">
+                            <option value="">Todas las materias del semestre</option>
+                        </select>
+
+                        <!-- Este botón cambia según la pestaña activa mediante JS -->
+                        <button class="btn-solid" id="context-action-btn" type="button">+ Preguntar Duda</button>
+                    </div>
+
+                    <!-- 2. PESTAÑAS DE NAVEGACIÓN INTERNA -->
+                    <nav class="hub-tabs" role="tablist">
+                        <button class="tab-button active" type="button" role="tab"
+                                data-tab="foro-dudas" data-action="+ Preguntar Duda">
+                             Foro de Dudas
+                        </button>
+                        <button class="tab-button" type="button" role="tab"
+                                data-tab="apuntes" data-action="+ Subir Apunte (PDF)">
+                             Repositorio de Apuntes
+                        </button>
+                        <button class="tab-button" type="button" role="tab"
+                                data-tab="tips" data-action="+ Compartir Tip">
+                             Tips Académicos
+                        </button>
+                    </nav>
+
+                    <!-- ================= PESTAÑA 1: FORO DE DUDAS ================= -->
+                    <section id="foro-dudas" class="tab-panel active" role="tabpanel">
+                        <!-- Las dudas se renderizan aquí solo cuando el backend responde -->
+                    </section>
+
+                    <!-- ================= PESTAÑA 2: APUNTES Y REPOSITORIO ================= -->
+                    <section id="apuntes" class="tab-panel" role="tabpanel">
+                        <!-- Los apuntes se renderizan aquí solo cuando el backend responde -->
+                    </section>
+
+                    <!-- ================= PESTAÑA 3: TIPS ACADÉMICOS ================= -->
+                    <section id="tips" class="tab-panel" role="tabpanel">
+                        <!-- Los tips se renderizan aquí solo cuando el backend responde -->
+                    </section>
+
+                </section>
+
+            </main>
+        </div>
+    </div>
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/layout.js"></script>
+    <script src="../js/pages/comunidad.js"></script>
+</body>
+</html>

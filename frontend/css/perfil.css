@@ -1,0 +1,254 @@
+/* MAPS Connect - Mi Perfil */
+
+.perfil-container {
+    --hub-accent: #005a2b;
+    --hub-accent-dark: #004420;
+    --hub-accent-soft: #e8f5e9;
+    --hub-border: #dcdfe6;
+    --hub-muted: #666;
+
+    max-width: 1050px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* Bordes rectos institucionales (scopeado a la página) */
+.perfil-container .card,
+.perfil-container .profile-avatar,
+.perfil-container .btn-solid,
+.perfil-container .btn-clean,
+.perfil-container .badge,
+.perfil-container .certificate-item,
+.perfil-container .stat-box {
+    border-radius: 0;
+}
+
+.perfil-container .card {
+    background: #ffffff;
+    border: 1px solid var(--hub-border);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+/* --- 1. CABECERA DE PERFIL --- */
+.profile-header-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    border-left: 4px solid var(--hub-accent);
+}
+
+.profile-main-info {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.profile-avatar {
+    width: 70px;
+    height: 70px;
+    background-color: var(--hub-accent);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.6rem;
+    flex-shrink: 0;
+}
+
+.profile-name {
+    font-size: 1.4rem;
+    color: #111111;
+    margin-bottom: 4px;
+}
+
+.profile-sub {
+    font-size: 0.9rem;
+    color: #555555;
+}
+
+/* Botones */
+.perfil-container .btn-solid {
+    background-color: var(--hub-accent);
+    color: #ffffff;
+    border: none;
+    padding: 9px 18px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.perfil-container .btn-solid:hover {
+    background-color: var(--hub-accent-dark);
+}
+
+.perfil-container .btn-clean {
+    background-color: transparent;
+    color: var(--hub-accent);
+    border: 1px solid var(--hub-accent);
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.perfil-container .btn-clean:hover {
+    background-color: var(--hub-accent-soft);
+}
+
+/* --- 2. LAYOUT A DOS COLUMNAS --- */
+.profile-grid {
+    display: grid;
+    grid-template-columns: 1.8fr 1.2fr;
+    gap: 20px;
+}
+
+@media (max-width: 850px) {
+    .profile-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.section-heading {
+    font-size: 1.1rem;
+    color: #222222;
+    margin-bottom: 14px;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 6px;
+}
+
+.sub-heading {
+    font-size: 0.95rem;
+    color: #333;
+    margin: 16px 0 10px 0;
+}
+
+/* Badges */
+.perfil-container .badge {
+    padding: 3px 8px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    display: inline-block;
+}
+
+.badge-green {
+    background-color: var(--hub-accent-soft);
+    color: var(--hub-accent);
+    border: 1px solid #c8e6c9;
+}
+
+.badge-gray {
+    background-color: #f1f5f9;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+}
+
+/* --- COLUMNA IZQUIERDA: TRAYECTORIA MAPS --- */
+.purpose-box {
+    background-color: #f9fafb;
+    border-left: 3px solid var(--hub-accent);
+    padding: 12px 16px;
+    margin-bottom: 18px;
+}
+
+.purpose-box strong {
+    font-size: 0.85rem;
+    color: var(--hub-accent);
+    display: block;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.purpose-box p {
+    font-size: 0.92rem;
+    color: #333333;
+    font-style: italic;
+}
+
+.certificate-item {
+    border: 1px solid var(--hub-border);
+    padding: 14px;
+    margin-bottom: 12px;
+    background: #ffffff;
+}
+
+.certificate-item.active {
+    border-left: 4px solid var(--hub-accent);
+}
+
+.cert-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.cert-title {
+    font-size: 0.95rem;
+    color: #111111;
+    font-weight: bold;
+}
+
+.cert-desc {
+    font-size: 0.85rem;
+    color: #555555;
+    line-height: 1.4;
+}
+
+/* --- COLUMNA DERECHA: APORTACIONES Y ESTADÍSTICAS --- */
+.stats-summary {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.stat-box {
+    background: #fafafa;
+    border: 1px solid #e0e0e0;
+    padding: 12px;
+    text-align: center;
+}
+
+.stat-box .number {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: var(--hub-accent);
+    display: block;
+}
+
+.stat-box .label {
+    font-size: 0.75rem;
+    color: var(--hub-muted);
+    text-transform: uppercase;
+}
+
+.activity-list {
+    list-style: none;
+}
+
+.activity-item {
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 0.85rem;
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-item strong {
+    color: #222222;
+    display: block;
+    margin-bottom: 2px;
+}
+
+.activity-item span {
+    color: #888888;
+    font-size: 0.75rem;
+}

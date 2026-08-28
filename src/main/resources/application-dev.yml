@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/maps_conect_dev
+    url: jdbc:mysql://localhost:3306/maps_conect
     username: root
-    password: Haloymega59!
+    password: Berlin007.
   
   jpa:
     hibernate:

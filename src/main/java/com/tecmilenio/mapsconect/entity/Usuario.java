@@ -21,34 +21,33 @@ public class Usuario {
     @Column(name = "id_usuario")
     private Integer id;
 
-    @Column(name = "correo", nullable = false, unique = true, length = 100)
+    @Column(name = "correo", nullable = false, unique = true, length = 150)
     private String email;
 
-    @Column(nullable = false, length = 100)
-    private String nombre;
-
-    @Column(nullable = false, length = 100)
-    private String apellido;
+    @Column(name = "nombre_completo", nullable = false, length = 150)
+    private String nombreCompleto;
 
     @Column(name = "contrasena_hash", nullable = false)
     private String contrasena;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = RolConverter.class)
+    @Column(name = "rol", nullable = false)
     private Rol rol;
+
+    @Builder.Default
+    @Column(name = "puntos_reputacion", nullable = false)
+    private Integer puntosReputacion = 0;
 
     @Builder.Default
     @Column(nullable = false)
     private Boolean activo = true;
 
     @Builder.Default
-    @Column(nullable = false)
-    private LocalDateTime fechaCreacion = LocalDateTime.now();
-
-    @Column
-    private LocalDateTime fechaActualizacion;
+    @Column(name = "fecha_registro", nullable = false)
+    private LocalDateTime fechaRegistro = LocalDateTime.now();
 
     public enum Rol {
-        ESTUDIANTE, DOCENTE, EGRESADO, ADMIN
+        ESTUDIANTE, PROFESOR, ADMINISTRADOR
     }
 
 }
