@@ -40,6 +40,40 @@
     color: var(--sidebar-text);
 }
 
+.sidebar-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    min-width: 0;
+}
+
+.sidebar-user small {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sidebar-avatar {
+    width: 34px;
+    height: 34px;
+    background-color: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+    border-radius: 0;
+}
+
+.sidebar-avatar.avatar-foto {
+    object-fit: cover;
+    width: 34px;
+    height: 34px;
+}
+
 .sidebar-nav {
     list-style: none;
     padding: 1rem 0;
@@ -132,6 +166,134 @@
     flex: 1;
     padding: 4.75rem 1.5rem 1.5rem;
     overflow-y: auto;
+}
+
+/* ---------- Buscador global (topbar) ---------- */
+.global-search {
+    position: fixed;
+    top: 0.8rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 115;
+    width: min(500px, calc(100vw - 10rem));
+}
+
+.global-search-input {
+    width: 100%;
+    padding: 0.55rem 0.9rem;
+    border: 1px solid var(--gray-300);
+    background: #ffffff;
+    font: inherit;
+    font-size: 0.9rem;
+    box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.12);
+    border-radius: 0;
+}
+
+.global-search-input:focus {
+    outline: none;
+    border-color: var(--sidebar-bg);
+}
+
+.global-search-dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    background: #ffffff;
+    border: 1px solid var(--gray-300);
+    box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.18);
+    max-height: 320px;
+    overflow-y: auto;
+    z-index: 116;
+}
+
+.global-search-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.global-search-item:hover {
+    background: #f6f8fa;
+}
+
+.global-search-item:last-child {
+    border-bottom: none;
+}
+
+.global-search-item .avatar {
+    width: 36px;
+    height: 36px;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+    background-color: var(--hub-accent, #0284c7);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.global-search-item .avatar-foto {
+    width: 36px;
+    height: 36px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.global-search-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.global-search-info strong {
+    display: block;
+    font-size: 0.88rem;
+    color: #111111;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.global-search-info span {
+    display: block;
+    font-size: 0.75rem;
+    color: #666666;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.global-search-chat {
+    border: 1px solid var(--accent-dark, #005a2b);
+    background: transparent;
+    color: var(--accent-dark, #005a2b);
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 0;
+    white-space: nowrap;
+}
+
+.global-search-chat:hover {
+    background: var(--accent-soft, #e8f5e9);
+}
+
+.global-search-empty {
+    padding: 12px;
+    font-size: 0.85rem;
+    color: #777777;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .global-search {
+        width: calc(100vw - 5.5rem);
+    }
 }
 
 .visually-hidden {
@@ -228,3 +390,159 @@
         padding: 4.75rem 1rem 1rem;
     }
 }
+
+/* ---------- Notificaciones (campana global) ---------- */
+.notif-bell {
+    position: fixed;
+    top: 0.9rem;
+    right: 1.25rem;
+    z-index: 115;
+}
+
+.notif-toggle {
+    position: relative;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: none;
+    border-radius: 50%;
+    background: #ffffff;
+    font-size: 1.15rem;
+    cursor: pointer;
+    box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.2);
+}
+
+.notif-toggle:hover {
+    background: #f6f8fa;
+}
+
+.notif-badge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    min-width: 1.1rem;
+    height: 1.1rem;
+    padding: 0 0.24rem;
+    border-radius: 999px;
+    background: #b3261e;
+    color: #ffffff;
+    font-size: 0.68rem;
+    font-weight: 700;
+    line-height: 1.1rem;
+    text-align: center;
+}
+
+.notif-panel {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    width: min(340px, calc(100vw - 2rem));
+    background: #ffffff;
+    border: 1px solid var(--gray-300);
+    box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.18);
+    z-index: 116;
+}
+
+.notif-panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.notif-marcar-todas {
+    background: none;
+    border: none;
+    color: var(--sidebar-bg, #0284c7);
+    font-size: 0.78rem;
+    cursor: pointer;
+}
+
+.notif-marcar-todas:hover {
+    text-decoration: underline;
+}
+
+.notif-list {
+    max-height: 340px;
+    overflow-y: auto;
+}
+
+.notif-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0.55rem 0.75rem;
+    cursor: pointer;
+    border-bottom: 1px solid #f6f8fa;
+    text-decoration: none;
+    color: inherit;
+}
+
+.notif-item:hover {
+    background: #f6f8fa;
+}
+
+.notif-item .avatar {
+    width: 34px;
+    height: 34px;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+    background-color: var(--sidebar-bg, #0284c7);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.notif-item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.notif-item-info strong {
+    display: block;
+    font-size: 0.85rem;
+    color: #222;
+}
+
+.notif-item-info span {
+    font-size: 0.76rem;
+    color: #666;
+    display: block;
+}
+
+.notif-item-info .notif-preview {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.notif-item-badge {
+    flex-shrink: 0;
+    min-width: 1.05rem;
+    height: 1.05rem;
+    padding: 0 0.22rem;
+    border-radius: 999px;
+    background: #b3261e;
+    color: #ffffff;
+    font-size: 0.68rem;
+    font-weight: 700;
+    line-height: 1.05rem;
+    text-align: center;
+}
+
+.notif-vacio {
+    padding: 1rem;
+    color: #888;
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .notif-bell {
+        right: 0.75rem;
+    }
+}
+

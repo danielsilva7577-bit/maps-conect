@@ -1,0 +1,33 @@
+/* MAPS Connect - Personalización del color
+   Cuando <html> lleva el atributo data-color (gestionado por js/colores.js),
+   estas reglas reemplazan las variables del tema por las variables --accent-*
+   calculadas a partir del color elegido por el usuario. El resto de la app
+   se "sintoniza" automáticamente porque consume estas variables. */
+
+html[data-color] {
+    --secondary-color: var(--accent-dark);
+    --link-color: var(--accent-dark);
+    --sidebar-bg: var(--accent-deep);
+    --sidebar-border: var(--accent-dark);
+    --sidebar-item-hover-bg: var(--accent-dark);
+    --sidebar-item-active-bg: var(--accent-dark);
+    --sidebar-accent: var(--accent-bright);
+    --topbar-bg: var(--accent-dark);
+    --btn-primary-text: var(--accent-dark);
+
+    /* Módulos con paleta propia (perfil, mensajes, comunidad) */
+    --hub-accent: var(--accent-dark);
+    --hub-accent-dark: var(--accent-deep);
+    --hub-accent-soft: var(--accent-soft);
+}
+
+/* En modo oscuro el acento debe verse claro sobre fondo oscuro. */
+html[data-color].dark-mode {
+    --primary-color: var(--accent-mid);
+    --link-color: var(--accent-bright);
+    --secondary-color: var(--accent-bright);
+    --btn-primary-text: var(--accent-bright);
+    --hub-accent: var(--accent-bright);
+    --hub-accent-dark: var(--accent);
+    --hub-accent-soft: var(--accent-deep);
+}

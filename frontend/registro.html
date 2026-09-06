@@ -4,9 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro | MAPS Connect</title>
-    <link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="css/layout.css">
-    <link rel="stylesheet" href="css/components.css">
+    <script>try{if(localStorage.getItem('tema-maps')==='oscuro'){document.documentElement.classList.add('dark-mode')}}catch(e){}</script>
+    <script src="js/estilos.js?v=17"></script>
+    <link rel="stylesheet" href="css/base.css?v=8">
+    <link rel="stylesheet" href="css/layout.css?v=5">
+    <link rel="stylesheet" href="css/components.css?v=8">
+    <link rel="stylesheet" href="css/colores.css?v=1">
+    <link rel="stylesheet" href="css/estilos.css?v=26">
+    <style>
+        .rol-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+        }
+        .rol-selector label {
+            display: block;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            text-align: center;
+            font-size: 0.95rem;
+            margin-bottom: 0;
+        }
+        .rol-selector label input {
+            margin-right: 0.4rem;
+        }
+        .rol-selector label.rol-activo {
+            border-color: var(--primary-color);
+            background: #eff6ff;
+        }
+    </style>
 </head>
 <body class="register-page">
 <div class="auth-layout">
@@ -15,11 +43,25 @@
         <div id="alert-container"></div>
         <form id="registro-form">
             <div class="form-group">
-                <label for="nombre">Nombre</label>
+                <label>Tipo de cuenta</label>
+                <div class="rol-selector" id="rol-selector">
+                    <label id="rol-card-estudiante" class="rol-activo">
+                        <input type="radio" name="rol" value="estudiante" checked>
+                        Estudiante
+                    </label>
+                </div>
+            </div>
+            <div class="form-group" id="group-identificador">
+                <label for="matricula" id="label-identificador">Matrícula</label>
+                <input type="text" id="matricula" class="form-control" required placeholder="A12345678">
+                <div class="form-hint" id="hint-identificador">Identificador único institucional</div>
+            </div>
+            <div class="form-group">
+                <label for="nombre">Nombre(s)</label>
                 <input type="text" id="nombre" class="form-control" required>
             </div>
             <div class="form-group">
-                <label for="apellido">Apellido</label>
+                <label for="apellido">Apellido(s)</label>
                 <input type="text" id="apellido" class="form-control" required>
             </div>
             <div class="form-group">
@@ -36,6 +78,17 @@
                 <label for="confirmar-contrasena">Confirmar contraseña</label>
                 <input type="password" id="confirmar-contrasena" class="form-control" required minlength="6">
             </div>
+            <div class="form-group">
+                <div class="terminos-checkbox">
+                    <input type="checkbox" id="acepta-terminos" required>
+                    <label for="acepta-terminos">
+                        He leído y acepto el
+                        <a id="link-aviso-registro" role="button">Aviso de Privacidad</a>
+                        y los
+                        <a id="link-terminos-registro" role="button">Términos y Condiciones</a>.
+                    </label>
+                </div>
+            </div>
             <button type="submit" class="btn btn-primary" style="width:100%">Crear cuenta</button>
         </form>
         <p style="margin-top:1rem;text-align:center">
@@ -43,9 +96,12 @@
         </p>
     </div>
 </div>
-<script src="js/api.js"></script>
-<script src="js/auth.js"></script>
-<script src="js/utils.js"></script>
-<script src="js/pages/registro.js"></script>
+<script src="js/api.js?v=5"></script>
+<script src="js/auth.js?v=7"></script>
+<script src="js/utils.js?v=5"></script>
+<script src="js/tema.js?v=2"></script>
+<script src="js/colores.js?v=1"></script>
+<script src="js/aviso-privacidad.js?v=1"></script>
+<script src="js/pages/registro.js?v=6"></script>
 </body>
 </html>

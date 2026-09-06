@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajustes | MAPS Connect</title>
+    <script>try{if(localStorage.getItem('tema-maps')==='oscuro'){document.documentElement.classList.add('dark-mode')}}catch(e){}</script>
+    <script src="../js/estilos.js?v=17"></script>
+    <link rel="stylesheet" href="../css/base.css?v=8">
+    <link rel="stylesheet" href="../css/layout.css?v=6">
+    <link rel="stylesheet" href="../css/components.css?v=8">
+    <link rel="stylesheet" href="../css/colores.css?v=1">
+    <link rel="stylesheet" href="../css/ajustes.css?v=4">
+    <link rel="stylesheet" href="../css/estilos.css?v=26">
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar"></aside>
+        <div class="main-wrapper">
+            <header class="topbar" id="topbar"></header>
+            <main class="main-content" id="main-content">
+
+                <section class="ajustes-container">
+                    <h1 class="page-title">Ajustes</h1>
+
+                    <div class="ajustes-seccion">
+                        <h2 class="ajustes-seccion-titulo">Personalización</h2>
+                        <p class="ajustes-seccion-desc">
+                            Personaliza el aspecto visual de la plataforma: color de acento, estilo de la página
+                            y modo de apariencia.
+                        </p>
+
+                        <div class="card">
+                            <h2 class="section-heading">Color de la página</h2>
+                            <p class="page-description" style="margin-bottom:0.5rem;">
+                                Elige el color de acento para toda la aplicación. El cambio se guarda
+                                automáticamente y se aplica al instante.
+                            </p>
+
+                            <div class="personaliza-seccion">
+                                <label class="personaliza-label">Colores predefinidos</label>
+                                <div class="personaliza-swatches" id="swatches-colores" role="group" aria-label="Colores predefinidos">
+                                    <!-- Swatches generados por ajustes.js -->
+                                </div>
+
+                                <label class="personaliza-label" for="color-custom">Color a medida</label>
+                                <div class="personaliza-custom">
+                                    <input type="color" id="color-custom" value="#e1367f" aria-label="Elegir color a medida">
+                                    <span class="personaliza-custom-texto" id="color-custom-texto">#e1367f</span>
+                                </div>
+
+                                <button type="button" class="btn btn-outline" id="btn-restaurar-color">
+                                    Restablecer color por defecto
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h2 class="section-heading">Estilos de la página</h2>
+                            <p class="page-description" style="margin-bottom:0.75rem;">
+                                Elige un estilo visual para toda la aplicación: sidebar, barra superior,
+                                tarjetas, formularios y fondo. El cambio se aplica al instante.
+                            </p>
+
+                            <div class="estilos-seccion" id="estilos-lista" role="group" aria-label="Estilos de la página">
+                                <!-- Tarjetas de estilo generadas por ajustes.js -->
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h2 class="section-heading">Apariencia</h2>
+                            <div class="ajustes-fila">
+                                <div class="ajustes-fila-texto">
+                                    <strong>Modo oscuro</strong>
+                                    <p>Reduce el brillo de la pantalla con colores oscuros en toda la aplicación.</p>
+                                </div>
+                                <label class="tema-switch" aria-label="Modo oscuro">
+                                    <input type="checkbox" id="tema-toggle">
+                                    <span class="slider" aria-hidden="true"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ajustes-seccion">
+                        <h2 class="ajustes-seccion-titulo">Mi cuenta</h2>
+                        <p class="ajustes-seccion-desc">
+                            Administra la información de tu cuenta: tu nombre y tu contraseña.
+                        </p>
+
+                        <div class="card">
+                            <h2 class="section-heading">Datos de la cuenta</h2>
+                            <div class="ajustes-fila" style="margin-bottom:0.25rem;">
+                                <div class="ajustes-fila-texto">
+                                    <strong>Correo</strong>
+                                    <p id="cuenta-email">—</p>
+                                </div>
+                            </div>
+                            <form id="form-nombre" class="cuenta-form" novalidate>
+                                <div class="form-group">
+                                    <label for="input-nombre">Nombre completo</label>
+                                    <input type="text" id="input-nombre" class="form-control" maxlength="150" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                            </form>
+                        </div>
+
+                        <div class="card">
+                            <h2 class="section-heading">Cambiar contraseña</h2>
+                            <form id="form-contrasena" class="cuenta-form" novalidate>
+                                <div class="form-group">
+                                    <label for="input-contrasena-actual">Contraseña actual</label>
+                                    <input type="password" id="input-contrasena-actual" class="form-control"
+                                           autocomplete="current-password" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="input-contrasena-nueva">Nueva contraseña</label>
+                                    <input type="password" id="input-contrasena-nueva" class="form-control"
+                                           autocomplete="new-password" required>
+                                    <small class="form-hint">
+                                        Mínimo 8 caracteres, con mayúscula, minúscula y número.
+                                    </small>
+                                </div>
+                                <div class="form-group">
+                                    <label for="input-contrasena-confirmar">Confirmar nueva contraseña</label>
+                                    <input type="password" id="input-contrasena-confirmar" class="form-control"
+                                           autocomplete="new-password" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="ajustes-seccion">
+                        <h2 class="ajustes-seccion-titulo">Legal</h2>
+                        <div class="card">
+                            <button type="button" class="btn btn-outline" id="btn-ver-aviso">Ver Aviso de Privacidad</button>
+                        </div>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+    </div>
+    <script src="../js/api.js?v=6"></script>
+    <script src="../js/auth.js?v=7"></script>
+    <script src="../js/utils.js?v=6"></script>
+    <script src="../js/tema.js?v=2"></script>
+    <script src="../js/colores.js?v=1"></script>
+    <script src="../js/aviso-privacidad.js?v=1"></script>
+    <script src="../js/layout.js?v=12"></script>
+    <script src="../js/pages/ajustes.js?v=4"></script>
+</body>
+</html>

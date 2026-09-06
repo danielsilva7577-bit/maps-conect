@@ -1,0 +1,250 @@
+/* MAPS Connect - Ajustes */
+
+.ajustes-container {
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+.ajustes-fila {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.ajustes-fila-texto strong {
+    display: block;
+    font-size: 1rem;
+    color: var(--heading-color);
+}
+
+.ajustes-fila-texto p {
+    color: var(--gray-600);
+    font-size: 0.88rem;
+    margin: 0.25rem 0 0;
+    max-width: 40rem;
+}
+
+/* --- Personalización del color de la página --- */
+.personaliza-seccion {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    margin-top: 0.75rem;
+}
+
+.personaliza-label {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--heading-color);
+    letter-spacing: 0.02em;
+}
+
+.personaliza-swatches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.color-swatch {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    background-color: var(--swatch);
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.color-swatch:hover {
+    transform: scale(1.12);
+}
+
+.color-swatch.activo {
+    border-color: var(--heading-color);
+    box-shadow: 0 0 0 3px var(--accent-soft, #e8f5e9);
+}
+
+.color-swatch.activo::after {
+    content: '✓';
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+html.dark-mode .color-swatch.activo {
+    border-color: #ffffff;
+}
+
+.personaliza-custom {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.personaliza-custom input[type="color"] {
+    width: 44px;
+    height: 34px;
+    padding: 2px;
+    border: 1px solid var(--gray-300);
+    border-radius: 8px;
+    background: #ffffff;
+    cursor: pointer;
+}
+
+.personaliza-custom-texto {
+    font-family: "SF Mono", Consolas, monospace;
+    font-size: 0.85rem;
+    color: var(--gray-600);
+}
+
+html.dark-mode .personaliza-custom input[type="color"] {
+    background: #161b22;
+    border-color: #30363d;
+}
+
+/* --- Estilos de la página (selector de skins) --- */
+.estilos-seccion {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.estilo-opcion {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.45rem;
+    padding: 0.9rem;
+    text-align: left;
+    cursor: pointer;
+    background: var(--card-bg, #ffffff);
+    border: 2px solid var(--gray-300);
+    border-radius: 12px;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.estilo-opcion:hover {
+    border-color: var(--accent-mid);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+}
+
+.estilo-opcion:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.estilo-opcion.activo {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft, #e8f5e9);
+}
+
+.estilo-preview {
+    width: 100%;
+    height: 54px;
+    border-radius: 8px;
+    border: 1px solid var(--gray-300);
+    display: block;
+}
+
+.estilo-nombre {
+    font-weight: 800;
+    font-size: 0.95rem;
+    color: var(--heading-color);
+}
+
+.estilo-desc {
+    font-size: 0.82rem;
+    line-height: 1.45;
+    color: var(--gray-600);
+}
+
+.estilo-check {
+    display: none;
+    position: absolute;
+    top: 0.55rem;
+    right: 0.55rem;
+    width: 24px;
+    height: 24px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--accent-contrast, #ffffff);
+    font-weight: 800;
+    font-size: 0.85rem;
+}
+
+.estilo-opcion.activo .estilo-check {
+    display: flex;
+}
+
+html.dark-mode .estilo-opcion {
+    background: #161b22;
+    border-color: #30363d;
+}
+
+html.dark-mode .estilo-desc {
+    color: #8b949e;
+}
+
+/* Personalización de color deshabilitada por un estilo activo */
+.personaliza-bloqueado {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* --- Secciones de ajustes --- */
+.ajustes-seccion {
+    margin-bottom: 2.25rem;
+}
+
+.ajustes-seccion-titulo {
+    font-size: 1.3rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--heading-color);
+    margin: 0 0 0.25rem;
+}
+
+.ajustes-seccion-desc {
+    font-size: 0.9rem;
+    color: var(--gray-600);
+    margin: 0 0 1.1rem;
+    max-width: 46rem;
+}
+
+html.dark-mode .ajustes-seccion-desc {
+    color: #8b949e;
+}
+
+/* --- Mi cuenta --- */
+.cuenta-form {
+    margin-top: 1rem;
+}
+
+.cuenta-form .form-control {
+    max-width: 420px;
+}
+
+.cuenta-form .btn-primary {
+    margin-top: 0.25rem;
+}
+
+#cuenta-email {
+    font-family: "SF Mono", Consolas, monospace;
+    font-size: 0.88rem;
+}

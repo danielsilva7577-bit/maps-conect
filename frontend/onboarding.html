@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Completa tu perfil | MAPS Connect</title>
+    <script src="js/estilos.js?v=17"></script>
+    <link rel="stylesheet" href="css/base.css?v=8">
+    <link rel="stylesheet" href="css/layout.css?v=5">
+    <link rel="stylesheet" href="css/components.css?v=8">
+    <link rel="stylesheet" href="css/colores.css?v=1">
+    <link rel="stylesheet" href="css/estilos.css?v=26">
+    <style>
+        .ono-section { margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--gray-200); }
+        .ono-section h3 { margin-bottom: 0.5rem; font-size: 1rem; }
+        .ono-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+        .ono-grid label {
+            display: flex; align-items: center; gap: 0.45rem;
+            padding: 0.55rem 0.7rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--border-radius);
+            font-size: 0.88rem;
+            cursor: pointer;
+        }
+        .ono-grid label.sem-activo { border-color: var(--primary-color); background: #eff6ff; }
+        .ono-materias { margin-top: 0.5rem; }
+        .ono-chip {
+            display: inline-block;
+            background: #f1f5f9; border: 1px solid var(--gray-200);
+            border-radius: 999px; padding: 0.3rem 0.75rem;
+            margin: 0.2rem 0.2rem 0 0; font-size: 0.82rem; color: var(--gray-800);
+        }
+        .ono-espera { color: var(--gray-600); font-size: 0.9rem; padding: 0.75rem 0; }
+    </style>
+</head>
+<body class="register-page">
+<div class="auth-layout">
+    <div class="auth-card card">
+        <h1 class="page-title" id="ono-titulo">Completa tu perfil</h1>
+        <p class="form-hint" id="ono-subtitulo"></p>
+        <div id="alert-container"></div>
+        <div id="ono-contenido"></div>
+    </div>
+</div>
+<script src="js/api.js?v=5"></script>
+<script src="js/auth.js?v=7"></script>
+<script src="js/utils.js?v=5"></script>
+<script src="js/colores.js?v=1"></script>
+<script src="js/pages/onboarding.js?v=5"></script>
+</body>
+</html>

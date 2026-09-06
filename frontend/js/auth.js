@@ -20,6 +20,22 @@ const Auth = {
         return user ? JSON.parse(user) : null;
     },
 
+    /** Actualiza la foto del usuario en la sesión local (nuevaFoto null = eliminar). */
+    foto(nuevaFoto) {
+        const user = this.getUser();
+        if (!user) return;
+        user.foto = nuevaFoto || null;
+        localStorage.setItem(this.USER_KEY, JSON.stringify(user));
+    },
+
+    /** Actualiza campos del usuario en la sesión local (p. ej. nombre). */
+    actualizar(patch) {
+        const user = this.getUser();
+        if (!user) return;
+        Object.assign(user, patch);
+        localStorage.setItem(this.USER_KEY, JSON.stringify(user));
+    },
+
     isAuthenticated() {
         return !!this.getToken();
     },
@@ -39,11 +55,35 @@ const Auth = {
         return true;
     },
 
-    /** Redirige al dashboard si ya hay sesión. Usar en login/registro. */
-    redirectIfAuthenticated() {
-        if (this.isAuthenticated()) {
+    /** Valida la sesión contra el servidor y redirige al dashboard si es válida.
+     *  Usar en login/registro: evita el bucle con tokens viejos o expirados. */
+    async redirectIfAuthenticated() {
+        if (!this.isAuthenticated()) return false;
+        try {
+            await API.request('/auth/perfil-estado');
             window.location.href = this.resolvePath('pages/inicio.html');
+            return true;
+        } catch (e) {
+            // Token inválido o expirado: se limpia la sesión y se deja ver el login.
+            localStorage.removeItem(this.TOKEN_KEY);
+            localStorage.removeItem(this.USER_KEY);
+            return false;
         }
+    },
+
+    /** Si el perfil está incompleto, lleva al usuario a completar onboarding. */
+    async redirectIfPerfilIncompleto() {
+        if (!this.isAuthenticated()) return false;
+        try {
+            const res = await API.request('/auth/perfil-estado');
+            if (!res?.completado) {
+                window.location.href = this.resolvePath('onboarding.html');
+                return true;
+            }
+        } catch (e) {
+            // Sin perfil consultable (p. ej. usuario demo) se permite navegar.
+        }
+        return false;
     },
 
     resolvePath(relativePath) {

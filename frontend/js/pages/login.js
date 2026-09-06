@@ -1,30 +1,40 @@
-/** Acceso provisional solo para revisar la interfaz (sin backend). */
-const DEV_LOGIN = {
-    email: 'demo@tecmilenio.mx',
-    password: 'Demo1234',
-    user: {
-        nombre: 'Usuario Demo',
-        email: 'demo@tecmilenio.mx',
-        rol: 'ESTUDIANTE'
-    }
-};
+document.addEventListener('DOMContentLoaded', async () => {
+    await Auth.redirectIfAuthenticated();
 
-document.addEventListener('DOMContentLoaded', () => {
-    Auth.redirectIfAuthenticated();
+    document.getElementById('link-aviso-login')?.addEventListener('click', () => AvisoPrivacidad.mostrar('Aviso de Privacidad'));
 
-    document.getElementById('login-form').addEventListener('submit', (e) => {
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         Utils.clearAlert('alert-container');
 
         const email = document.getElementById('email').value.trim();
         const password = document.getElementById('password').value;
 
-        if (email === DEV_LOGIN.email && password === DEV_LOGIN.password) {
-            Auth.saveSession('token-provisional-dev', DEV_LOGIN.user);
-            window.location.href = 'pages/inicio.html';
+        if (!email || !password) {
+            Utils.showAlert('alert-container', 'Ingresa tu correo y contraseña.');
             return;
         }
 
-        Utils.showAlert('alert-container', 'Correo o contraseña incorrectos. Usa las credenciales provisionales.');
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Iniciando sesión...';
+
+        try {
+            const response = await API.request('/auth/login', {
+                method: 'POST',
+                body: JSON.stringify({ email, contrasena: password })
+            });
+
+            Auth.saveSession(response.token, response.usuario);
+            try {
+                localStorage.removeItem('bienvenida-pendiente');
+                sessionStorage.setItem('bienvenida-pendiente', '1');
+            } catch (e) {}
+            window.location.href = Auth.resolvePath('pages/inicio.html');
+        } catch (error) {
+            Utils.showAlert('alert-container', error.message || 'No se pudo iniciar sesión.');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Entrar';
+        }
     });
 });

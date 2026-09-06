@@ -4,10 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Perfil | MAPS Connect</title>
-    <link rel="stylesheet" href="../css/base.css">
-    <link rel="stylesheet" href="../css/layout.css">
-    <link rel="stylesheet" href="../css/components.css">
-    <link rel="stylesheet" href="../css/perfil.css">
+    <script>try{if(localStorage.getItem('tema-maps')==='oscuro'){document.documentElement.classList.add('dark-mode')}}catch(e){}</script>
+    <script src="../js/estilos.js?v=17"></script>
+    <link rel="stylesheet" href="../css/base.css?v=8">
+    <link rel="stylesheet" href="../css/layout.css?v=5">
+    <link rel="stylesheet" href="../css/components.css?v=8">
+    <link rel="stylesheet" href="../css/colores.css?v=1">
+    <link rel="stylesheet" href="../css/perfil.css?v=6">
+    <link rel="stylesheet" href="../css/estilos.css?v=26">
 </head>
 <body>
     <div class="app-layout">
@@ -23,8 +27,11 @@
                         <div class="profile-main-info" id="profile-header-info">
                             <!-- Avatar, nombre y datos se renderizan desde el backend (o sesión) -->
                         </div>
-                        <div>
+                        <div class="profile-header-actions">
+                            <button class="btn-clean" type="button" id="btn-cambiar-foto">Cambiar Foto</button>
+                            <button class="btn-clean" type="button" id="btn-cambiar-semestre">Cambiar Semestre</button>
                             <button class="btn-clean" type="button" id="btn-editar-proposito">Editar Propósito</button>
+                            <input type="file" id="foto-input" accept="image/png,image/jpeg,image/webp" hidden>
                         </div>
                     </div>
 
@@ -62,15 +69,28 @@
 
                     </div>
 
+                    <!-- 3. MI RED: SEGUIDORES Y DESCUBRIR PERSONAS -->
+                    <section class="card" id="profile-red" hidden>
+                        <h3 class="section-heading">Mi Red</h3>
+                        <div class="red-stats" id="red-stats"></div>
+                        <h4 class="sub-heading">Descubrir personas</h4>
+                        <div class="discover-grid" id="discover-list">
+                            <p class="discover-empty">Cargando personas...</p>
+                        </div>
+                    </section>
+
                 </section>
 
             </main>
         </div>
     </div>
-    <script src="../js/api.js"></script>
-    <script src="../js/auth.js"></script>
-    <script src="../js/utils.js"></script>
-    <script src="../js/layout.js"></script>
-    <script src="../js/pages/perfil.js"></script>
+    <script src="../js/api.js?v=5"></script>
+    <script src="../js/auth.js?v=7"></script>
+    <script src="../js/utils.js?v=5"></script>
+    <script src="../js/tema.js?v=2"></script>
+    <script src="../js/colores.js?v=1"></script>
+    <script src="../js/aviso-privacidad.js?v=1"></script>
+    <script src="../js/layout.js?v=12"></script>
+    <script src="../js/pages/perfil.js?v=7"></script>
 </body>
 </html>

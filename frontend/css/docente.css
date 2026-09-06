@@ -1,0 +1,194 @@
+.docente-container { max-width: 1050px; margin: 0 auto; }
+
+.docente-header {
+    border-left: 4px solid #0284c7;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.docente-header .header-info h2 { font-size: 1.3rem; }
+.docente-header .header-info p { font-size: 0.85rem; color: #666; margin-top: 3px; }
+
+.docente-badge {
+    background-color: #e0f2fe;
+    color: #0369a1;
+    padding: 4px 10px;
+    font-size: 0.78rem;
+    font-weight: bold;
+    border: 1px solid #bae6fd;
+}
+
+.docente-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.docente-kpi {
+    background: #ffffff;
+    border: 1px solid #dcdfe6;
+    padding: 16px;
+    border-top: 3px solid #0284c7;
+}
+
+.docente-kpi .val { font-size: 1.8rem; font-weight: bold; color: #111; }
+.docente-kpi .lbl { font-size: 0.8rem; color: #666; text-transform: uppercase; margin-top: 4px; }
+
+.docente-section { margin-bottom: 20px; }
+
+.docente-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.docente-section-header h3 {
+    font-size: 1.05rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 6px;
+    flex: 1;
+}
+
+.btn-outline {
+    background: transparent;
+    color: #0284c7;
+    border: 1px solid #0284c7;
+    padding: 6px 12px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-solid {
+    background-color: var(--accent-dark, #005a2b);
+    color: #ffffff;
+    border: none;
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.docente-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; margin-top: 10px; }
+.docente-table th { background: #f9fafb; padding: 10px; border-bottom: 2px solid #dcdfe6; text-align: left; }
+.docente-table td { padding: 12px 10px; border-bottom: 1px solid #ebeef5; }
+
+.docente-empty { padding: 20px; text-align: center; color: #999; font-size: 0.9rem; }
+
+.docente-meta { font-size: 0.85rem; color: #666; margin-bottom: 12px; }
+.docente-link { color: #0284c7; font-weight: bold; text-decoration: none; }
+
+.modal-overlay {
+    position: fixed; inset: 0; background: rgba(15, 23, 42, 0.55);
+    display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px;
+}
+.docente-asistencia-modal {
+    background: #fff; border-radius: 14px; padding: 24px; width: 100%; max-width: 560px;
+    box-shadow: 0 18px 50px rgba(0,0,0,0.25);
+}
+.docente-asistencia-modal h3 { margin: 0 0 16px; color: #0f172a; }
+.docente-asistencia-modal label { display: block; font-size: 0.82rem; color: #475569; margin: 10px 0 4px; font-weight: 600; }
+.docente-asistencia-modal input,
+.docente-asistencia-modal select,
+.docente-asistencia-modal textarea {
+    width: 100%; padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.9rem; box-sizing: border-box;
+}
+.docente-asistencia-modal input:focus,
+.docente-asistencia-modal select:focus,
+.docente-asistencia-modal textarea:focus { outline: none; border-color: #0284c7; }
+.docente-asistencia-modal .ag-row { display: flex; gap: 12px; }
+.docente-asistencia-modal .ag-row > div { flex: 1; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+
+/* ============================================================
+   MODO OSCURO — Docente (inversión pareja)
+   ============================================================ */
+html.dark-mode .docente-container {
+    color: #e6edf3;
+}
+
+html.dark-mode .docente-header .header-info p {
+    color: #8b949e;
+}
+
+html.dark-mode .docente-badge {
+    background-color: #0b1520;
+    color: #38bdf8;
+    border-color: #123f5c;
+}
+
+html.dark-mode .docente-kpi {
+    background: #161b22;
+    border-color: #30363d;
+}
+
+html.dark-mode .docente-kpi .val {
+    color: #e6edf3;
+}
+
+html.dark-mode .docente-kpi .lbl {
+    color: #8b949e;
+}
+
+html.dark-mode .docente-section-header h3 {
+    border-bottom-color: #30363d;
+}
+
+html.dark-mode .btn-outline {
+    color: #38bdf8;
+    border-color: #38bdf8;
+}
+
+html.dark-mode .docente-table th {
+    background: #0d1117;
+    color: #c9d1d9;
+    border-bottom-color: #30363d;
+}
+
+html.dark-mode .docente-table td {
+    border-bottom-color: #21262d;
+    color: #c9d1d9;
+}
+
+html.dark-mode .docente-empty {
+    color: #8b949e;
+}
+
+html.dark-mode .docente-meta {
+    color: #8b949e;
+}
+
+html.dark-mode .docente-link {
+    color: #38bdf8;
+}
+
+html.dark-mode .docente-asistencia-modal {
+    background: #161b22;
+}
+
+html.dark-mode .docente-asistencia-modal h3 {
+    color: #e6edf3;
+}
+
+html.dark-mode .docente-asistencia-modal label {
+    color: #8b949e;
+}
+
+html.dark-mode .docente-asistencia-modal input,
+html.dark-mode .docente-asistencia-modal select,
+html.dark-mode .docente-asistencia-modal textarea {
+    background: #0d1117;
+    color: #e6edf3;
+    border-color: #30363d;
+}
+
+html.dark-mode .docente-asistencia-modal input:focus,
+html.dark-mode .docente-asistencia-modal select:focus,
+html.dark-mode .docente-asistencia-modal textarea:focus {
+    border-color: #38bdf8;
+}

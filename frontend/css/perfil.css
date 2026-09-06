@@ -1,9 +1,9 @@
 /* MAPS Connect - Mi Perfil */
 
 .perfil-container {
-    --hub-accent: #005a2b;
+    --hub-accent: var(--accent-dark, #005a2b);
     --hub-accent-dark: #004420;
-    --hub-accent-soft: #e8f5e9;
+    --hub-accent-soft: var(--accent-soft, #e8f5e9);
     --hub-border: #dcdfe6;
     --hub-muted: #666;
 
@@ -12,7 +12,7 @@
     width: 100%;
 }
 
-/* Bordes rectos institucionales (scopeado a la página) */
+/* Bordes rectos institucionales (scopeado a la p├ígina) */
 .perfil-container .card,
 .perfil-container .profile-avatar,
 .perfil-container .btn-solid,
@@ -137,7 +137,7 @@
 .badge-green {
     background-color: var(--hub-accent-soft);
     color: var(--hub-accent);
-    border: 1px solid #c8e6c9;
+    border: 1px solid var(--accent-soft-border, #c8e6c9);
 }
 
 .badge-gray {
@@ -200,7 +200,7 @@
     line-height: 1.4;
 }
 
-/* --- COLUMNA DERECHA: APORTACIONES Y ESTADÍSTICAS --- */
+/* --- COLUMNA DERECHA: APORTACIONES Y ESTAD├ìSTICAS --- */
 .stats-summary {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -251,4 +251,282 @@
 .activity-item span {
     color: #888888;
     font-size: 0.75rem;
+}
+
+/* --- MODAL: EDICI├ôN DE PROP├ôSITO DE VIDA --- */
+.proposito-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 4000;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.proposito-modal {
+    background: #ffffff;
+    border-radius: 0;
+    max-width: 520px;
+    width: 100%;
+    padding: 24px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+    border-top: 4px solid var(--accent-dark, #005a2b);
+}
+
+.proposito-modal h3 {
+    font-size: 1.15rem;
+    color: #111111;
+    margin-bottom: 6px;
+}
+
+.proposito-modal-sub {
+    font-size: 0.85rem;
+    color: #666666;
+    margin-bottom: 14px;
+}
+
+.proposito-modal textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #dcdfe6;
+    border-radius: 0;
+    font-size: 0.95rem;
+    font-family: inherit;
+    resize: vertical;
+    box-sizing: border-box;
+}
+
+.proposito-modal textarea:focus {
+    outline: none;
+    border-color: var(--accent-dark, #005a2b);
+    box-shadow: 0 0 0 2px rgba(0, 90, 43, 0.15);
+}
+
+.proposito-modal-msg {
+    font-size: 0.85rem;
+    color: #b91c1c;
+    margin-top: 8px;
+    min-height: 1em;
+}
+
+.proposito-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.proposito-modal-actions .btn-solid {
+    background-color: var(--accent-dark, #005a2b);
+    color: #ffffff;
+    border: none;
+    padding: 9px 18px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 0;
+}
+
+.proposito-modal-actions .btn-solid:hover {
+    background-color: #004420;
+}
+
+.proposito-modal-actions .btn-clean {
+    background-color: transparent;
+    color: var(--accent-dark, #005a2b);
+    border: 1px solid var(--accent-dark, #005a2b);
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 0;
+}
+
+.proposito-modal-actions .btn-clean:hover {
+    background-color: var(--accent-soft, #e8f5e9);
+}
+.proposito-modal-actions .btn-clean {
+    background-color: transparent;
+    color: var(--accent-dark, #005a2b);
+    border: 1px solid var(--accent-dark, #005a2b);
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 0;
+}
+
+.proposito-modal-actions .btn-clean:hover {
+    background-color: var(--accent-soft, #e8f5e9);
+}
+
+/* --- 3. MI RED: SEGUIDORES Y DESCUBRIR PERSONAS --- */
+.red-stats {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+}
+
+.red-stat {
+    background: #fafafa;
+    border: 1px solid #e0e0e0;
+    padding: 10px 18px;
+    text-align: center;
+}
+
+.red-stat .number {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--hub-accent);
+    display: block;
+}
+
+.red-stat .label {
+    font-size: 0.72rem;
+    color: var(--hub-muted);
+    text-transform: uppercase;
+}
+
+.discover-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 12px;
+}
+
+.discover-person {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid var(--hub-border);
+    padding: 12px;
+    background: #ffffff;
+}
+
+.discover-person .avatar,
+.discover-person .avatar-foto {
+    width: 46px;
+    height: 46px;
+    background-color: var(--hub-accent);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.discover-person .avatar-foto {
+    object-fit: cover;
+}
+
+.discover-info {
+    min-width: 0;
+    flex: 1;
+}
+
+.discover-info strong {
+    display: block;
+    font-size: 0.88rem;
+    color: #111111;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.discover-info span {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--hub-muted);
+}
+
+.discover-empty {
+    color: var(--hub-muted);
+    font-size: 0.85rem;
+}
+
+/* ============================================================
+   MODO OSCURO (p├ígina de perfil)
+   ============================================================ */
+html.dark-mode .perfil-container .card,
+html.dark-mode .certificate-item,
+html.dark-mode .discover-person {
+    background: #161b22;
+    border-color: #30363d;
+}
+
+html.dark-mode .profile-name,
+html.dark-mode .cert-title,
+html.dark-mode .section-heading,
+html.dark-mode .sub-heading,
+html.dark-mode .discover-info strong {
+    color: #e6edf3;
+}
+
+html.dark-mode .profile-sub,
+html.dark-mode .cert-desc,
+html.dark-mode .discover-info span {
+    color: #8b949e;
+}
+
+html.dark-mode .purpose-box {
+    background: #0d1117;
+    border-color: #21262d;
+    border-left-color: var(--accent-mid, #2ea043);
+}
+
+html.dark-mode .purpose-box strong { color: var(--accent-bright, #3fb950); }
+html.dark-mode .purpose-box p { color: #c9d1d9; }
+
+html.dark-mode .stat-box,
+html.dark-mode .red-stat {
+    background: #0d1117;
+    border-color: #30363d;
+}
+
+html.dark-mode .stat-box .number,
+html.dark-mode .red-stat .number {
+    color: var(--accent-bright, #3fb950);
+}
+
+html.dark-mode .stat-box .label,
+html.dark-mode .red-stat .label,
+html.dark-mode .activity-item span,
+html.dark-mode .discover-empty {
+    color: #8b949e;
+}
+
+html.dark-mode .activity-item strong { color: #e6edf3; }
+html.dark-mode .activity-item { border-bottom-color: #21262d; }
+
+html.dark-mode .perfil-container .btn-clean {
+    color: var(--accent-bright, #3fb950);
+    border-color: var(--accent-mid, #2ea043);
+}
+html.dark-mode .perfil-container .btn-clean:hover {
+    background-color: rgba(46, 160, 67, 0.15);
+}
+
+html.dark-mode .proposito-modal {
+    background: #161b22;
+}
+html.dark-mode .proposito-modal h3 { color: #e6edf3; }
+html.dark-mode .proposito-modal-sub { color: #8b949e; }
+html.dark-mode .proposito-modal textarea {
+    background: #0d1117;
+    color: #e6edf3;
+    border-color: #30363d;
+}
+html.dark-mode .badge-green {
+    background-color: rgba(46, 160, 67, 0.15);
+    color: var(--accent-bright, #3fb950);
+    border-color: var(--accent-mid, #2ea043);
+}
+html.dark-mode .badge-gray {
+    background-color: #21262d;
+    color: #c9d1d9;
+    border-color: #30363d;
 }

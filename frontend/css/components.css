@@ -123,3 +123,196 @@
     background: #d1fae5;
     color: #065f46;
 }
+
+/* ---------- Toast / notificaciones flotantes ---------- */
+#toast-root {
+    position: fixed;
+    bottom: 1.25rem;
+    right: 1.25rem;
+    z-index: 5000;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-width: min(22rem, calc(100vw - 2.5rem));
+}
+
+.toast {
+    padding: 0.75rem 1rem;
+    border-radius: var(--border-radius);
+    font-size: 0.9rem;
+    line-height: 1.35;
+    color: #1f2937;
+    background: #ffffff;
+    border: 1px solid var(--gray-200);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.toast-info { border-left: 4px solid var(--primary-color); }
+.toast-success { border-left: 4px solid #059669; }
+.toast-error { border-left: 4px solid var(--danger-color); }
+
+/* ---------- Avatar con foto ---------- */
+.avatar-foto {
+    object-fit: cover;
+    display: block;
+    flex-shrink: 0;
+}
+
+/* ---------- Enlace a perfil p├║blico ---------- */
+.user-link {
+    color: inherit;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.user-link:hover {
+    text-decoration: underline;
+}
+
+/* ---------- Bot├│n Seguir / Siguiendo ---------- */
+.follow-btn {
+    background: transparent;
+    border: 1px solid var(--accent-dark, #005a2b);
+    color: var(--accent-dark, #005a2b);
+    padding: 3px 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 0;
+    white-space: nowrap;
+}
+
+.follow-btn:hover {
+    background: var(--accent-soft, #e8f5e9);
+}
+
+.follow-btn.siguiendo {
+    background: var(--accent-dark, #005a2b);
+    color: #ffffff;
+}
+
+.follow-btn.siguiendo:hover {
+    background: #004420;
+}
+
+.follow-btn:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
+
+/* ---------- Modal de Aviso de Privacidad / T├®rminos ---------- */
+.aviso-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 6000;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.aviso-modal {
+    background: #ffffff;
+    color: var(--text-color);
+    border: 1px solid var(--gray-300);
+    border-radius: var(--border-radius);
+    width: 100%;
+    max-width: 620px;
+    max-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+}
+
+html.dark-mode .aviso-modal {
+    background: #161b22;
+    color: #e6edf3;
+}
+
+.aviso-modal-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.aviso-modal-head h3 {
+    margin: 0;
+    font-size: 1.05rem;
+}
+
+.aviso-modal-cerrar {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    color: var(--gray-600);
+}
+
+.aviso-modal-body {
+    padding: 1rem 1.25rem;
+    overflow-y: auto;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.aviso-modal-body h4 {
+    margin: 1rem 0 0.35rem;
+    font-size: 0.95rem;
+    color: var(--heading-color);
+}
+
+.aviso-modal-body p {
+    margin: 0 0 0.5rem;
+    color: var(--gray-600);
+}
+
+html.dark-mode .aviso-modal-body p {
+    color: #c9d1d9;
+}
+
+.aviso-modal-body hr {
+    margin: 1rem 0;
+    border: none;
+    border-top: 1px solid var(--gray-200);
+}
+
+.aviso-modal-foot {
+    padding: 0.85rem 1.25rem;
+    border-top: 1px solid var(--gray-200);
+    text-align: right;
+}
+
+/* ---------- Checkbox de aceptaci├│n (registro) ---------- */
+.terminos-checkbox {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-start;
+    font-size: 0.85rem;
+    color: var(--gray-600);
+    line-height: 1.4;
+    margin-top: 0.25rem;
+}
+.terminos-checkbox input {
+    margin-top: 0.15rem;
+    flex-shrink: 0;
+}
+.terminos-checkbox a {
+    cursor: pointer;
+    color: var(--link-color);
+    text-decoration: underline;
+}
+

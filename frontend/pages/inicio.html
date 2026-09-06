@@ -4,12 +4,107 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio | MAPS Connect</title>
-    <link rel="stylesheet" href="../css/base.css">
-    <link rel="stylesheet" href="../css/layout.css">
-    <link rel="stylesheet" href="../css/components.css">
+    <script>try{if(localStorage.getItem('tema-maps')==='oscuro'){document.documentElement.classList.add('dark-mode')}}catch(e){}</script>
+    <script src="../js/estilos.js?v=17"></script>
+    <link rel="stylesheet" href="../css/base.css?v=8">
+    <link rel="stylesheet" href="../css/layout.css?v=5">
+    <link rel="stylesheet" href="../css/components.css?v=8">
+    <link rel="stylesheet" href="../css/colores.css?v=1">
+    <link rel="stylesheet" href="../css/inicio.css?v=6">
+    <link rel="stylesheet" href="../css/estilos.css?v=26">
+    <style>
+        /* --- Animación de bienvenida HUD al entrar a la cuenta --- */
+        .welcome-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background-color: rgba(5, 12, 8, 0.96);
+            backdrop-filter: blur(8px);
+            z-index: 99999;
+            display: flex;
+            align-items: center; justify-content: center;
+            transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.5s;
+        }
+        .welcome-overlay.fade-out {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .welcome-popup {
+            background: #161b22;
+            border: 2px solid #2ea043;
+            box-shadow: 0 0 35px rgba(46, 160, 67, 0.35);
+            padding: 36px 44px;
+            text-align: center;
+            max-width: 520px;
+            width: 90%;
+            position: relative;
+            transform: scale(0.92);
+            animation: welcomePopupAppear 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .welcome-popup::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 3px;
+            background: linear-gradient(90deg, transparent, #3fb950, transparent);
+            animation: welcomeScanX 1.8s ease-in-out infinite;
+        }
+        .welcome-popup .popup-tag {
+            font-family: "SF Mono", Consolas, monospace;
+            font-size: 0.72rem;
+            color: #3fb950;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center; justify-content: center;
+            gap: 8px;
+            text-align: center;
+        }
+        .popup-tag .pulse-mini {
+            width: 6px; height: 6px;
+            background-color: #3fb950;
+            box-shadow: 0 0 6px #3fb950;
+        }
+        .welcome-popup .popup-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: #ffffff;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            text-align: center;
+        }
+        .welcome-popup .popup-username {
+            font-family: "SF Mono", Consolas, monospace;
+            font-size: 1.15rem;
+            color: #3fb950;
+            font-weight: 700;
+            padding: 6px 12px;
+            background: rgba(46, 160, 67, 0.12);
+            border: 1px solid rgba(46, 160, 67, 0.3);
+            display: inline-block;
+            margin: 10px 0 16px 0;
+            text-align: center;
+        }
+        .welcome-popup .popup-status {
+            font-size: 0.82rem;
+            color: #8b949e;
+            font-family: "SF Mono", Consolas, monospace;
+            text-align: center;
+        }
+        @keyframes welcomePopupAppear {
+            0% { transform: scale(0.85); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes welcomeScanX {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+    </style>
 </head>
 <body>
-
 
     <div class="app-layout">
         <aside class="sidebar" id="sidebar"></aside>
@@ -20,11 +115,14 @@
             </main>
         </div>
     </div>
-    <script src="../js/api.js"></script>
-    <script src="../js/auth.js"></script>
-    <script src="../js/utils.js"></script>
-    <script src="../js/layout.js"></script>
-    <script src="../js/pages/inicio.js"></script>
+    <script src="../js/api.js?v=5"></script>
+    <script src="../js/auth.js?v=7"></script>
+    <script src="../js/utils.js?v=5"></script>
+    <script src="../js/tema.js?v=2"></script>
+    <script src="../js/colores.js?v=1"></script>
+    <script src="../js/aviso-privacidad.js?v=1"></script>
+    <script src="../js/layout.js?v=12"></script>
+    <script src="../js/pages/inicio.js?v=8"></script>
 
 
 
