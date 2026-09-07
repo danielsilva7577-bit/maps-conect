@@ -25,8 +25,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 function mostrarBienvenida() {
-    // Limpia cualquier flag viejo que pudiera haber quedado de versiones anteriores.
-    try { localStorage.removeItem('bienvenida-pendiente'); } catch (e) {}
+    if (document.documentElement.getAttribute('data-estilo') === 'observatorio') {
+        const mostrar = () => window.Observatorio?.mostrarBienvenida?.();
+        if (window.Observatorio?.mostrarBienvenida) {
+            mostrar();
+        } else {
+            // El módulo del observatorio se carga de forma diferida desde
+            // estilos.js; espera su evento sin bloquear el dashboard.
+            document.addEventListener('observatorio:listo', mostrar, { once: true });
+        }
+        return;
+    }
 
     let pendiente = false;
     try {
@@ -90,9 +99,38 @@ function renderDashboard(content, data) {
         </div>
     `;
 
-    document.getElementById('quick-question-form')?.addEventListener('submit', event => {
+    document.getElementById('quick-question-form')?.addEventListener('submit', async event => {
         event.preventDefault();
-        window.location.href = 'comunidad.html#foro-dudas';
+        const question = document.getElementById('quick-question')?.value.trim() || '';
+        const materia = document.getElementById('quick-question-materia')?.value;
+        const idMateria = materia ? Number(materia) : null;
+        const submit = event.currentTarget.querySelector('button[type="submit"]');
+
+        if (!question) return;
+
+        submit.disabled = true;
+        submit.textContent = 'Publicando...';
+        try {
+            await API.request('/foro', {
+                method: 'POST',
+                body: JSON.stringify({
+                    titulo: question,
+                    contenido: question,
+                    idMateria
+                })
+            });
+            Utils.toast('Duda publicada correctamente.', 'success');
+            window.location.href = 'comunidad.html#foro-dudas';
+        } catch (error) {
+            if (error.status === 409) {
+                Utils.toast('Ya existe una duda similar. Revísala en la comunidad.', 'info');
+                window.location.href = 'comunidad.html#foro-dudas';
+                return;
+            }
+            Utils.toast(error.message || 'No se pudo publicar la duda.', 'error');
+            submit.disabled = false;
+            submit.textContent = 'Publicar duda';
+        }
     });
 
     content.addEventListener('click', event => {
@@ -144,7 +182,7 @@ function renderQuickQuestion(materias) {
         <form class="card create-post" id="quick-question-form">
             <label class="visually-hidden" for="quick-question">Nueva duda académica</label>
             <input id="quick-question" name="question" type="text" maxlength="180" placeholder="¿Tienes una duda académica? Pregunta a tu comunidad..." required>
-            <div class="create-post-actions"><select aria-label="Materia de la duda"><option value="">Seleccionar materia...</option>${options}</select><button class="btn-solid" type="submit">Publicar duda</button></div>
+            <div class="create-post-actions"><select id="quick-question-materia" aria-label="Materia de la duda"><option value="">Seleccionar materia...</option>${options}</select><button class="btn-solid" type="submit">Publicar duda</button></div>
         </form>
     `;
 }
@@ -182,13 +220,15 @@ function renderPost(post) {
         ? `<div class="embed-box prof-box"><strong style="color:#0284c7;">Archivo disponible:</strong><p>${escapeHtml(post.archivo.nombre)} (${escapeHtml(post.archivo.peso)}) • ${escapeHtml(post.archivo.descargas)} descargas de tu carrera</p></div>`
         : (post.respuestaUsuario ? `<div class="embed-box"><strong>Tu respuesta:</strong><p>${escapeHtml(post.respuestaUsuario)}</p></div>` : '');
 
-    const votos = Number.isFinite(Number(post.votos)) ? Number(post.votos) : 0;
-    const botonVotos = post.participado
-        ? `<button class="btn-action voted" type="button">Votado (${votos})</button>`
-        : `<button class="btn-action" type="button">${votos} Votos</button>`;
+    const votos = Number(post.votos);
+    const metricaVotos = Number.isFinite(votos)
+        ? `<span class="btn-action" aria-label="${votos} votos">${votos} Votos</span>`
+        : '';
+    const enlaceForo = 'comunidad.html#foro-dudas';
+    const botonRespuestas = `<a class="btn-action" href="${enlaceForo}">${Number(post.respuestas) || 0} ${esMaterial ? 'Comentarios' : 'Respuestas'}</a>`;
     const tercerBoton = esMaterial
-        ? '<button class="btn-action" type="button">Descargar</button>'
-        : '<button class="btn-action" type="button">Guardar</button>';
+        ? '<a class="btn-action" href="comunidad.html#apuntes">Ver recursos</a>'
+        : `<a class="btn-action" href="${enlaceForo}">Ver en el foro</a>`;
     const status = esMaterial ? 'Material Oficial' : (post.solucionAceptada ? 'Resuelto' : '');
 
     return `
@@ -197,7 +237,7 @@ function renderPost(post) {
             <h3 class="post-title">${escapeHtml(post.titulo || '')}</h3>
             ${post.contenido ? `<p class="post-body">${escapeHtml(post.contenido)}</p>` : ''}
             ${embed}
-            <div class="post-footer"><div class="action-links">${botonVotos}<button class="btn-action" type="button">${Number(post.respuestas) || 0} ${esMaterial ? 'Comentarios' : 'Respuestas'}</button>${tercerBoton}</div>${status ? `<span class="post-status">${escapeHtml(status)}</span>` : ''}</div>
+            <div class="post-footer"><div class="action-links">${metricaVotos}${botonRespuestas}${tercerBoton}</div>${status ? `<span class="post-status">${escapeHtml(status)}</span>` : ''}</div>
         </article>
     `;
 }
@@ -211,6 +251,32 @@ function renderAccessCards(data) {
     if (circulo) cards.push(`<section class="card side-card"><span class="badge badge-materia">${escapeHtml(circulo.fecha || 'Próximamente')}</span><h4>${escapeHtml(circulo.nombre || 'Círculo de estudio')}</h4>${circulo.descripcion ? `<p>${escapeHtml(circulo.descripcion)}</p>` : ''}<a class="btn-solid" style="width:100%;" href="circulos.html">${circulo.plataforma ? `Entrar a Sala (${escapeHtml(circulo.plataforma)})` : 'Ver círculo'}</a></section>`);
     if (asesoria) cards.push(`<section class="card side-card prof-card"><span class="badge badge-verified">Asesoría Disponible</span><h4>${escapeHtml(asesoria.docente || 'Docente')}</h4>${asesoria.horario ? `<p>Horario de atención para dudas del certificado: <strong>${escapeHtml(asesoria.horario)}</strong></p>` : ''}<a class="btn-clean" href="mensajes.html">Enviar Mensaje Privado</a></section>`);
     if (empresa) cards.push(`<section class="card side-card"><h4>Radar Semestre Empresarial</h4><p><strong>${escapeHtml(empresa.nombre || '')}${empresa.calificacion ? ` • ${escapeHtml(empresa.calificacion)}` : ''}</strong>${empresa.resena ? `<br>${escapeHtml(empresa.resena)}` : ''}</p><a class="side-link" href="empresarial.html">Ver directorio de empresas →</a></section>`);
+
+    // El inicio debe conservar los accesos principales aunque todavía no haya
+    // una sesión o asesoría asignada por la API.
+    if (!circulo) {
+        cards.unshift(
+            '<section class="card side-card obs-access-card">' +
+            '<span class="badge badge-materia">Círculos de estudio</span>' +
+            '<h4>Encuentra tu próxima sesión</h4>' +
+            '<p>Explora los repasos abiertos y únete al círculo de la materia que necesitas.</p>' +
+            '<a class="btn-solid" style="width:100%;" href="circulos.html">Explorar círculos</a>' +
+            '</section>'
+        );
+    }
+
+    if (!asesoria) {
+        const mentoriaCard =
+            '<section class="card side-card prof-card obs-access-card">' +
+            '<span class="badge badge-verified">Mentoría disponible</span>' +
+            '<h4>Acompañamiento docente</h4>' +
+            '<p>Consulta tus opciones de asesoría y envía una duda a tu docente.</p>' +
+            '<a class="btn-clean" href="mensajes.html">Enviar mensaje</a>' +
+            '</section>';
+
+        // La tarjeta empresarial, cuando existe, siempre queda al final.
+        cards.splice(empresa ? cards.length - 1 : cards.length, 0, mentoriaCard);
+    }
 
     return cards.join('');
 }

@@ -29,6 +29,7 @@ function renderAdmin(content, data) {
     const perfil = data.perfil || {};
     const kpis = data.kpis || {};
     const actividad = Array.isArray(data.actividad) ? data.actividad : [];
+    const ciclosReporte = opcionesCicloReportes();
 
     content.innerHTML = `
         <div class="admin-container">
@@ -84,18 +85,16 @@ function renderAdmin(content, data) {
                     <div class="form-group">
                         <label for="report-tipo">Tipo de Reporte</label>
                         <select class="form-control" id="report-tipo">
-                            <option value="círculos">Participación en Círculos de Estudio y Asistencia</option>
+                            <option value="circulos">Participación en Círculos de Estudio e Inscripciones</option>
                             <option value="dudas">Métricas de Resolución de Dudas por Materia</option>
-                            <option value="recursos">Descargas y Calidad de Repositorio de Apuntes</option>
+                            <option value="recursos">Uso y Moderación del Repositorio de Apuntes</option>
                             <option value="empresas">Evaluación y Desempeño de Empresas Vinculadas</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="report-ciclo">Semestre / Ciclo</label>
                         <select class="form-control" id="report-ciclo">
-                            <option value="current">Ciclo Vigente (Semestre Actual)</option>
-                            <option value="2026-1">2026-1 (Enero - Mayo)</option>
-                            <option value="all">Histórico Anual</option>
+                            ${ciclosReporte}
                         </select>
                     </div>
                     <div class="form-group">
@@ -105,7 +104,7 @@ function renderAdmin(content, data) {
                             <option value="pdf">Documento Ejecutivo (.pdf)</option>
                         </select>
                     </div>
-                    <button class="btn-solid" type="submit">⬇ Descargar Reporte</button>
+                    <button class="btn-solid" id="report-submit" type="submit">⬇ Descargar Reporte</button>
                 </form>
             </section>
 
@@ -169,12 +168,12 @@ function renderAdmin(content, data) {
         </div>
     `;
 
-    document.getElementById('report-form')?.addEventListener('submit', event => {
+    document.getElementById('report-form')?.addEventListener('submit', async event => {
         event.preventDefault();
         const tipo = document.getElementById('report-tipo').value;
         const ciclo = document.getElementById('report-ciclo').value;
         const formato = document.getElementById('report-formato').value;
-        exportarReporte(tipo, ciclo, formato, data);
+        await descargarReporte(tipo, ciclo, formato, document.getElementById('report-submit'));
     });
 
     document.getElementById('docente-form')?.addEventListener('submit', async event => {
@@ -349,62 +348,38 @@ function renderFilaVacia() {
     return '<tr><td colspan="4"><div class="admin-empty">Sin actividad reciente para supervisar.</div></td></tr>';
 }
 
-function exportarReporte(tipo, ciclo, formato, data) {
-    const etiquetas = {
-        'círculos': 'Participación en Círculos de Estudio y Asistencia',
-        'dudas': 'Métricas de Resolución de Dudas por Materia',
-        'recursos': 'Descargas y Calidad de Repositorio de Apuntes',
-        'empresas': 'Evaluación y Desempeño de Empresas Vinculadas'
-    };
-    const kpis = (data && data.kpis) || {};
-    const actividad = (data && Array.isArray(data.actividad)) ? data.actividad : [];
+async function descargarReporte(tipo, ciclo, formato, boton) {
+    const textoOriginal = boton?.textContent || '⬇ Descargar Reporte';
+    if (boton) {
+        boton.disabled = true;
+        boton.textContent = 'Generando reporte…';
+    }
 
-    const filas = [];
-    filas.push(['MAPS CONNECT — REPORTE INSTITUCIONAL']);
-    filas.push(['Tipo de reporte', etiquetas[tipo] || tipo]);
-    filas.push(['Semestre / Ciclo', ciclo]);
-    filas.push(['Generado', new Date().toLocaleString()]);
-    filas.push([]);
-    filas.push(['INDICADOR', 'VALOR']);
-    filas.push(['Estudiantes activos', Number(kpis.totalEstudiantes) || 0]);
-    filas.push(['Docentes registrados', Number(kpis.totalProfesores) || 0]);
-    filas.push(['Dudas / Publicaciones', Number(kpis.totalPublicaciones) || 0]);
-    filas.push(['Círculos de Estudio activos', Number(kpis.sesionesAbiertas) || 0]);
-    filas.push(['Empresas vinculadas', Number(kpis.totalEmpresas) || 0]);
-    filas.push(['Reseñas empresariales', Number(kpis.totalResenas) || 0]);
-    filas.push(['Recursos académicos', Number(kpis.totalRecursos) || 0]);
-    filas.push([]);
-    filas.push(['ACTIVIDAD RECIENTE — Módulo', 'Elemento / Título', 'Autor', 'Estado', 'Fecha']);
-    if (actividad.length) {
-        actividad.forEach(a => {
-            filas.push([
-                a.modulo || 'General',
-                a.titulo || 'Sin título',
-                a.autor || '—',
-                a.tipo === 'publicacion' ? 'Foro' : 'Actividad',
-                formatFecha(a.fecha)
-            ]);
+    try {
+        const parametros = new URLSearchParams({ tipo, ciclo, formato });
+        const token = localStorage.getItem('token');
+        const respuesta = await fetch(`${API_BASE_URL}/admin/reportes?${parametros.toString()}`, {
+            headers: token ? { Authorization: `Bearer ${token}` } : {}
         });
-    } else {
-        filas.push(['Sin actividad reciente para este período.']);
-    }
 
-    const csv = filas.map(fila => fila.map(campo => {
-        const s = String(campo == null ? '' : campo);
-        return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
-    }).join(',')).join('\r\n');
+        if (!respuesta.ok) {
+            const error = await respuesta.json().catch(() => ({}));
+            throw new Error(error?.message || `No se pudo generar el reporte (${respuesta.status}).`);
+        }
 
-    const nombre = `reporte_${tipo}_${ciclo}`;
-    if (formato === 'pdf') {
-        const docu = filas.map(fila => fila.join('\t')).join('\r\n');
-        const blob = new Blob([docu], { type: 'text/plain;charset=utf-8' });
-        descargar(blob, `${nombre}.txt`);
-        Utils.toast('Documento ejecutivo generado.', 'success');
-        return;
+        const blob = await respuesta.blob();
+        const extension = formato === 'pdf' ? 'pdf' : 'csv';
+        const cicloArchivo = ciclo === 'current' ? 'vigente' : ciclo === 'all' ? 'historico' : ciclo;
+        descargar(blob, `reporte-${tipo}-${cicloArchivo}.${extension}`);
+        Utils.toast(`Reporte ${extension.toUpperCase()} generado correctamente.`, 'success');
+    } catch (e) {
+        Utils.toast(e.message || 'No se pudo generar el reporte.', 'error');
+    } finally {
+        if (boton) {
+            boton.disabled = false;
+            boton.textContent = textoOriginal;
+        }
     }
-    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' });
-    descargar(blob, `${nombre}.csv`);
-    Utils.toast('Reporte CSV generado correctamente.', 'success');
 }
 
 function descargar(blob, nombre) {
@@ -415,7 +390,26 @@ function descargar(blob, nombre) {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function opcionesCicloReportes() {
+    const hoy = new Date();
+    const anioActual = hoy.getFullYear();
+    const semestreActual = hoy.getMonth() < 6 ? 1 : 2;
+    const cicloVigente = `${anioActual}-${semestreActual}`;
+    const opciones = [`<option value="current">Ciclo vigente (${cicloVigente})</option>`];
+
+    for (let anio = anioActual; anio >= anioActual - 2; anio--) {
+        for (const semestre of [2, 1]) {
+            const ciclo = `${anio}-${semestre}`;
+            if (ciclo === cicloVigente) continue;
+            const meses = semestre === 1 ? 'Enero - Mayo' : 'Agosto - Diciembre';
+            opciones.push(`<option value="${ciclo}">${ciclo} (${meses})</option>`);
+        }
+    }
+    opciones.push('<option value="all">Histórico completo</option>');
+    return opciones.join('');
 }
 
 function formatFecha(value) {

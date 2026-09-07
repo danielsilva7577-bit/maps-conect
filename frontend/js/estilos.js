@@ -14,8 +14,15 @@
  */
 const Estilos = {
     KEY: 'estilo-maps',
+    MIGRATION_KEY: 'observatorio-v1-aplicado',
 
     STYLES: [
+        {
+            id: 'observatorio',
+            nombre: 'Observatorio Cósmico',
+            descripcion: 'Constelaciones, paneles acoplados y navegación estelar para toda la plataforma.',
+            preview: 'radial-gradient(circle at 28% 22%, #8b6bc7 0%, #171b38 38%, #030309 100%)'
+        },
         {
             id: 'clasico',
             nombre: 'Clásico',
@@ -72,6 +79,7 @@ const Estilos = {
     /** Textos personalizados por skin (botones, enlaces y placeholders).
         Las claves son el texto original exacto y los valores el texto temático. */
     TEXTOS_ESTILO: {
+        observatorio: {},
         cyber: {},
         medieval: {
             'Publicar duda': 'Enviar al Palacio',
@@ -154,7 +162,19 @@ const Estilos = {
     },
 
     guardado() {
-        try { return localStorage.getItem(this.KEY) || 'clasico'; } catch (e) { return 'clasico'; }
+        try {
+            const preferido = localStorage.getItem(this.KEY);
+            // Activa una vez el diseño solicitado sin impedir que cada persona
+            // elija después otro estilo desde Ajustes.
+            if (!localStorage.getItem(this.MIGRATION_KEY)) {
+                localStorage.setItem(this.MIGRATION_KEY, '1');
+                localStorage.setItem(this.KEY, 'observatorio');
+                return 'observatorio';
+            }
+            return this.STYLES.some(estilo => estilo.id === preferido) ? preferido : 'observatorio';
+        } catch (e) {
+            return 'observatorio';
+        }
     },
 
     /** Estilo activo en este momento (sin consultar storage). */
@@ -487,7 +507,8 @@ const Estilos = {
     },
 
     _limpiarFondo() {
-        document.querySelectorAll('.cyber-bg-viewport, .medieval-bg-viewport, .saiyan-bg-viewport, .noir-bg-viewport, .alchemy-bg-viewport, .minimal-bg-viewport, .invernadero-bg-viewport, .greenhouse-canopy, .light-dapple, .atmosphere-overlay, .castle-vignette, .cyber-blade-transition, .med-blade-transition, .saiyan-aura-transition, .noir-blade-transition, .alchemy-blade-transition, .minimal-blade-transition, .invernadero-leaf-transition, .heraldic-transition').forEach(el => el.remove());
+        if (window.Observatorio?.desactivar) window.Observatorio.desactivar();
+        document.querySelectorAll('.cyber-bg-viewport, .medieval-bg-viewport, .saiyan-bg-viewport, .noir-bg-viewport, .alchemy-bg-viewport, .minimal-bg-viewport, .invernadero-bg-viewport, .greenhouse-canopy, .light-dapple, .atmosphere-overlay, .castle-vignette, .cyber-blade-transition, .med-blade-transition, .saiyan-aura-transition, .noir-blade-transition, .alchemy-blade-transition, .minimal-blade-transition, .invernadero-leaf-transition, .heraldic-transition, .observatory-scene, .observatory-comet-transition, .observatory-welcome-overlay').forEach(el => el.remove());
     },
 
     _limpiarAccentoInline() {
@@ -511,6 +532,7 @@ const Estilos = {
 
     _ponFondo() {
         const estilo = this.activo();
+        if (estilo === 'observatorio') return this._ponFondoObservatorio();
         if (estilo === 'medieval') return this._ponFondoMedieval();
         if (estilo === 'saiyan') return this._ponFondoSaiyan();
         if (estilo === 'noir') return this._ponFondoNoir();
@@ -518,6 +540,43 @@ const Estilos = {
         if (estilo === 'minimal') return this._ponFondoMinimal();
         if (estilo === 'invernadero') return this._ponFondoInvernadero();
         return this._ponFondoCyber();
+    },
+
+    _rutaAssets() {
+        return window.location.pathname.includes('/pages/') ? '../' : '';
+    },
+
+    _ponFondoObservatorio() {
+        this._cargarFuentes();
+        const prefijo = this._rutaAssets();
+        const iniciar = () => {
+            if (this.activo() === 'observatorio') window.Observatorio?.activar?.();
+        };
+
+        if (!document.getElementById('observatorio-css')) {
+            const css = document.createElement('link');
+            css.id = 'observatorio-css';
+            css.rel = 'stylesheet';
+            css.href = prefijo + 'css/observatorio.css?v=4';
+            document.head.appendChild(css);
+        }
+
+        if (window.Observatorio) {
+            iniciar();
+            return;
+        }
+
+        const previo = document.getElementById('observatorio-js');
+        if (previo) {
+            previo.addEventListener('load', iniciar, { once: true });
+            return;
+        }
+
+        const script = document.createElement('script');
+        script.id = 'observatorio-js';
+        script.src = prefijo + 'js/observatorio.js?v=1';
+        script.addEventListener('load', iniciar, { once: true });
+        document.head.appendChild(script);
     },
 
     _ponFondoCyber() {
@@ -923,6 +982,8 @@ const Estilos = {
     set(id, guardar = true) {
         const estilo = this.STYLES.some(s => s.id === id) ? id : 'clasico';
         const r = document.documentElement;
+        const anterior = this.activo();
+        if (anterior !== estilo) this._limpiarFondo();
         r.setAttribute('data-estilo', estilo);
 
         if (estilo === 'clasico') {
@@ -969,7 +1030,7 @@ const Estilos = {
             document.addEventListener('DOMContentLoaded', () => this._mostrarRecarga(), { once: true });
             return;
         }
-        const acento = { clasico: '#3fb950', cyber: '#00f0ff', medieval: '#A9834B', saiyan: '#facc15', noir: '#e11d48', alchemy: '#10b981', minimal: '#2563eb', invernadero: '#3E6B4F' }[this.activo()] || '#3fb950';
+        const acento = { observatorio: '#8B6BC7', clasico: '#3fb950', cyber: '#00f0ff', medieval: '#A9834B', saiyan: '#facc15', noir: '#e11d48', alchemy: '#10b981', minimal: '#2563eb', invernadero: '#3E6B4F' }[this.activo()] || '#3fb950';
         const ov = document.createElement('div');
         ov.className = 'estilos-recarga-overlay';
         ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.72);backdrop-filter:blur(6px);z-index:999999;display:flex;align-items:center;justify-content:center;padding:1rem;overflow:auto;';

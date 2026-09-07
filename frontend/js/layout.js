@@ -18,6 +18,18 @@ const NAV_ITEMS = [
  * Los textos provienen de los prototipos entregados (mockups).
  */
 const ETIQUETAS_ESTILO = {
+    observatorio: {
+        'inicio.html': 'Inicio',
+        'perfil.html': 'Mi perfil',
+        'certificados.html': 'Ruta MAPS',
+        'comunidad.html': 'Comunidad',
+        'mensajes.html': 'Mensajes',
+        'empresarial.html': 'Aliados',
+        'circulos.html': 'Círculos de estudio',
+        'ajustes.html': 'Ajustes',
+        'admin.html': 'Observatorio institucional',
+        'docente.html': 'Observatorio docente'
+    },
     saiyan: {
         'inicio.html': '01. Gran Dojo (Inicio)',
         'perfil.html': '02. Mi Perfil Saiyan',
@@ -273,6 +285,7 @@ const Layout = {
         const setMenuState = isOpen => {
             sidebar?.classList.toggle('open', isOpen);
             layout?.classList.toggle('menu-open', isOpen);
+            toggle?.classList.toggle('open', isOpen);
             toggle.setAttribute('aria-expanded', String(isOpen));
             toggle.setAttribute('aria-label', isOpen ? 'Cerrar menú' : 'Abrir menú');
         };
