@@ -13,8 +13,7 @@ public class HealthController {
     @GetMapping
     public ResponseEntity<ApiResponse<String>> health() {
         return ResponseEntity.ok(
-            ApiResponse.success("MAPS Connect Backend is running", "OK")
+                ApiResponse.success("MAPS Connect Backend is running", "OK")
         );
     }
-
 }
