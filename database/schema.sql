@@ -1,14 +1,25 @@
 -- =====================================================================
--- MAPS Connect - Esquema de Base de Datos (MySQL 8.0, 3FN)
--- Universidad Tecmilenio - Plataforma Académica y de Mentoría MAPS
+-- ⚠️  DEPRECADO — NO USAR PARA INSTALAR
+-- =====================================================================
+-- Este archivo (schema.sql) es la estructura original basada en la
+-- especificación del proyecto, pero está DESACTUALIZADO y NO coincide
+-- con la base de datos real que usa la aplicación.
 --
--- Basado en: "Documento de Especificación de Proyecto: Plataforma
--- Académica y de Mentoría MAPS" - Sección 6 (Catálogo de 22 Entidades)
--- y Sección 7 (Reglas de Integridad y Restricciones Técnicas).
+-- PROBLEMAS CONOCIDOS:
+--   - La columna `rol` usa ENUM('ESTUDIANTE','DOCENTE','EGRESADO','ADMIN')
+--     pero el código Java usa el enum Usuario.Rol { ESTUDIANTE, PROFESOR,
+--     ADMINISTRADOR } con un RolConverter que espera MINÚSCULAS.
+--   - Los nombres de columnas difieren (ej: `nombre`/`apellido` vs
+--     `nombre_completo`; `id_usuario_emisor` vs `id_emisor`).
+--   - falta el trigger trg_respuestas_verificacion_docente, tabla
+--     sesion_inscripciones, miembros_comunidad con FK a usuarios, etc.
 --
--- Ejecutar dentro del esquema correspondiente, por ejemplo:
---   USE maps_conect_dev;   -- perfil dev
---   USE maps_conect;       -- perfil prod
+-- USO CORRECTO:
+--   Para instalar la base de datos, usa el script canónico:
+--     mysql -u root -p --default-character-set=utf8mb4 < maps_conect.sql
+--
+--   Este archivo se mantiene solo como referencia histórica de la
+--   especificación original. No garantiza compatibilidad con el código.
 -- =====================================================================
 
 SET FOREIGN_KEY_CHECKS = 0;

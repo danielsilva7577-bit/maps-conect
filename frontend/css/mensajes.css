@@ -25,7 +25,7 @@
     }
 }
 
-/* Bordes rectos institucionales (scopeado a la p├ígina) */
+/* Bordes rectos institucionales (scopeado a la página) */
 .messages-container .avatar,
 .messages-container .btn-solid,
 .messages-container .btn-clean,
@@ -104,6 +104,30 @@
     background-color: #0284c7;
 }
 
+/* Indicador de presencia en avatar */
+.chat-avatar-wrap {
+    position: relative;
+    display: inline-flex;
+    flex-shrink: 0;
+}
+
+.status-dot {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background-color: #9ca3af;
+    border: 2px solid #ffffff;
+    box-sizing: border-box;
+}
+
+.status-dot.online {
+    background-color: #10b981;
+    box-shadow: 0 0 6px rgba(16, 185, 129, 0.7);
+}
+
 .chat-item-info {
     flex: 1;
     min-width: 0;
@@ -173,6 +197,80 @@
     font-weight: 600;
 }
 
+.chat-header-user .chat-status-text {
+    font-size: 0.76rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 2px;
+    font-weight: 500;
+}
+
+.chat-header-user .chat-status-text.online {
+    color: #059669;
+}
+
+.chat-header-user .chat-status-text.offline {
+    color: #6b7280;
+}
+
+.chat-header-user .chat-status-text .status-dot {
+    position: static;
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border: none;
+}
+
+/* Indicador de "Escribiendo..." con 3 puntos animados */
+.typing-indicator-wrap {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    color: #555;
+    font-size: 0.82rem;
+    border-radius: 14px 14px 14px 2px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    animation: fadeInTyping 0.25s ease-out;
+}
+
+.typing-dots {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.typing-dots span {
+    width: 6px;
+    height: 6px;
+    background-color: var(--hub-accent, #005a2b);
+    border-radius: 50%;
+    animation: typingBounce 1.4s infinite ease-in-out both;
+}
+
+.typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+.typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes typingBounce {
+    0%, 80%, 100% {
+        transform: scale(0.4);
+        opacity: 0.4;
+    }
+    40% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInTyping {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
 /* Cuerpo con los mensajes */
 .chat-body {
     flex: 1;
@@ -212,7 +310,7 @@
     opacity: 0.8;
 }
 
-/* Estado vac├¡o del chat */
+/* Estado vacío del chat */
 .chat-empty {
     flex: 1;
     display: flex;

@@ -35,7 +35,7 @@
 .empty-companies p { margin: 0.5rem 0 0; color: var(--gray-600); }
 .loading-message { color: var(--gray-600); }
 
-/* Modal de experiencias y rese├▒as */
+/* Modal de experiencias y reseñas */
 .empresa-modal-open { overflow: hidden; }
 .empresa-modal-backdrop { position: fixed; inset: 0; z-index: 1200; background: rgba(0, 0, 0, 0.45); display: flex; align-items: flex-start; justify-content: center; padding: 2rem 1rem; overflow-y: auto; }
 .empresa-modal { background: white; width: 100%; max-width: 640px; max-height: calc(100vh - 4rem); display: flex; flex-direction: column; border-radius: 0; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25); }

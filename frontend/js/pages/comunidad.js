@@ -10,7 +10,10 @@ const Comunidad = {
         tips: [],
         materiasModal: [],
         loaded: new Set(),
-        activeTab: 'foro-dudas'
+        activeTab: 'foro-dudas',
+        foroPage: 0,
+        foroHasMore: true,
+        foroCargando: false
     },
 
     async init() {
@@ -133,13 +136,37 @@ const Comunidad = {
         await conf.loader();
     },
 
-    async loadForo() {
+    async loadForo(cargarMas = false) {
+        if (cargarMas && this.state.foroCargando) return;
+        this.state.foroCargando = true;
+
+        const pagina = cargarMas ? this.state.foroPage : 0;
+        const tamano = 10;
+
         try {
-            const res = await API.request('/foro');
-            this.state.foro = this.toArray(res);
+            const res = await API.request(`/foro?page=${pagina}&size=${tamano}`);
+            const items = this.toArray(res);
+
+            if (items.length < tamano) {
+                this.state.foroHasMore = false;
+            } else {
+                this.state.foroHasMore = true;
+            }
+
+            if (cargarMas) {
+                const idsExistentes = new Set(this.state.foro.map(x => String(this.field(x, 'id'))));
+                const nuevos = items.filter(x => !idsExistentes.has(String(this.field(x, 'id'))));
+                this.state.foro = this.state.foro.concat(nuevos);
+                this.state.foroPage = pagina + 1;
+            } else {
+                this.state.foro = items;
+                this.state.foroPage = 1;
+            }
             this.state.loaded.add('foro');
         } catch (e) {
-            this.state.foro = [];
+            if (!cargarMas) this.state.foro = [];
+        } finally {
+            this.state.foroCargando = false;
         }
         this.renderActive();
     },
@@ -229,8 +256,12 @@ const Comunidad = {
                     Utils.toast('Los votos del foro se habilitan cuando el backend de publicaciones esté integrado.', 'info');
                 } else if (accion === 'guardar') {
                     Utils.toast('El guardado se habilita cuando el backend de comunidad esté integrado.', 'info');
-                } else {
-                    Utils.toast('Para aportar una respuesta, abre la publicación cuando el detalle esté disponible.', 'info');
+                } else if (accion === 'respuesta') {
+                    const pubId = foroBtn.getAttribute('data-id');
+                    const pubTitulo = foroBtn.getAttribute('data-titulo') || 'Duda académica';
+                    if (pubId) {
+                        this.abrirModalRespuestas(pubId, pubTitulo);
+                    }
                 }
             }
         });
@@ -241,7 +272,26 @@ const Comunidad = {
         if (!panel) return;
         panel.innerHTML = '';
         if (!items.length) return;
-        panel.innerHTML = items.map(item => this.foroCard(item)).join('');
+
+        let html = items.map(item => this.foroCard(item)).join('');
+
+        const q = (document.getElementById('hub-search')?.value || '').trim();
+        const m = document.getElementById('hub-materia')?.value || '';
+
+        if (!q && !m && this.state.foroHasMore) {
+            html += `
+            <div class="cargar-mas-wrap" style="text-align:center;padding:24px 0;grid-column:1/-1;">
+                <button type="button" class="btn btn-outline" id="btn-cargar-mas-foro" ${this.state.foroCargando ? 'disabled' : ''}>
+                    ${this.state.foroCargando ? 'Cargando más publicaciones...' : 'Cargar más publicaciones'}
+                </button>
+            </div>`;
+        }
+
+        panel.innerHTML = html;
+
+        document.getElementById('btn-cargar-mas-foro')?.addEventListener('click', () => {
+            this.loadForo(true);
+        });
     },
 
     renderApuntes(items, panelId) {
@@ -298,9 +348,10 @@ const Comunidad = {
             ? `<div class="solved-box"><strong>Solución validada por el autor:</strong><p>${this.esc(solucion)}</p></div>`
             : '';
 
+        const idPub = this.field(item, 'id');
         const accionRespuesta = resuelto
-            ? `<button class="btn-link foro-action" data-action="respuesta">${respuestas} Respuestas</button>`
-            : `<button class="btn-link foro-action" data-action="respuesta" style="color:#005a2b;font-weight:bold;">Aportar Respuesta</button>`;
+            ? `<button class="btn-link foro-action" data-action="respuesta" data-id="${this.esc(idPub)}" data-titulo="${this.esc(titulo)}">${respuestas} Respuestas</button>`
+            : `<button class="btn-link foro-action" data-action="respuesta" data-id="${this.esc(idPub)}" data-titulo="${this.esc(titulo)}" style="color:var(--primary, #005a2b);font-weight:bold;">${respuestas > 0 ? `${respuestas} Respuestas · Responder` : 'Aportar Respuesta'}</button>`;
 
         return `
         <article class="card">
@@ -548,6 +599,136 @@ const Comunidad = {
     cerrarModal() {
         const overlay = document.getElementById('hub-modal');
         if (overlay) overlay.remove();
+    },
+
+    async abrirModalRespuestas(pubId, pubTitulo) {
+        const modal = document.getElementById('modal-root');
+        if (!modal) return;
+
+        modal.innerHTML = `
+            <div class="hub-modal-overlay" id="hub-modal">
+                <div class="hub-modal" role="dialog" aria-modal="true" style="max-width: 680px; width: 95%;">
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
+                        <div>
+                            <span class="hub-badge badge-materia" style="margin-bottom:6px; display:inline-block;">Foro de Dudas</span>
+                            <h3 style="margin:0; font-size:1.15rem; color:var(--heading-color, #111);">${this.esc(pubTitulo)}</h3>
+                        </div>
+                        <button type="button" class="btn-clean" id="modal-close-x" style="font-size:1.4rem; cursor:pointer; padding:0 8px; line-height:1;" aria-label="Cerrar">&times;</button>
+                    </div>
+
+                    <div id="respuestas-lista-contenedor" style="max-height: 320px; overflow-y: auto; margin-bottom: 16px; padding-right: 4px;">
+                        <p style="text-align:center; color:var(--text-muted, #888); padding: 20px;">Cargando respuestas...</p>
+                    </div>
+
+                    <form id="form-nueva-respuesta" style="border-top: 1px solid var(--border-color, #e0e0e0); padding-top: 12px;">
+                        <label for="txt-nueva-respuesta" style="font-weight:600; font-size:0.85rem; display:block; margin-bottom:6px;">Tu aportación o respuesta</label>
+                        <textarea id="txt-nueva-respuesta" rows="3" maxlength="5000" placeholder="Escribe una explicación clara o comparte la solución a esta duda..." required style="width:100%; box-sizing:border-box; margin-bottom:8px;"></textarea>
+                        <div class="modal-msg" id="modal-resp-msg" style="margin-bottom:8px;"></div>
+                        <div class="modal-actions" style="display:flex; justify-content:flex-end; gap:8px;">
+                            <button class="btn-clean" type="button" id="modal-resp-cancel">Cerrar</button>
+                            <button class="btn-solid" type="submit" id="btn-enviar-resp">Publicar Respuesta</button>
+                        </div>
+                    </form>
+                </div>
+            </div>`;
+
+        const overlay = document.getElementById('hub-modal');
+        overlay?.addEventListener('click', e => {
+            if (e.target === overlay) this.cerrarModal();
+        });
+        document.getElementById('modal-close-x')?.addEventListener('click', () => this.cerrarModal());
+        document.getElementById('modal-resp-cancel')?.addEventListener('click', () => this.cerrarModal());
+
+        const form = document.getElementById('form-nueva-respuesta');
+        form?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const txt = (document.getElementById('txt-nueva-respuesta')?.value || '').trim();
+            const btn = document.getElementById('btn-enviar-resp');
+            const msgEl = document.getElementById('modal-resp-msg');
+            if (!txt) return;
+
+            try {
+                if (btn) btn.disabled = true;
+                if (msgEl) msgEl.textContent = 'Publicando...';
+                await API.request(`/foro/${encodeURIComponent(pubId)}/respuestas`, {
+                    method: 'POST',
+                    body: JSON.stringify({ contenido: txt })
+                });
+                Utils.toast('Respuesta publicada correctamente.', 'success');
+                const area = document.getElementById('txt-nueva-respuesta');
+                if (area) area.value = '';
+                if (msgEl) msgEl.textContent = '';
+                await this.cargarListaRespuestasModal(pubId);
+                if (Array.isArray(this.state.foro)) {
+                    const duda = this.state.foro.find(d => String(d.id) === String(pubId));
+                    if (duda) {
+                        duda.respuestas = (Number(duda.respuestas) || 0) + 1;
+                        this.renderForo(this.state.foro, 'foro-dudas');
+                    }
+                }
+            } catch (err) {
+                if (msgEl) {
+                    msgEl.style.color = '#c62828';
+                    msgEl.textContent = err.message || 'Error al enviar respuesta.';
+                }
+            } finally {
+                if (btn) btn.disabled = false;
+            }
+        });
+
+        await this.cargarListaRespuestasModal(pubId);
+    },
+
+    async cargarListaRespuestasModal(pubId) {
+        const cont = document.getElementById('respuestas-lista-contenedor');
+        if (!cont) return;
+
+        try {
+            const res = await API.get(`/foro/${encodeURIComponent(pubId)}/respuestas`);
+            const lista = this.toArray(res);
+            if (!lista.length) {
+                cont.innerHTML = `
+                    <div style="text-align:center; padding: 24px 12px; color:var(--text-muted, #888);">
+                        <p style="margin:0; font-weight:500;">Aún no hay respuestas a esta duda.</p>
+                        <p style="margin:4px 0 0; font-size:0.85rem;">Sé el primero en compartir tu conocimiento y ayudar a tu compañero.</p>
+                    </div>`;
+                return;
+            }
+
+            cont.innerHTML = lista.map(r => {
+                const autor = this.esc(r.autor || 'Compañero');
+                const fecha = this.esc(r.fecha || 'Recientemente');
+                const contenido = this.esc(r.contenido || '');
+                const esDocente = r.esVerificadaDocente === true;
+                const esSol = r.esSolucion === true;
+                const badgeDocente = esDocente
+                    ? `<span class="hub-badge" style="background:#005a2b; color:#fff; font-size:0.72rem; padding:2px 6px; border-radius:4px;">Docente Verificado</span>`
+                    : '';
+                const badgeSolucion = esSol
+                    ? `<span class="hub-badge badge-solved" style="font-size:0.72rem;">Solución Aceptada</span>`
+                    : '';
+
+                return `
+                    <div style="background:var(--bg-card, rgba(0,0,0,0.02)); border:1px solid var(--border-color, #e8e8e8); border-radius:8px; padding:12px; margin-bottom:10px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                ${Utils.avatarHtml(autor, r.autorFoto, 'hub-avatar', autor)}
+                                <div>
+                                    <strong style="font-size:0.9rem; color:var(--heading-color, #222);">${autor}</strong>
+                                    <span style="font-size:0.75rem; color:var(--text-muted, #888); margin-left:6px;">${fecha}</span>
+                                </div>
+                            </div>
+                            <div style="display:flex; gap:4px;">
+                                ${badgeDocente}
+                                ${badgeSolucion}
+                            </div>
+                        </div>
+                        <p style="margin:0; font-size:0.88rem; line-height:1.45; color:var(--text-color, #333); white-space:pre-wrap;">${contenido}</p>
+                    </div>`;
+            }).join('');
+        } catch (err) {
+            cont.innerHTML = `<p style="color:#c62828; text-align:center; padding:16px;">Error al cargar respuestas: ${this.esc(err.message)}</p>`;
+        }
     },
 
     mensajeModal(texto, tipo) {

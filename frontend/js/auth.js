@@ -17,7 +17,13 @@ const Auth = {
 
     getUser() {
         const user = localStorage.getItem(this.USER_KEY);
-        return user ? JSON.parse(user) : null;
+        try {
+            return user ? JSON.parse(user) : null;
+        } catch (_) {
+            localStorage.removeItem(this.TOKEN_KEY);
+            localStorage.removeItem(this.USER_KEY);
+            return null;
+        }
     },
 
     /** Actualiza la foto del usuario en la sesión local (nuevaFoto null = eliminar). */
@@ -41,6 +47,11 @@ const Auth = {
     },
 
     logout() {
+        // Cierra el canal SSE de notificaciones antes de destruir la sesión
+        // para evitar reconexiones espurias con un token que ya no existe.
+        if (window.Layout && typeof Layout._cerrarNotificacionesSSE === 'function') {
+            Layout._cerrarNotificacionesSSE();
+        }
         localStorage.removeItem(this.TOKEN_KEY);
         localStorage.removeItem(this.USER_KEY);
         window.location.href = Auth.resolvePath('index.html');
@@ -88,6 +99,9 @@ const Auth = {
 
     resolvePath(relativePath) {
         const inPages = window.location.pathname.includes('/pages/');
+        if (inPages && relativePath.startsWith('pages/')) {
+            return '../' + relativePath;
+        }
         if (inPages && !relativePath.startsWith('../') && !relativePath.startsWith('pages/')) {
             return '../' + relativePath;
         }

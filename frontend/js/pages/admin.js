@@ -76,36 +76,37 @@ function renderAdmin(content, data) {
                 </div>
             </section>
 
-            <section class="card">
-                <div class="section-header">
-                    <strong>Extracción de Reportes Institucionales</strong>
-                    <span style="font-size: 0.8rem; color: #666;">Exportación directa para comités y acreditaciones</span>
-                </div>
-                <form class="report-form" id="report-form">
-                    <div class="form-group">
-                        <label for="report-tipo">Tipo de Reporte</label>
-                        <select class="form-control" id="report-tipo">
-                            <option value="circulos">Participación en Círculos de Estudio e Inscripciones</option>
-                            <option value="dudas">Métricas de Resolución de Dudas por Materia</option>
-                            <option value="recursos">Uso y Moderación del Repositorio de Apuntes</option>
-                            <option value="empresas">Evaluación y Desempeño de Empresas Vinculadas</option>
-                        </select>
+            <section class="card report-dashboard-card" id="seccion-reportes">
+                <div class="section-header report-section-head">
+                    <div>
+                        <strong class="report-header-title">Dashboard y Reportería Institucional</strong>
+                        <div class="report-header-subtitle">Métricas ejecutivas en tiempo real y exportación de documentos oficiales</div>
                     </div>
-                    <div class="form-group">
-                        <label for="report-ciclo">Semestre / Ciclo</label>
-                        <select class="form-control" id="report-ciclo">
+                    <div class="report-controls-inline">
+                        <select class="form-control" id="report-ciclo" style="width:auto; min-width:210px; font-weight:600;">
                             ${ciclosReporte}
                         </select>
+                        <div class="report-export-buttons">
+                            <button class="btn-solid" id="btn-export-pdf" type="button" title="Descargar documento PDF ejecutivo">Exportar PDF</button>
+                            <button class="btn-solid" id="btn-export-excel" type="button" title="Descargar libro de cálculo estructurado en Excel (.xls)">Exportar Excel</button>
+                            <button class="btn-outline" id="btn-export-csv" type="button" title="Descargar datos en CSV (.csv)">Exportar CSV</button>
+                            <button class="btn-outline" id="btn-print-report" type="button" title="Imprimir reporte" style="padding:8px 12px;">Imprimir</button>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="report-formato">Formato de Salida</label>
-                        <select class="form-control" id="report-formato">
-                            <option value="csv">Archivo CSV / Excel (.csv)</option>
-                            <option value="pdf">Documento Ejecutivo (.pdf)</option>
-                        </select>
-                    </div>
-                    <button class="btn-solid" id="report-submit" type="submit">⬇ Descargar Reporte</button>
-                </form>
+                </div>
+
+                <!-- Pestañas de módulos -->
+                <div class="report-module-tabs" id="report-tabs">
+                    <button class="report-tab-btn active" data-tipo="circulos" type="button">Círculos de Estudio</button>
+                    <button class="report-tab-btn" data-tipo="dudas" type="button">Resolución de Dudas</button>
+                    <button class="report-tab-btn" data-tipo="recursos" type="button">Repositorio de Apuntes</button>
+                    <button class="report-tab-btn" data-tipo="empresas" type="button">Empresas Vinculadas</button>
+                </div>
+
+                <!-- Contenedor del Dashboard Dinámico -->
+                <div id="report-dashboard-container">
+                    <div class="admin-empty">Cargando métricas del dashboard…</div>
+                </div>
             </section>
 
             <section class="card">
@@ -134,7 +135,7 @@ function renderAdmin(content, data) {
                         <label for="doc-contrasena">Contraseña inicial</label>
                         <input type="text" class="form-control" id="doc-contrasena" required placeholder="Temporal123">
                     </div>
-                    <button class="btn-solid" type="submit">➕ Crear Docente</button>
+                    <button class="btn-solid" type="submit">Crear Docente</button>
                 </form>
                 <div id="docente-resultado" style="margin-top:10px;"></div>
             </section>
@@ -168,13 +169,44 @@ function renderAdmin(content, data) {
         </div>
     `;
 
-    document.getElementById('report-form')?.addEventListener('submit', async event => {
-        event.preventDefault();
-        const tipo = document.getElementById('report-tipo').value;
-        const ciclo = document.getElementById('report-ciclo').value;
-        const formato = document.getElementById('report-formato').value;
-        await descargarReporte(tipo, ciclo, formato, document.getElementById('report-submit'));
+    // Gestión del Dashboard de Reportería
+    let tipoReporteActual = 'circulos';
+    const cicloReporteSelect = document.getElementById('report-ciclo');
+
+    document.querySelectorAll('#report-tabs .report-tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('#report-tabs .report-tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            tipoReporteActual = btn.dataset.tipo || 'circulos';
+            cargarDashboardReporte(tipoReporteActual, cicloReporteSelect?.value || 'current');
+        });
     });
+
+    cicloReporteSelect?.addEventListener('change', () => {
+        cargarDashboardReporte(tipoReporteActual, cicloReporteSelect.value);
+    });
+
+    document.getElementById('btn-export-pdf')?.addEventListener('click', async (e) => {
+        const ciclo = cicloReporteSelect?.value || 'current';
+        await descargarReporte(tipoReporteActual, ciclo, 'pdf', e.currentTarget);
+    });
+
+    document.getElementById('btn-export-excel')?.addEventListener('click', async (e) => {
+        const ciclo = cicloReporteSelect?.value || 'current';
+        await descargarReporte(tipoReporteActual, ciclo, 'excel', e.currentTarget);
+    });
+
+    document.getElementById('btn-export-csv')?.addEventListener('click', async (e) => {
+        const ciclo = cicloReporteSelect?.value || 'current';
+        await descargarReporte(tipoReporteActual, ciclo, 'csv', e.currentTarget);
+    });
+
+    document.getElementById('btn-print-report')?.addEventListener('click', () => {
+        window.print();
+    });
+
+    // Carga inicial del dashboard de reportes
+    cargarDashboardReporte(tipoReporteActual, cicloReporteSelect?.value || 'current');
 
     document.getElementById('docente-form')?.addEventListener('submit', async event => {
         event.preventDefault();
@@ -200,7 +232,7 @@ function renderAdmin(content, data) {
                 method: 'POST',
                 body: JSON.stringify({ nombre, apellido, email, numeroNomina, contrasena })
             });
-            resultado.innerHTML = '<div class="admin-empty" style="color:#087527;">✅ Docente creado correctamente.</div>';
+            resultado.innerHTML = '<div class="admin-empty" style="color:#087527;">Docente creado correctamente.</div>';
             event.target.reset();
             cargarUsuarios();
         } catch (e) {
@@ -349,7 +381,7 @@ function renderFilaVacia() {
 }
 
 async function descargarReporte(tipo, ciclo, formato, boton) {
-    const textoOriginal = boton?.textContent || '⬇ Descargar Reporte';
+    const textoOriginal = boton?.textContent || 'Descargar Reporte';
     if (boton) {
         boton.disabled = true;
         boton.textContent = 'Generando reporte…';
@@ -368,10 +400,11 @@ async function descargarReporte(tipo, ciclo, formato, boton) {
         }
 
         const blob = await respuesta.blob();
-        const extension = formato === 'pdf' ? 'pdf' : 'csv';
+        const extension = formato === 'pdf' ? 'pdf' : formato === 'excel' ? 'xls' : 'csv';
         const cicloArchivo = ciclo === 'current' ? 'vigente' : ciclo === 'all' ? 'historico' : ciclo;
         descargar(blob, `reporte-${tipo}-${cicloArchivo}.${extension}`);
-        Utils.toast(`Reporte ${extension.toUpperCase()} generado correctamente.`, 'success');
+        const formatoNombre = formato === 'pdf' ? 'PDF' : formato === 'excel' ? 'Excel' : 'CSV';
+        Utils.toast(`Reporte ${formatoNombre} generado correctamente.`, 'success');
     } catch (e) {
         Utils.toast(e.message || 'No se pudo generar el reporte.', 'error');
     } finally {
@@ -418,4 +451,128 @@ function formatFecha(value) {
     const m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
     if (!m) return '';
     return `${m[3]}/${m[2]}/${m[1]}`;
+}
+
+function formatFechaHora(value) {
+    if (!value) return '';
+    const s = String(value).replace('T', ' ');
+    const m = s.match(/^(\d{4})-(\d{2})-(\d{2})\s*(\d{2}):(\d{2})/);
+    if (!m) return formatFecha(value);
+    return `${m[3]}/${m[2]}/${m[1]} ${m[4]}:${m[5]}`;
+}
+
+async function cargarDashboardReporte(tipo, ciclo) {
+    const container = document.getElementById('report-dashboard-container');
+    if (!container) return;
+
+    container.innerHTML = '<div class="admin-empty" style="padding:40px 20px;">Cargando métricas y datos del dashboard…</div>';
+
+    try {
+        const datos = await API.request(`/admin/reportes/datos?tipo=${encodeURIComponent(tipo)}&ciclo=${encodeURIComponent(ciclo)}`);
+        if (!datos) {
+            container.innerHTML = '<div class="admin-empty">No se obtuvieron datos para el reporte solicitado.</div>';
+            return;
+        }
+
+        const indicadoresHtml = (datos.indicadores || []).map((ind, i) => {
+            const variante = i % 3 === 1 ? 'accent-alt' : i % 3 === 2 ? 'accent-gold' : '';
+            return `
+                <div class="report-kpi-card ${variante}">
+                    <div class="report-kpi-val">${Utils.esc(ind.valor || '0')}</div>
+                    <div class="report-kpi-label">${Utils.esc(ind.nombre || '—')}</div>
+                </div>
+            `;
+        }).join('');
+
+        const notasHtml = (datos.notas || []).map(nota => `
+            <div class="report-nota-box">
+                <strong>Nota metodológica:</strong> ${Utils.esc(nota)}
+            </div>
+        `).join('');
+
+        const seccionesHtml = (datos.secciones || []).map((sec, sIdx) => {
+            const columnas = sec.columnas || [];
+            const filas = sec.filas || [];
+            const tableId = `reporte-tabla-${sIdx}`;
+            const countId = `count-${tableId}`;
+
+            const thHtml = columnas.map(col => `<th>${Utils.esc(col)}</th>`).join('');
+            const trHtml = filas.length
+                ? filas.map(fila => `
+                    <tr>
+                        ${fila.map(celda => `<td>${Utils.esc(celda)}</td>`).join('')}
+                    </tr>
+                `).join('')
+                : `<tr><td colspan="${Math.max(columnas.length, 1)}"><div class="admin-empty">Sin registros para el periodo seleccionado.</div></td></tr>`;
+
+            return `
+                <div class="report-section-container" style="margin-top:24px;">
+                    <div class="report-section-title">${Utils.esc(sec.titulo || 'Detalle')}</div>
+                    <div class="report-table-controls">
+                        <input type="text" class="form-control report-table-search" 
+                               placeholder="Filtrar en esta tabla…" 
+                               data-tabla-id="${tableId}"
+                               data-count-id="${countId}">
+                        <span class="report-table-count" id="${countId}">${filas.length} registros</span>
+                    </div>
+                    <div class="report-table-wrapper">
+                        <table class="report-dashboard-table" id="${tableId}">
+                            <thead><tr>${thHtml}</tr></thead>
+                            <tbody>${trHtml}</tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        const fechaGenerado = datos.generadoEn ? formatFechaHora(datos.generadoEn) : 'En tiempo real';
+
+        container.innerHTML = `
+            <div class="report-meta-header">
+                <div>
+                    <h3>${Utils.esc(datos.titulo || 'Reporte Institucional')}</h3>
+                    <div class="report-meta-info" style="margin-top:4px;">
+                        <strong>Ciclo:</strong> ${Utils.esc(datos.periodo || ciclo)} &nbsp;·&nbsp; 
+                        <strong>Generado:</strong> ${Utils.esc(fechaGenerado)} &nbsp;·&nbsp;
+                        <strong>Sistema:</strong> MAPS Connect (Tecmilenio)
+                    </div>
+                </div>
+            </div>
+
+            ${indicadoresHtml ? `<div class="report-kpis-grid">${indicadoresHtml}</div>` : ''}
+            ${notasHtml}
+            ${seccionesHtml}
+        `;
+
+        // Filtrado dinámico por tabla
+        container.querySelectorAll('.report-table-search').forEach(input => {
+            input.addEventListener('input', () => {
+                const tableId = input.dataset.tablaId;
+                const countId = input.dataset.countId;
+                const query = input.value.toLowerCase().trim();
+                const table = document.getElementById(tableId);
+                const countElem = document.getElementById(countId);
+                if (!table) return;
+
+                const rows = table.querySelectorAll('tbody tr');
+                let visibles = 0;
+                let total = 0;
+                rows.forEach(row => {
+                    if (row.querySelector('.admin-empty')) return;
+                    total++;
+                    const text = row.textContent.toLowerCase();
+                    const match = !query || text.includes(query);
+                    row.style.display = match ? '' : 'none';
+                    if (match) visibles++;
+                });
+
+                if (countElem) {
+                    countElem.textContent = query ? `${visibles} de ${total} registros` : `${total} registros`;
+                }
+            });
+        });
+
+    } catch (e) {
+        container.innerHTML = `<div class="admin-empty" style="color:#b91c1c;">Error al cargar datos del reporte: ${Utils.esc(e.message || 'Error de conexión')}</div>`;
+    }
 }

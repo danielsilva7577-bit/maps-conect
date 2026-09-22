@@ -166,7 +166,7 @@
     flex-shrink: 0;
 }
 
-/* ---------- Enlace a perfil p├║blico ---------- */
+/* ---------- Enlace a perfil público ---------- */
 .user-link {
     color: inherit;
     text-decoration: none;
@@ -179,7 +179,7 @@
     text-decoration: underline;
 }
 
-/* ---------- Bot├│n Seguir / Siguiendo ---------- */
+/* ---------- Botón Seguir / Siguiendo ---------- */
 .follow-btn {
     background: transparent;
     border: 1px solid var(--accent-dark, #005a2b);
@@ -210,7 +210,7 @@
     cursor: default;
 }
 
-/* ---------- Modal de Aviso de Privacidad / T├®rminos ---------- */
+/* ---------- Modal de Aviso de Privacidad / Términos ---------- */
 .aviso-modal-overlay {
     position: fixed;
     inset: 0;
@@ -296,7 +296,7 @@ html.dark-mode .aviso-modal-body p {
     text-align: right;
 }
 
-/* ---------- Checkbox de aceptaci├│n (registro) ---------- */
+/* ---------- Checkbox de aceptación (registro) ---------- */
 .terminos-checkbox {
     display: flex;
     gap: 0.5rem;

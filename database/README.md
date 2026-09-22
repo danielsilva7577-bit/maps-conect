@@ -1,14 +1,30 @@
 # Base de datos
 
-Carpeta reservada para scripts SQL del proyecto.
+Carpeta de scripts SQL del proyecto.
 
-## Configuración inicial
+## Instalación (archivo único)
 
-1. Crear las bases de datos en MySQL
-2. Modelar las 22 tablas según la especificación del proyecto
-3. Actualizar credenciales en `src/main/resources/application.yml`
+El script **`maps_conect.sql`** es el archivo canónico de instalación. Incluye todo:
+creación de la base, esquema (26 tablas + triggers), catálogos (carreras, materias,
+plan de estudios, empresas) y datos demo (foro, recursos, círculos, reseñas,
+seguimientos, conversaciones y tips).
 
-## Perfiles
+```bash
+mysql -u root -p < maps_conect.sql
+```
 
-- **dev:** `application-dev.yml` → `maps_conect_dev`
-- **prod:** `application-prod.yml` → `maps_conect`
+En Windows usar redirección de `cmd` (la tubería de PowerShell corrompe UTF‑8):
+
+```cmd
+cmd /c "mysql -u root -p --default-character-set=utf8mb4 < maps_conect.sql"
+```
+
+Usuario demo logueable: `al07080560@tecmilenio.mx` / `DemoMaps2026!`
+
+## Otros scripts (referencia)
+
+- `schema.sql` — estructura original (desactualizado; ver `maps_conect.sql`).
+- `seed-demo.sql` — datos demo del foro, recursos, círculos y reseñas.
+- `seed-follows.sql` — tabla `seguimientos` + compañeros demo.
+- `seed-mensajes-tips.sql` — conversaciones, mensajes y tips académicos.
+- `clean-demo.sql` — limpieza de los datos demo (no es parte de la instalación).

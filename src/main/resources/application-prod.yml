@@ -17,3 +17,8 @@ logging:
 jwt:
   secret: ${JWT_SECRET}
   expiration: ${JWT_EXPIRATION:86400000}
+
+app:
+  cors:
+    # Dominios del frontend en producción (separados por coma), p. ej. https://app.mapsconect.com
+    origins: ${CORS_ORIGINS:}

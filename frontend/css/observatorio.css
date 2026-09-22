@@ -481,10 +481,10 @@ html[data-estilo="observatorio"] .menu-backdrop {
 
 html[data-estilo="observatorio"] .global-search {
     top: 1.55rem;
-    left: 6.65rem;
+    left: 50%;
     z-index: 125;
     width: min(420px, calc(100vw - 14rem));
-    transform: none;
+    transform: translateX(-50%);
 }
 
 html[data-estilo="observatorio"] .global-search-input {
@@ -1054,8 +1054,9 @@ html[data-estilo="observatorio"] .landing-hero p {
 
     html[data-estilo="observatorio"] .global-search {
         top: 1.47rem;
-        left: 4.8rem;
+        left: 50%;
         width: calc(100vw - 10.1rem);
+        transform: translateX(-50%);
     }
 
     html[data-estilo="observatorio"] .notif-bell {

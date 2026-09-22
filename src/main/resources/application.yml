@@ -3,10 +3,16 @@ spring:
     name: maps-conect
   
   datasource:
-    url: jdbc:mysql://localhost:3306/maps_conect
+    url: jdbc:mysql://localhost:3306/maps_conect?useUnicode=true&characterEncoding=UTF-8&connectionCollation=utf8mb4_unicode_ci
     username: root
-    password: 
+    password: ${DB_PASSWORD:}
     driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      # Cada stream SSE mantiene una conexion abierta mientras vive (OSIV de Hibernate).
+      # Con el default (10) unos pocos chats simultaneos agotan el pool.
+      maximum-pool-size: 100
+      minimum-idle: 5
+      connection-timeout: 20000
   
   jpa:
     hibernate:
@@ -19,15 +25,31 @@ spring:
   
   mvc:
     throw-exception-if-no-handler-found: true
+
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 22MB
   
   web:
     resources:
       add-mappings: false
+  jackson:
+    charset: UTF-8
 
 server:
   port: 8080
   servlet:
     context-path: /api
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  tomcat:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
 
 logging:
   level:
@@ -37,9 +59,30 @@ logging:
     console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
 
 jwt:
-  secret: mapsconnect-tecmilenio-super-secret-key-2024-desarrollo-local-minimo-64-caracteres-seguro
-  expiration: 86400000
+  # Lectura desde variable de entorno (JWT_SECRET). El valor por defecto solo sirve
+  # para desarrollo local: nunca usar la clave embebida en producción.
+  secret: ${JWT_SECRET:mapsconnect-tecmilenio-super-secret-key-2024-desarrollo-local-minimo-64-caracteres-seguro}
+  # 7 días en desarrollo para evitar re-logins frecuentes; sobreescribible por JWT_EXPIRATION.
+  expiration: ${JWT_EXPIRATION:604800000}
 
 app:
   name: MAPS Connect
   version: 1.0.0
+  # Orígenes permitidos para CORS (lista separada por comas); sobreescribible por CORS_ORIGINS.
+  cors:
+    origins: ${CORS_ORIGINS:http://localhost:5500,http://localhost:3000,http://localhost:5173,http://localhost:63342}
+  # Límites de rate limiting por scope (endpoints sensibles).
+  # Cada scope puede sobreescibirse por variable de entorno RATELIMIT_<SCOPE>_{MAX,WINDOW}.
+  rate-limiting:
+    foro:
+      max-requests: 10
+      window-seconds: 60
+    mensajes:
+      max-requests: 60
+      window-seconds: 60
+    uploads:
+      max-requests: 5
+      window-seconds: 60
+    recursos:
+      max-requests: 20
+      window-seconds: 60

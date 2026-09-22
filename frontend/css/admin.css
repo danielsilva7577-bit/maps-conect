@@ -18,12 +18,13 @@
 
 .admin-title h2 {
     font-size: 1.3rem;
-    color: #111;
+    color: var(--heading-color, #111);
 }
 
 .admin-title p {
     font-size: 0.85rem;
-    color: #555;
+    color: var(--text-color, #555);
+    opacity: 0.85;
     margin-top: 3px;
 }
 
@@ -403,3 +404,709 @@ html.dark-mode .usuarios-buscar .form-control:focus {
 html.dark-mode .loading-message {
     color: #8b949e;
 }
+
+/* ============================================================
+   DASHBOARD Y REPORTERÍA INSTITUCIONAL
+   ============================================================ */
+
+.report-dashboard-card {
+    border-top: 3px solid var(--accent, #005A2B);
+}
+
+.report-section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.report-header-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--heading-color, #111827);
+    display: block;
+}
+
+.report-header-subtitle {
+    font-size: 0.82rem;
+    color: var(--text-color, #64748b);
+    opacity: 0.85;
+    margin-top: 3px;
+}
+
+.report-controls-inline {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.report-export-buttons {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.report-module-tabs {
+    display: flex;
+    gap: 8px;
+    padding: 12px 0;
+    border-bottom: 2px solid #e2e8f0;
+    margin-bottom: 16px;
+    overflow-x: auto;
+}
+
+.report-tab-btn {
+    background: #f1f5f9;
+    color: #334155;
+    border: 1px solid #cbd5e1;
+    padding: 8px 16px;
+    font-size: 0.84rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    border-radius: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s ease-in-out;
+}
+
+.report-tab-btn:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+.report-tab-btn.active {
+    background: var(--accent, #005A2B);
+    color: #ffffff;
+    border-color: var(--accent, #005A2B);
+    box-shadow: 0 2px 4px rgba(0, 90, 43, 0.2);
+}
+
+.report-meta-header {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-left: 4px solid var(--accent, #005A2B);
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.report-meta-header h3 {
+    margin: 0;
+    font-size: 1.05rem;
+    color: #0f172a;
+}
+
+.report-meta-header .report-meta-info {
+    font-size: 0.8rem;
+    color: #64748b;
+}
+
+.report-kpis-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.report-kpi-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    padding: 14px 16px;
+    position: relative;
+    border-radius: 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.report-kpi-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--accent, #005A2B);
+}
+
+.report-kpi-card.accent-alt::before {
+    background: #0284c7;
+}
+
+.report-kpi-card.accent-gold::before {
+    background: #d97706;
+}
+
+.report-kpi-val {
+    font-size: 1.45rem;
+    font-weight: 700;
+    color: var(--accent, #005A2B);
+    line-height: 1.2;
+    margin-bottom: 4px;
+}
+
+.report-kpi-card.accent-alt .report-kpi-val {
+    color: #0284c7;
+}
+
+.report-kpi-card.accent-gold .report-kpi-val {
+    color: #d97706;
+}
+
+.report-kpi-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #475569;
+    letter-spacing: 0.4px;
+    line-height: 1.3;
+}
+
+.report-nota-box {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    color: #92400e;
+    padding: 10px 14px;
+    margin-bottom: 18px;
+    font-size: 0.82rem;
+    line-height: 1.4;
+}
+
+.report-section-title {
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 20px 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.report-section-title::before {
+    content: "";
+    width: 3.5px;
+    height: 14px;
+    background: var(--accent, #005A2B);
+    display: inline-block;
+}
+
+.report-table-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.report-table-search {
+    padding: 6px 12px;
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    color: #0f172a;
+    font-size: 0.82rem;
+    width: 260px;
+    outline: none;
+}
+
+.report-table-search:focus {
+    border-color: var(--accent, #005A2B);
+}
+
+.report-table-count {
+    font-size: 0.8rem;
+    color: #64748b;
+}
+
+.report-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 20px;
+}
+
+.report-dashboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+    text-align: left;
+}
+
+.report-dashboard-table th {
+    background: #004D25;
+    color: #ffffff;
+    padding: 10px 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    border: none;
+}
+
+.report-dashboard-table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid #e2e8f0;
+    color: #334155;
+    vertical-align: middle;
+}
+
+.report-dashboard-table tr:nth-child(even) {
+    background-color: #f8fafc;
+}
+
+.report-dashboard-table tr:hover {
+    background-color: #f0fdf4;
+}
+
+/* ============================================================
+   ADAPTACIÓN COMPLETA A TODOS LOS ESTILOS Y TEMAS DE LA PLATAFORMA
+   (Dark mode, Observatorio, Cyberpunk, Noir, Medieval, Saiyan,
+    Alchemy, Minimalista, Biblioteca, etc.)
+   ============================================================ */
+
+/* Selector unificado para todos los temas oscuros y skins */
+html:is(.dark-mode, [data-estilo="observatorio"], [data-estilo="cyber"], [data-estilo="noir"], [data-estilo="medieval"], [data-estilo="saiyan"], [data-estilo="alchemy"], [data-estilo="minimalista"], [data-estilo="biblioteca"]),
+html.dark-mode,
+html[data-estilo="observatorio"],
+html[data-estilo="cyber"],
+html[data-estilo="noir"],
+html[data-estilo="medieval"],
+html[data-estilo="saiyan"],
+html[data-estilo="alchemy"],
+html[data-estilo="minimalista"],
+html[data-estilo="biblioteca"] {
+    --rep-card-bg: rgba(15, 23, 42, 0.65);
+    --rep-card-border: rgba(255, 255, 255, 0.14);
+    --rep-text-main: #f1f5f9;
+    --rep-text-muted: #94a3b8;
+    --rep-surface-alt: rgba(255, 255, 255, 0.05);
+}
+
+/* Encabezados y títulos de reporte en skins oscuros */
+html:is(.dark-mode, [data-estilo="observatorio"], [data-estilo="cyber"], [data-estilo="noir"], [data-estilo="medieval"], [data-estilo="saiyan"], [data-estilo="alchemy"], [data-estilo="minimalista"], [data-estilo="biblioteca"]) .report-header-title,
+html.dark-mode .report-header-title,
+html[data-estilo="observatorio"] .report-header-title,
+html[data-estilo="cyber"] .report-header-title,
+html[data-estilo="noir"] .report-header-title,
+html[data-estilo="medieval"] .report-header-title,
+html[data-estilo="saiyan"] .report-header-title,
+html[data-estilo="alchemy"] .report-header-title,
+html[data-estilo="minimalista"] .report-header-title,
+html[data-estilo="biblioteca"] .report-header-title {
+    color: var(--heading-color, #f8fafc) !important;
+}
+
+html:is(.dark-mode, [data-estilo="observatorio"], [data-estilo="cyber"], [data-estilo="noir"], [data-estilo="medieval"], [data-estilo="saiyan"], [data-estilo="alchemy"], [data-estilo="minimalista"], [data-estilo="biblioteca"]) .report-header-subtitle,
+html.dark-mode .report-header-subtitle,
+html[data-estilo="observatorio"] .report-header-subtitle,
+html[data-estilo="cyber"] .report-header-subtitle,
+html[data-estilo="noir"] .report-header-subtitle,
+html[data-estilo="medieval"] .report-header-subtitle,
+html[data-estilo="saiyan"] .report-header-subtitle,
+html[data-estilo="alchemy"] .report-header-subtitle,
+html[data-estilo="minimalista"] .report-header-subtitle,
+html[data-estilo="biblioteca"] .report-header-subtitle {
+    color: var(--text-color, #94a3b8) !important;
+    opacity: 0.85;
+}
+
+/* Selector de ciclo */
+html:is(.dark-mode, [data-estilo="observatorio"], [data-estilo="cyber"], [data-estilo="noir"], [data-estilo="medieval"], [data-estilo="saiyan"], [data-estilo="alchemy"], [data-estilo="minimalista"], [data-estilo="biblioteca"]) #report-ciclo,
+html.dark-mode #report-ciclo,
+html[data-estilo="observatorio"] #report-ciclo,
+html[data-estilo="cyber"] #report-ciclo,
+html[data-estilo="noir"] #report-ciclo,
+html[data-estilo="medieval"] #report-ciclo,
+html[data-estilo="saiyan"] #report-ciclo,
+html[data-estilo="alchemy"] #report-ciclo,
+html[data-estilo="minimalista"] #report-ciclo,
+html[data-estilo="biblioteca"] #report-ciclo {
+    background: rgba(0, 0, 0, 0.45) !important;
+    color: var(--text-color, #f1f5f9) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Pestañas de módulos */
+html:is(.dark-mode, [data-estilo="observatorio"], [data-estilo="cyber"], [data-estilo="noir"], [data-estilo="medieval"], [data-estilo="saiyan"], [data-estilo="alchemy"], [data-estilo="minimalista"], [data-estilo="biblioteca"]) .report-module-tabs,
+html.dark-mode .report-module-tabs,
+html[data-estilo="observatorio"] .report-module-tabs,
+html[data-estilo="cyber"] .report-module-tabs,
+html[data-estilo="noir"] .report-module-tabs,
+html[data-estilo="medieval"] .report-module-tabs,
+html[data-estilo="saiyan"] .report-module-tabs,
+html[data-estilo="alchemy"] .report-module-tabs,
+html[data-estilo="minimalista"] .report-module-tabs,
+html[data-estilo="biblioteca"] .report-module-tabs {
+    border-bottom-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+html:is(.dark-mode, [data-estilo="observatorio"], [data-estilo="cyber"], [data-estilo="noir"], [data-estilo="medieval"], [data-estilo="saiyan"], [data-estilo="alchemy"], [data-estilo="minimalista"], [data-estilo="biblioteca"]) .report-tab-btn,
+html.dark-mode .report-tab-btn,
+html[data-estilo="observatorio"] .report-tab-btn,
+html[data-estilo="cyber"] .report-tab-btn,
+html[data-estilo="noir"] .report-tab-btn,
+html[data-estilo="medieval"] .report-tab-btn,
+html[data-estilo="saiyan"] .report-tab-btn,
+html[data-estilo="alchemy"] .report-tab-btn,
+html[data-estilo="minimalista"] .report-tab-btn,
+html[data-estilo="biblioteca"] .report-tab-btn {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: var(--text-color, #cbd5e1) !important;
+    border-color: rgba(255, 255, 255, 0.18) !important;
+}
+
+html:is(.dark-mode, [data-estilo="observatorio"], [data-estilo="cyber"], [data-estilo="noir"], [data-estilo="medieval"], [data-estilo="saiyan"], [data-estilo="alchemy"], [data-estilo="minimalista"], [data-estilo="biblioteca"]) .report-tab-btn:hover,
+html.dark-mode .report-tab-btn:hover,
+html[data-estilo="observatorio"] .report-tab-btn:hover,
+html[data-estilo="cyber"] .report-tab-btn:hover,
+html[data-estilo="noir"] .report-tab-btn:hover,
+html[data-estilo="medieval"] .report-tab-btn:hover,
+html[data-estilo="saiyan"] .report-tab-btn:hover,
+html[data-estilo="alchemy"] .report-tab-btn:hover,
+html[data-estilo="minimalista"] .report-tab-btn:hover,
+html[data-estilo="biblioteca"] .report-tab-btn:hover {
+    background: rgba(255, 255, 255, 0.16) !important;
+    color: #ffffff !important;
+}
+
+html:is(.dark-mode, [data-estilo="observatorio"], [data-estilo="cyber"], [data-estilo="noir"], [data-estilo="medieval"], [data-estilo="saiyan"], [data-estilo="alchemy"], [data-estilo="minimalista"], [data-estilo="biblioteca"]) .report-tab-btn.active,
+html.dark-mode .report-tab-btn.active,
+html[data-estilo="observatorio"] .report-tab-btn.active,
+html[data-estilo="cyber"] .report-tab-btn.active,
+html[data-estilo="noir"] .report-tab-btn.active,
+html[data-estilo="medieval"] .report-tab-btn.active,
+html[data-estilo="saiyan"] .report-tab-btn.active,
+html[data-estilo="alchemy"] .report-tab-btn.active,
+html[data-estilo="minimalista"] .report-tab-btn.active,
+html[data-estilo="biblioteca"] .report-tab-btn.active {
+    background: var(--accent, #005A2B) !important;
+    color: #ffffff !important;
+    border-color: var(--accent, #005A2B) !important;
+    box-shadow: 0 0 16px rgba(0, 0, 0, 0.4);
+}
+
+/* Banner de metadatos */
+html:is(.dark-mode, [data-estilo="observatorio"], [data-estilo="cyber"], [data-estilo="noir"], [data-estilo="medieval"], [data-estilo="saiyan"], [data-estilo="alchemy"], [data-estilo="minimalista"], [data-estilo="biblioteca"]) .report-meta-header,
+html.dark-mode .report-meta-header,
+html[data-estilo="observatorio"] .report-meta-header,
+html[data-estilo="cyber"] .report-meta-header,
+html[data-estilo="noir"] .report-meta-header,
+html[data-estilo="medieval"] .report-meta-header,
+html[data-estilo="saiyan"] .report-meta-header,
+html[data-estilo="alchemy"] .report-meta-header,
+html[data-estilo="minimalista"] .report-meta-header,
+html[data-estilo="biblioteca"] .report-meta-header {
+    background: rgba(0, 0, 0, 0.4) !important;
+    border-color: rgba(255, 255, 255, 0.15) !important;
+    border-left: 4px solid var(--accent, #005A2B) !important;
+}
+
+html:is(.dark-mode, [data-estilo="observatorio"], [data-estilo="cyber"], [data-estilo="noir"], [data-estilo="medieval"], [data-estilo="saiyan"], [data-estilo="alchemy"], [data-estilo="minimalista"], [data-estilo="biblioteca"]) .report-meta-header h3,
+html.dark-mode .report-meta-header h3,
+html[data-estilo="observatorio"] .report-meta-header h3,
+html[data-estilo="cyber"] .report-meta-header h3,
+html[data-estilo="noir"] .report-meta-header h3,
+html[data-estilo="medieval"] .report-meta-header h3,
+html[data-estilo="saiyan"] .report-meta-header h3,
+html[data-estilo="alchemy"] .report-meta-header h3,
+html[data-estilo="minimalista"] .report-meta-header h3,
+html[data-estilo="biblioteca"] .report-meta-header h3 {
+    color: var(--heading-color, #ffffff) !important;
+}
+
+html:is(.dark-mode, [data-estilo="observatorio"], [data-estilo="cyber"], [data-estilo="noir"], [data-estilo="medieval"], [data-estilo="saiyan"], [data-estilo="alchemy"], [data-estilo="minimalista"], [data-estilo="biblioteca"]) .report-meta-header .report-meta-info,
+html.dark-mode .report-meta-header .report-meta-info,
+html[data-estilo="observatorio"] .report-meta-header .report-meta-info,
+html[data-estilo="cyber"] .report-meta-header .report-meta-info,
+html[data-estilo="noir"] .report-meta-header .report-meta-info,
+html[data-estilo="medieval"] .report-meta-header .report-meta-info,
+html[data-estilo="saiyan"] .report-meta-header .report-meta-info,
+html[data-estilo="alchemy"] .report-meta-header .report-meta-info,
+html[data-estilo="minimalista"] .report-meta-header .report-meta-info,
+html[data-estilo="biblioteca"] .report-meta-header .report-meta-info {
+    color: var(--text-color, #94a3b8) !important;
+    opacity: 0.9;
+}
+
+/* Tarjetas KPI del Reporte */
+html:is(.dark-mode, [data-estilo="observatorio"], [data-estilo="cyber"], [data-estilo="noir"], [data-estilo="medieval"], [data-estilo="saiyan"], [data-estilo="alchemy"], [data-estilo="minimalista"], [data-estilo="biblioteca"]) .report-kpi-card,
+html.dark-mode .report-kpi-card,
+html[data-estilo="observatorio"] .report-kpi-card,
+html[data-estilo="cyber"] .report-kpi-card,
+html[data-estilo="noir"] .report-kpi-card,
+html[data-estilo="medieval"] .report-kpi-card,
+html[data-estilo="saiyan"] .report-kpi-card,
+html[data-estilo="alchemy"] .report-kpi-card,
+html[data-estilo="minimalista"] .report-kpi-card,
+html[data-estilo="biblioteca"] .report-kpi-card {
+    background: rgba(0, 0, 0, 0.42) !important;
+    border-color: rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35) !important;
+}
+
+html:is(.dark-mode, [data-estilo="observatorio"], [data-estilo="cyber"], [data-estilo="noir"], [data-estilo="medieval"], [data-estilo="saiyan"], [data-estilo="alchemy"], [data-estilo="minimalista"], [data-estilo="biblioteca"]) .report-kpi-card::before,
+html.dark-mode .report-kpi-card::before,
+html[data-estilo="observatorio"] .report-kpi-card::before,
+html[data-estilo="cyber"] .report-kpi-card::before,
+html[data-estilo="noir"] .report-kpi-card::before,
+html[data-estilo="medieval"] .report-kpi-card::before,
+html[data-estilo="saiyan"] .report-kpi-card::before,
+html[data-estilo="alchemy"] .report-kpi-card::before,
+html[data-estilo="minimalista"] .report-kpi-card::before,
+html[data-estilo="biblioteca"] .report-kpi-card::before {
+    background: var(--accent, #005A2B) !important;
+}
+
+html:is(.dark-mode, [data-estilo="observatorio"], [data-estilo="cyber"], [data-estilo="noir"], [data-estilo="medieval"], [data-estilo="saiyan"], [data-estilo="alchemy"], [data-estilo="minimalista"], [data-estilo="biblioteca"]) .report-kpi-val,
+html.dark-mode .report-kpi-val,
+html[data-estilo="observatorio"] .report-kpi-val,
+html[data-estilo="cyber"] .report-kpi-val,
+html[data-estilo="noir"] .report-kpi-val,
+html[data-estilo="medieval"] .report-kpi-val,
+html[data-estilo="saiyan"] .report-kpi-val,
+html[data-estilo="alchemy"] .report-kpi-val,
+html[data-estilo="minimalista"] .report-kpi-val,
+html[data-estilo="biblioteca"] .report-kpi-val {
+    color: var(--accent-bright, var(--accent, #4ade80)) !important;
+}
+
+html:is(.dark-mode, [data-estilo="observatorio"], [data-estilo="cyber"], [data-estilo="noir"], [data-estilo="medieval"], [data-estilo="saiyan"], [data-estilo="alchemy"], [data-estilo="minimalista"], [data-estilo="biblioteca"]) .report-kpi-label,
+html.dark-mode .report-kpi-label,
+html[data-estilo="observatorio"] .report-kpi-label,
+html[data-estilo="cyber"] .report-kpi-label,
+html[data-estilo="noir"] .report-kpi-label,
+html[data-estilo="medieval"] .report-kpi-label,
+html[data-estilo="saiyan"] .report-kpi-label,
+html[data-estilo="alchemy"] .report-kpi-label,
+html[data-estilo="minimalista"] .report-kpi-label,
+html[data-estilo="biblioteca"] .report-kpi-label {
+    color: var(--text-color, #cbd5e1) !important;
+    opacity: 0.85;
+}
+
+html:is(.dark-mode, [data-estilo="observatorio"], [data-estilo="cyber"], [data-estilo="noir"], [data-estilo="medieval"], [data-estilo="saiyan"], [data-estilo="alchemy"], [data-estilo="minimalista"], [data-estilo="biblioteca"]) .report-kpi-card.accent-alt::before {
+    background: #38bdf8 !important;
+}
+html:is(.dark-mode, [data-estilo="observatorio"], [data-estilo="cyber"], [data-estilo="noir"], [data-estilo="medieval"], [data-estilo="saiyan"], [data-estilo="alchemy"], [data-estilo="minimalista"], [data-estilo="biblioteca"]) .report-kpi-card.accent-alt .report-kpi-val {
+    color: #38bdf8 !important;
+}
+
+html:is(.dark-mode, [data-estilo="observatorio"], [data-estilo="cyber"], [data-estilo="noir"], [data-estilo="medieval"], [data-estilo="saiyan"], [data-estilo="alchemy"], [data-estilo="minimalista"], [data-estilo="biblioteca"]) .report-kpi-card.accent-gold::before {
+    background: #fbbf24 !important;
+}
+html:is(.dark-mode, [data-estilo="observatorio"], [data-estilo="cyber"], [data-estilo="noir"], [data-estilo="medieval"], [data-estilo="saiyan"], [data-estilo="alchemy"], [data-estilo="minimalista"], [data-estilo="biblioteca"]) .report-kpi-card.accent-gold .report-kpi-val {
+    color: #fbbf24 !important;
+}
+
+/* Nota metodológica */
+html:is(.dark-mode, [data-estilo="observatorio"], [data-estilo="cyber"], [data-estilo="noir"], [data-estilo="medieval"], [data-estilo="saiyan"], [data-estilo="alchemy"], [data-estilo="minimalista"], [data-estilo="biblioteca"]) .report-nota-box,
+html.dark-mode .report-nota-box,
+html[data-estilo="observatorio"] .report-nota-box,
+html[data-estilo="cyber"] .report-nota-box,
+html[data-estilo="noir"] .report-nota-box,
+html[data-estilo="medieval"] .report-nota-box,
+html[data-estilo="saiyan"] .report-nota-box,
+html[data-estilo="alchemy"] .report-nota-box,
+html[data-estilo="minimalista"] .report-nota-box,
+html[data-estilo="biblioteca"] .report-nota-box {
+    background: rgba(245, 158, 11, 0.12) !important;
+    border-color: rgba(245, 158, 11, 0.35) !important;
+    color: #fde68a !important;
+}
+
+/* Títulos de sección */
+html:is(.dark-mode, [data-estilo="observatorio"], [data-estilo="cyber"], [data-estilo="noir"], [data-estilo="medieval"], [data-estilo="saiyan"], [data-estilo="alchemy"], [data-estilo="minimalista"], [data-estilo="biblioteca"]) .report-section-title,
+html.dark-mode .report-section-title,
+html[data-estilo="observatorio"] .report-section-title,
+html[data-estilo="cyber"] .report-section-title,
+html[data-estilo="noir"] .report-section-title,
+html[data-estilo="medieval"] .report-section-title,
+html[data-estilo="saiyan"] .report-section-title,
+html[data-estilo="alchemy"] .report-section-title,
+html[data-estilo="minimalista"] .report-section-title,
+html[data-estilo="biblioteca"] .report-section-title {
+    color: var(--heading-color, #f8fafc) !important;
+}
+
+/* Buscador en tablas */
+html:is(.dark-mode, [data-estilo="observatorio"], [data-estilo="cyber"], [data-estilo="noir"], [data-estilo="medieval"], [data-estilo="saiyan"], [data-estilo="alchemy"], [data-estilo="minimalista"], [data-estilo="biblioteca"]) .report-table-search,
+html.dark-mode .report-table-search,
+html[data-estilo="observatorio"] .report-table-search,
+html[data-estilo="cyber"] .report-table-search,
+html[data-estilo="noir"] .report-table-search,
+html[data-estilo="medieval"] .report-table-search,
+html[data-estilo="saiyan"] .report-table-search,
+html[data-estilo="alchemy"] .report-table-search,
+html[data-estilo="minimalista"] .report-table-search,
+html[data-estilo="biblioteca"] .report-table-search {
+    background: rgba(0, 0, 0, 0.45) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    color: var(--text-color, #ffffff) !important;
+}
+
+html:is(.dark-mode, [data-estilo="observatorio"], [data-estilo="cyber"], [data-estilo="noir"], [data-estilo="medieval"], [data-estilo="saiyan"], [data-estilo="alchemy"], [data-estilo="minimalista"], [data-estilo="biblioteca"]) .report-table-count,
+html.dark-mode .report-table-count,
+html[data-estilo="observatorio"] .report-table-count,
+html[data-estilo="cyber"] .report-table-count,
+html[data-estilo="noir"] .report-table-count,
+html[data-estilo="medieval"] .report-table-count,
+html[data-estilo="saiyan"] .report-table-count,
+html[data-estilo="alchemy"] .report-table-count,
+html[data-estilo="minimalista"] .report-table-count,
+html[data-estilo="biblioteca"] .report-table-count {
+    color: var(--text-color, #94a3b8) !important;
+}
+
+/* Contenedor y tabla */
+html:is(.dark-mode, [data-estilo="observatorio"], [data-estilo="cyber"], [data-estilo="noir"], [data-estilo="medieval"], [data-estilo="saiyan"], [data-estilo="alchemy"], [data-estilo="minimalista"], [data-estilo="biblioteca"]) .report-table-wrapper,
+html.dark-mode .report-table-wrapper,
+html[data-estilo="observatorio"] .report-table-wrapper,
+html[data-estilo="cyber"] .report-table-wrapper,
+html[data-estilo="noir"] .report-table-wrapper,
+html[data-estilo="medieval"] .report-table-wrapper,
+html[data-estilo="saiyan"] .report-table-wrapper,
+html[data-estilo="alchemy"] .report-table-wrapper,
+html[data-estilo="minimalista"] .report-table-wrapper,
+html[data-estilo="biblioteca"] .report-table-wrapper {
+    border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+html:is(.dark-mode, [data-estilo="observatorio"], [data-estilo="cyber"], [data-estilo="noir"], [data-estilo="medieval"], [data-estilo="saiyan"], [data-estilo="alchemy"], [data-estilo="minimalista"], [data-estilo="biblioteca"]) .report-dashboard-table th,
+html.dark-mode .report-dashboard-table th,
+html[data-estilo="observatorio"] .report-dashboard-table th,
+html[data-estilo="cyber"] .report-dashboard-table th,
+html[data-estilo="noir"] .report-dashboard-table th,
+html[data-estilo="medieval"] .report-dashboard-table th,
+html[data-estilo="saiyan"] .report-dashboard-table th,
+html[data-estilo="alchemy"] .report-dashboard-table th,
+html[data-estilo="minimalista"] .report-dashboard-table th,
+html[data-estilo="biblioteca"] .report-dashboard-table th {
+    background: rgba(0, 0, 0, 0.65) !important;
+    border-bottom: 2px solid var(--accent, #005A2B) !important;
+    color: #ffffff !important;
+}
+
+html:is(.dark-mode, [data-estilo="observatorio"], [data-estilo="cyber"], [data-estilo="noir"], [data-estilo="medieval"], [data-estilo="saiyan"], [data-estilo="alchemy"], [data-estilo="minimalista"], [data-estilo="biblioteca"]) .report-dashboard-table td,
+html.dark-mode .report-dashboard-table td,
+html[data-estilo="observatorio"] .report-dashboard-table td,
+html[data-estilo="cyber"] .report-dashboard-table td,
+html[data-estilo="noir"] .report-dashboard-table td,
+html[data-estilo="medieval"] .report-dashboard-table td,
+html[data-estilo="saiyan"] .report-dashboard-table td,
+html[data-estilo="alchemy"] .report-dashboard-table td,
+html[data-estilo="minimalista"] .report-dashboard-table td,
+html[data-estilo="biblioteca"] .report-dashboard-table td {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    color: var(--text-color, #e2e8f0) !important;
+}
+
+html:is(.dark-mode, [data-estilo="observatorio"], [data-estilo="cyber"], [data-estilo="noir"], [data-estilo="medieval"], [data-estilo="saiyan"], [data-estilo="alchemy"], [data-estilo="minimalista"], [data-estilo="biblioteca"]) .report-dashboard-table tr:nth-child(even),
+html.dark-mode .report-dashboard-table tr:nth-child(even),
+html[data-estilo="observatorio"] .report-dashboard-table tr:nth-child(even),
+html[data-estilo="cyber"] .report-dashboard-table tr:nth-child(even),
+html[data-estilo="noir"] .report-dashboard-table tr:nth-child(even),
+html[data-estilo="medieval"] .report-dashboard-table tr:nth-child(even),
+html[data-estilo="saiyan"] .report-dashboard-table tr:nth-child(even),
+html[data-estilo="alchemy"] .report-dashboard-table tr:nth-child(even),
+html[data-estilo="minimalista"] .report-dashboard-table tr:nth-child(even),
+html[data-estilo="biblioteca"] .report-dashboard-table tr:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+html:is(.dark-mode, [data-estilo="observatorio"], [data-estilo="cyber"], [data-estilo="noir"], [data-estilo="medieval"], [data-estilo="saiyan"], [data-estilo="alchemy"], [data-estilo="minimalista"], [data-estilo="biblioteca"]) .report-dashboard-table tr:hover,
+html.dark-mode .report-dashboard-table tr:hover,
+html[data-estilo="observatorio"] .report-dashboard-table tr:hover,
+html[data-estilo="cyber"] .report-dashboard-table tr:hover,
+html[data-estilo="noir"] .report-dashboard-table tr:hover,
+html[data-estilo="medieval"] .report-dashboard-table tr:hover,
+html[data-estilo="saiyan"] .report-dashboard-table tr:hover,
+html[data-estilo="alchemy"] .report-dashboard-table tr:hover,
+html[data-estilo="minimalista"] .report-dashboard-table tr:hover,
+html[data-estilo="biblioteca"] .report-dashboard-table tr:hover {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Tarjetas KPI superiores generales del admin en temas oscuros */
+html:is(.dark-mode, [data-estilo="observatorio"], [data-estilo="cyber"], [data-estilo="noir"], [data-estilo="medieval"], [data-estilo="saiyan"], [data-estilo="alchemy"], [data-estilo="minimalista"], [data-estilo="biblioteca"]) .kpi-card,
+html.dark-mode .kpi-card,
+html[data-estilo="observatorio"] .kpi-card,
+html[data-estilo="cyber"] .kpi-card,
+html[data-estilo="noir"] .kpi-card,
+html[data-estilo="medieval"] .kpi-card,
+html[data-estilo="saiyan"] .kpi-card,
+html[data-estilo="alchemy"] .kpi-card,
+html[data-estilo="minimalista"] .kpi-card,
+html[data-estilo="biblioteca"] .kpi-card {
+    background: rgba(0, 0, 0, 0.42) !important;
+    border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+html:is(.dark-mode, [data-estilo="observatorio"], [data-estilo="cyber"], [data-estilo="noir"], [data-estilo="medieval"], [data-estilo="saiyan"], [data-estilo="alchemy"], [data-estilo="minimalista"], [data-estilo="biblioteca"]) .kpi-value,
+html.dark-mode .kpi-value,
+html[data-estilo="observatorio"] .kpi-value,
+html[data-estilo="cyber"] .kpi-value,
+html[data-estilo="noir"] .kpi-value,
+html[data-estilo="medieval"] .kpi-value,
+html[data-estilo="saiyan"] .kpi-value,
+html[data-estilo="alchemy"] .kpi-value,
+html[data-estilo="minimalista"] .kpi-value,
+html[data-estilo="biblioteca"] .kpi-value {
+    color: var(--heading-color, #f8fafc) !important;
+}
+
+html:is(.dark-mode, [data-estilo="observatorio"], [data-estilo="cyber"], [data-estilo="noir"], [data-estilo="medieval"], [data-estilo="saiyan"], [data-estilo="alchemy"], [data-estilo="minimalista"], [data-estilo="biblioteca"]) .kpi-label,
+html.dark-mode .kpi-label,
+html[data-estilo="observatorio"] .kpi-label,
+html[data-estilo="cyber"] .kpi-label,
+html[data-estilo="noir"] .kpi-label,
+html[data-estilo="medieval"] .kpi-label,
+html[data-estilo="saiyan"] .kpi-label,
+html[data-estilo="alchemy"] .kpi-label,
+html[data-estilo="minimalista"] .kpi-label,
+html[data-estilo="biblioteca"] .kpi-label {
+    color: var(--text-color, #cbd5e1) !important;
+}
+
+html:is(.dark-mode, [data-estilo="observatorio"], [data-estilo="cyber"], [data-estilo="noir"], [data-estilo="medieval"], [data-estilo="saiyan"], [data-estilo="alchemy"], [data-estilo="minimalista"], [data-estilo="biblioteca"]) .kpi-sub,
+html.dark-mode .kpi-sub,
+html[data-estilo="observatorio"] .kpi-sub,
+html[data-estilo="cyber"] .kpi-sub,
+html[data-estilo="noir"] .kpi-sub,
+html[data-estilo="medieval"] .kpi-sub,
+html[data-estilo="saiyan"] .kpi-sub,
+html[data-estilo="alchemy"] .kpi-sub,
+html[data-estilo="minimalista"] .kpi-sub,
+html[data-estilo="biblioteca"] .kpi-sub {
+    color: var(--text-color, #94a3b8) !important;
+    opacity: 0.8;
+}
+
+/* Reglas de impresión para el reporte */
+@media print {
+    body {
+        background: #ffffff !important;
+        color: #000000 !important;
+    }
+    .sidebar, .topbar, .report-export-buttons, .report-module-tabs, .report-table-controls, .report-controls-inline {
+        display: none !important;
+    }
+    .main-wrapper, .main-content {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+    }
+    .card:not(.report-dashboard-card) {
+        display: none !important;
+    }
+    .report-dashboard-card {
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+    }
+}
+

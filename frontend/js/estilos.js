@@ -24,6 +24,12 @@ const Estilos = {
             preview: 'radial-gradient(circle at 28% 22%, #8b6bc7 0%, #171b38 38%, #030309 100%)'
         },
         {
+            id: 'biblioteca',
+            nombre: 'Biblioteca G\u00f3tica',
+            descripcion: 'Estanter\u00edas, motas de polvo, cap\u00edtulos y navegaci\u00f3n de p\u00e1ginas en una biblioteca borgo\u00f1a.',
+            preview: 'radial-gradient(circle at 50% 24%, #8c1f3d 0%, #26090d 44%, #0a0404 100%)'
+        },
+        {
             id: 'clasico',
             nombre: 'Clásico',
             descripcion: 'Estilo predeterminado de MAPS Connect con la paleta institucional.',
@@ -70,6 +76,12 @@ const Estilos = {
             nombre: 'Invernadero',
             descripcion: 'Cubierta vegetal, foliaje mecido y luz tamizada sobre una experiencia académica que crece (verde institucional).',
             preview: 'linear-gradient(135deg, #3E6B4F 0%, #E7EEDA 50%, #C97B4A 100%)'
+        },
+        {
+            id: 'minimalista',
+            nombre: 'Minimalista Monocromo',
+            descripcion: 'Diseño estricto en una sola tinta: superficies oscuras, tipografía Inter y blancos sin ornamentos.',
+            preview: 'linear-gradient(135deg, #0E0E0F 0%, #1D1D1F 60%, #F2F2F3 100%)'
         }
     ],
 
@@ -78,8 +90,10 @@ const Estilos = {
 
     /** Textos personalizados por skin (botones, enlaces y placeholders).
         Las claves son el texto original exacto y los valores el texto temático. */
-    TEXTOS_ESTILO: {
+TEXTOS_ESTILO: {
         observatorio: {},
+        biblioteca: {},
+        minimalista: {},
         cyber: {},
         medieval: {
             'Publicar duda': 'Enviar al Palacio',
@@ -507,8 +521,10 @@ const Estilos = {
     },
 
     _limpiarFondo() {
-        if (window.Observatorio?.desactivar) window.Observatorio.desactivar();
-        document.querySelectorAll('.cyber-bg-viewport, .medieval-bg-viewport, .saiyan-bg-viewport, .noir-bg-viewport, .alchemy-bg-viewport, .minimal-bg-viewport, .invernadero-bg-viewport, .greenhouse-canopy, .light-dapple, .atmosphere-overlay, .castle-vignette, .cyber-blade-transition, .med-blade-transition, .saiyan-aura-transition, .noir-blade-transition, .alchemy-blade-transition, .minimal-blade-transition, .invernadero-leaf-transition, .heraldic-transition, .observatory-scene, .observatory-comet-transition, .observatory-welcome-overlay').forEach(el => el.remove());
+if (window.Observatorio?.desactivar) window.Observatorio.desactivar();
+        if (window.Biblioteca?.desactivar) window.Biblioteca.desactivar();
+        if (window.Minimalista?.desactivar) window.Minimalista.desactivar();
+        document.querySelectorAll('.cyber-bg-viewport, .medieval-bg-viewport, .saiyan-bg-viewport, .noir-bg-viewport, .alchemy-bg-viewport, .minimal-bg-viewport, .invernadero-bg-viewport, .greenhouse-canopy, .light-dapple, .atmosphere-overlay, .castle-vignette, .cyber-blade-transition, .med-blade-transition, .saiyan-aura-transition, .noir-blade-transition, .alchemy-blade-transition, .minimal-blade-transition, .invernadero-leaf-transition, .heraldic-transition, .observatory-scene, .observatory-comet-transition, .observatory-welcome-overlay, .biblioteca-scene, .biblioteca-page-transition, .biblioteca-welcome-overlay, .minimalista-page-transition, .minimalista-welcome-overlay').forEach(el => el.remove());
     },
 
     _limpiarAccentoInline() {
@@ -530,9 +546,11 @@ const Estilos = {
         document.head.appendChild(link);
     },
 
-    _ponFondo() {
+_ponFondo() {
         const estilo = this.activo();
         if (estilo === 'observatorio') return this._ponFondoObservatorio();
+        if (estilo === 'biblioteca') return this._ponFondoBiblioteca();
+        if (estilo === 'minimalista') return this._ponFondoMinimalista();
         if (estilo === 'medieval') return this._ponFondoMedieval();
         if (estilo === 'saiyan') return this._ponFondoSaiyan();
         if (estilo === 'noir') return this._ponFondoNoir();
@@ -557,7 +575,7 @@ const Estilos = {
             const css = document.createElement('link');
             css.id = 'observatorio-css';
             css.rel = 'stylesheet';
-            css.href = prefijo + 'css/observatorio.css?v=4';
+            css.href = prefijo + 'css/observatorio.css?v=5';
             document.head.appendChild(css);
         }
 
@@ -575,6 +593,72 @@ const Estilos = {
         const script = document.createElement('script');
         script.id = 'observatorio-js';
         script.src = prefijo + 'js/observatorio.js?v=1';
+        script.addEventListener('load', iniciar, { once: true });
+        document.head.appendChild(script);
+    },
+
+    _ponFondoBiblioteca() {
+        this._cargarFuentes();
+        const prefijo = this._rutaAssets();
+        const iniciar = () => {
+            if (this.activo() === 'biblioteca') window.Biblioteca?.activar?.();
+        };
+
+        if (!document.getElementById('biblioteca-css')) {
+            const css = document.createElement('link');
+            css.id = 'biblioteca-css';
+            css.rel = 'stylesheet';
+            css.href = prefijo + 'css/biblioteca.css?v=4';
+            document.head.appendChild(css);
+        }
+
+        if (window.Biblioteca) {
+            iniciar();
+            return;
+        }
+
+        const previo = document.getElementById('biblioteca-js');
+        if (previo) {
+            previo.addEventListener('load', iniciar, { once: true });
+            return;
+        }
+
+const script = document.createElement('script');
+        script.id = 'biblioteca-js';
+        script.src = prefijo + 'js/biblioteca.js?v=1';
+        script.addEventListener('load', iniciar, { once: true });
+        document.head.appendChild(script);
+    },
+
+    _ponFondoMinimalista() {
+        this._cargarFuentes();
+        const prefijo = this._rutaAssets();
+        const iniciar = () => {
+            if (this.activo() === 'minimalista') window.Minimalista?.activar?.();
+        };
+
+        if (!document.getElementById('minimalista-css')) {
+            const css = document.createElement('link');
+            css.id = 'minimalista-css';
+            css.rel = 'stylesheet';
+            css.href = prefijo + 'css/minimalista.css?v=1';
+            document.head.appendChild(css);
+        }
+
+        if (window.Minimalista) {
+            iniciar();
+            return;
+        }
+
+        const previo = document.getElementById('minimalista-js');
+        if (previo) {
+            previo.addEventListener('load', iniciar, { once: true });
+            return;
+        }
+
+        const script = document.createElement('script');
+        script.id = 'minimalista-js';
+        script.src = prefijo + 'js/minimalista.js?v=1';
         script.addEventListener('load', iniciar, { once: true });
         document.head.appendChild(script);
     },
@@ -1030,7 +1114,7 @@ const Estilos = {
             document.addEventListener('DOMContentLoaded', () => this._mostrarRecarga(), { once: true });
             return;
         }
-        const acento = { observatorio: '#8B6BC7', clasico: '#3fb950', cyber: '#00f0ff', medieval: '#A9834B', saiyan: '#facc15', noir: '#e11d48', alchemy: '#10b981', minimal: '#2563eb', invernadero: '#3E6B4F' }[this.activo()] || '#3fb950';
+        const acento = { observatorio: '#8B6BC7', biblioteca: '#B32A4C', clasico: '#3fb950', cyber: '#00f0ff', medieval: '#A9834B', saiyan: '#facc15', noir: '#e11d48', alchemy: '#10b981', minimal: '#2563eb', invernadero: '#3E6B4F', minimalista: '#F2F2F3' }[this.activo()] || '#3fb950';
         const ov = document.createElement('div');
         ov.className = 'estilos-recarga-overlay';
         ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.72);backdrop-filter:blur(6px);z-index:999999;display:flex;align-items:center;justify-content:center;padding:1rem;overflow:auto;';

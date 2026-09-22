@@ -21,3 +21,5 @@ public class RolConverter implements AttributeConverter<Usuario.Rol, String> {
         return Usuario.Rol.valueOf(dbValue.toUpperCase());
     }
 }
+
+

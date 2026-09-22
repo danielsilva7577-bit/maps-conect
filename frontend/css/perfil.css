@@ -12,7 +12,7 @@
     width: 100%;
 }
 
-/* Bordes rectos institucionales (scopeado a la p├ígina) */
+/* Bordes rectos institucionales (scopeado a la página) */
 .perfil-container .card,
 .perfil-container .profile-avatar,
 .perfil-container .btn-solid,
@@ -200,7 +200,7 @@
     line-height: 1.4;
 }
 
-/* --- COLUMNA DERECHA: APORTACIONES Y ESTAD├ìSTICAS --- */
+/* --- COLUMNA DERECHA: APORTACIONES Y ESTADÍSTICAS --- */
 .stats-summary {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -253,7 +253,7 @@
     font-size: 0.75rem;
 }
 
-/* --- MODAL: EDICI├ôN DE PROP├ôSITO DE VIDA --- */
+/* --- MODAL: EDICIÓN DE PROPÓSITO DE VIDA --- */
 .proposito-modal-overlay {
     position: fixed;
     inset: 0;
@@ -449,7 +449,7 @@
 }
 
 /* ============================================================
-   MODO OSCURO (p├ígina de perfil)
+   MODO OSCURO (página de perfil)
    ============================================================ */
 html.dark-mode .perfil-container .card,
 html.dark-mode .certificate-item,

@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Wrapper generico de respuesta API con status, mensaje, datos y timestamp.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -42,3 +45,4 @@ public class ApiResponse<T> {
     }
 
 }
+

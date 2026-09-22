@@ -58,3 +58,15 @@ frontend/build/
 # Frontend - Environment
 frontend/.env
 frontend/.env.local
+
+# Stakpak session files
+.stakpak/session*
+
+# Archivos locales y resultados de pruebas
+.stakpak/
+cloudflared.exe
+uploads/
+reporte-*.png
+reporte-*.pdf
+reporte-*.csv
+test-reporte-*.pdf

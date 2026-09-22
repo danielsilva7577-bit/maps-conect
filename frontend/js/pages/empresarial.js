@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 let empresasActuales = [];
+let empresasVisiblesCount = 6;
 
 async function loadCompanies(content, filters = {}) {
     const params = new URLSearchParams();
@@ -43,6 +44,7 @@ async function loadCompanies(content, filters = {}) {
     const companies = Array.isArray(response) ? response : (Array.isArray(response.empresas) ? response.empresas : []);
     const carreraFiltrada = response && !Array.isArray(response) ? response.carreraFiltrada || '' : '';
     empresasActuales = companies;
+    empresasVisiblesCount = 6;
     renderCompanies(content, companies, filters.sector || '', carreraFiltrada);
 }
 
@@ -59,6 +61,9 @@ function renderCompanies(content, companies, sectorSeleccionado = '', carreraFil
         ? companies.filter(c => (c.sector || '').trim() === sectorSeleccionado)
         : companies;
 
+    const mostrando = visibles.slice(0, empresasVisiblesCount);
+    const hayMas = visibles.length > empresasVisiblesCount;
+
     content.innerHTML = `
         <div class="empresarial-container">
             <header class="module-heading"><h1>Semestre Empresarial</h1><p>Explora empresas vinculadas y experiencias compartidas por la comunidad.</p>${carreraFiltrada ? `<p class="filter-note">Mostrando empresas afines a tu carrera: <strong>${escapeHtml(carreraFiltrada)}</strong></p>` : ''}</header>
@@ -69,9 +74,22 @@ function renderCompanies(content, companies, sectorSeleccionado = '', carreraFil
                 <select class="select-filter" name="calificacionMinima" aria-label="Filtrar por calificación"><option value="">Calificación: todas</option><option value="4.5">4.5 estrellas o más</option><option value="4.0">4.0 estrellas o más</option></select>
                 <button class="btn-solid" type="submit">Buscar</button>
             </form>
-            <section id="company-results" aria-live="polite">${visibles.length ? visibles.map(renderCompany).join('') : renderEmptyCompanies()}</section>
+            <section id="company-results" aria-live="polite">
+                ${mostrando.length ? mostrando.map(renderCompany).join('') : renderEmptyCompanies()}
+                ${hayMas ? `
+                <div class="cargar-mas-wrap" style="text-align:center;padding:24px 0;grid-column:1/-1;">
+                    <button type="button" class="btn btn-outline" id="btn-cargar-mas-empresas">
+                        Cargar más empresas (${visibles.length - empresasVisiblesCount} restantes)
+                    </button>
+                </div>` : ''}
+            </section>
         </div>
     `;
+
+    document.getElementById('btn-cargar-mas-empresas')?.addEventListener('click', () => {
+        empresasVisiblesCount += 6;
+        renderCompanies(content, companies, sectorSeleccionado, carreraFiltrada);
+    });
 
     document.getElementById('company-filter-form')?.addEventListener('submit', event => {
         event.preventDefault();

@@ -16,7 +16,7 @@
     width: 100%;
 }
 
-/* Bordes rectos institucionales (scopeado a la p├ígina) */
+/* Bordes rectos institucionales (scopeado a la página) */
 .academic-hub-container .card,
 .academic-hub-container .input-search,
 .academic-hub-container .select-materia,
@@ -48,7 +48,7 @@
 
 .filter-note[hidden] { display: none; }
 
-/* --- 1. BARRA DE B├ÜSQUEDA Y FILTRO SUPERIOR --- */
+/* --- 1. BARRA DE BÚSQUEDA Y FILTRO SUPERIOR --- */
 .hub-filter-bar {
     display: grid;
     grid-template-columns: 2fr 1.2fr auto;
@@ -131,7 +131,7 @@
     background-color: var(--hub-accent-soft);
 }
 
-/* --- 2. PESTA├æAS DE SUB-NAVEGACI├ôN --- */
+/* --- 2. PESTAÑAS DE SUB-NAVEGACIÓN --- */
 .hub-tabs {
     display: flex;
     border-bottom: 2px solid var(--hub-border);
@@ -347,7 +347,7 @@
     color: var(--hub-muted);
 }
 
-/* --- ESTILOS: TIPS ACAD├ëMICOS --- */
+/* --- ESTILOS: TIPS ACADÉMICOS --- */
 .tip-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;

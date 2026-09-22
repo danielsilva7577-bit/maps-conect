@@ -1,8 +1,10 @@
 const API_BASE_URL = (() => {
-    const path = window.location.pathname;
-    const sameOrigin = path === '/' || path === '/index.html' || path.startsWith('/api');
-    if (sameOrigin) {
-        return `${window.location.origin}/api`;
+    const origin = window.location.origin;
+    if (window.location.port === '5500' || window.location.port === '5501' || window.location.port === '3000') {
+        return `${window.location.protocol}//${window.location.hostname}:8080/api`;
+    }
+    if (origin && origin !== 'null' && !window.location.protocol.startsWith('file')) {
+        return `${origin}/api`;
     }
     return 'http://localhost:8080/api';
 })();
@@ -20,11 +22,11 @@ const API = {
             ...options
         };
 
-const response = await fetch(url, config);
+        const response = await fetch(url, config);
         const body = await response.json().catch(() => null);
 
         if (!response.ok) {
-            if (response.status === 401 || response.status === 403) {
+            if (response.status === 401) {
                 localStorage.removeItem('token');
                 localStorage.removeItem('user');
                 const path = window.location.pathname;

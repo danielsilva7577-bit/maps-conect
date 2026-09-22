@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+/**
+ * Entidad de usuario del sistema. Representa la cuenta con email, contrasena, rol, foto y puntos de reputacion.
+ */
 @Entity
 @Table(name = "usuarios")
 @Data
@@ -38,6 +41,9 @@ public class Usuario {
     @Column(name = "puntos_reputacion", nullable = false)
     private Integer puntosReputacion = 0;
 
+    @Column(name = "foto_url")
+    private String fotoUrl;
+
     @Builder.Default
     @Column(nullable = false)
     private Boolean activo = true;
@@ -51,3 +57,4 @@ public class Usuario {
     }
 
 }
+

@@ -1,0 +1,2787 @@
+/*
+ * MAPS Connect · Minimalista
+ * Capa visual global del estilo "Minimalista" (mockup monocromo oscuro).
+ * Todos los selectores están acotados al skin para que los demás estilos
+ * sigan disponibles en Ajustes.
+ */
+
+/* --------------------------------------------------------------------------
+   Paleta y variables globales
+   -------------------------------------------------------------------------- */
+
+html[data-estilo="minimalista"] {
+    --min-bg: #0E0E0F;
+    --min-bg-deep: #09090A;
+    --min-panel: #161617;
+    --min-panel-light: #1D1D1F;
+    --min-panel-hover: #232326;
+    --min-border: #2A2A2D;
+    --min-line: #3A3A3E;
+    --min-white: #F2F2F3;
+    --min-gray: #9A9AA0;
+    --min-gray-dim: #626268;
+    --min-black: #000000;
+
+    --primary-color: var(--min-white);
+    --secondary-color: var(--min-gray);
+    --accent: var(--min-white);
+    --accent-dark: var(--min-gray);
+    --accent-mid: var(--min-line);
+    --accent-bright: var(--min-white);
+    --accent-deep: var(--min-black);
+    --accent-soft: rgba(242, 242, 243, 0.07);
+    --accent-soft-border: rgba(242, 242, 243, 0.22);
+    --accent-contrast: var(--min-black);
+    --text-color: var(--min-white);
+    --heading-color: var(--min-white);
+    --link-color: var(--min-white);
+    --danger-color: #E5484D;
+    --success-color: #5FD0A0;
+    --warning-color: #F5C15C;
+    --sidebar-width: 280px;
+    --sidebar-bg: var(--min-panel);
+    --sidebar-border: var(--min-border);
+    --sidebar-text: var(--min-gray-dim);
+    --sidebar-text-hover: var(--min-white);
+    --sidebar-item-hover-bg: rgba(242, 242, 243, 0.045);
+    --sidebar-item-active-bg: var(--min-panel-light);
+    --sidebar-accent: var(--min-white);
+    --topbar-bg: transparent;
+    --topbar-text: var(--min-white);
+    --btn-primary-bg: var(--min-white);
+    --btn-primary-text: var(--min-black);
+    --btn-outline-border: var(--min-line);
+    --btn-outline-text: var(--min-white);
+    --hub-accent: var(--min-white);
+    --hub-accent-dark: var(--min-gray);
+    --hub-accent-soft: rgba(242, 242, 243, 0.07);
+    --hub-border: var(--min-border);
+    --hub-muted: var(--min-gray);
+    --hub-bg: var(--min-bg);
+    --hub-text: var(--min-white);
+    --border-radius: 12px;
+    color-scheme: dark;
+    background: var(--min-bg);
+}
+
+html[data-estilo="minimalista"],
+html[data-estilo="minimalista"] body {
+    min-height: 100%;
+    background: var(--min-bg);
+}
+
+html[data-estilo="minimalista"] body {
+    color: var(--min-white);
+    font-family: "Inter", "Segoe UI", Roboto, system-ui, sans-serif;
+    line-height: 1.5;
+    overflow-x: hidden;
+}
+
+html[data-estilo="minimalista"] * {
+    scrollbar-color: var(--min-line) transparent;
+}
+
+html[data-estilo="minimalista"] h1,
+html[data-estilo="minimalista"] h2,
+html[data-estilo="minimalista"] h3,
+html[data-estilo="minimalista"] h4,
+html[data-estilo="minimalista"] .page-title,
+html[data-estilo="minimalista"] .section-heading,
+html[data-estilo="minimalista"] .card-title,
+html[data-estilo="minimalista"] .sidebar-header h1 {
+    color: var(--min-white);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+html[data-estilo="minimalista"] a {
+    color: var(--min-white);
+    text-decoration-color: var(--min-gray-dim);
+}
+
+html[data-estilo="minimalista"] a:hover {
+    color: var(--min-white);
+    text-decoration-color: var(--min-white);
+}
+
+/* --------------------------------------------------------------------------
+   Transición entre vistas (fade monocromo)
+   -------------------------------------------------------------------------- */
+
+.minimalista-page-transition {
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    background: var(--min-bg);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.22s ease;
+}
+
+.minimalista-page-transition.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+html[data-estilo="minimalista"] .main-wrapper {
+    transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+html[data-estilo="minimalista"].minimalista-leaving .main-wrapper {
+    opacity: 0;
+    transform: translateY(6px);
+}
+
+html[data-estilo="minimalista"].minimalista-ready .main-content > * {
+    animation: mm-view-in 0.45s ease both;
+}
+
+@keyframes mm-view-in {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --------------------------------------------------------------------------
+   Contenedores y navegación
+   -------------------------------------------------------------------------- */
+
+html[data-estilo="minimalista"] .app-layout,
+html[data-estilo="minimalista"] .auth-layout,
+html[data-estilo="minimalista"] .landing-layout {
+    position: relative;
+    z-index: 5;
+}
+
+html[data-estilo="minimalista"] .app-layout {
+    background: var(--min-bg);
+}
+
+html[data-estilo="minimalista"] .main-wrapper {
+    background: var(--min-bg);
+}
+
+html[data-estilo="minimalista"] .main-content {
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .sidebar {
+    z-index: 120;
+    background: var(--min-panel);
+    border-right: 1px solid var(--min-border);
+    box-shadow: 12px 0 40px rgba(0, 0, 0, 0.36);
+}
+
+html[data-estilo="minimalista"] .sidebar-header {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    align-items: center;
+    margin: 4.5rem 16px 18px;
+    padding: 16px 14px;
+    border: 1px solid var(--min-border);
+    border-radius: 10px;
+    background: transparent;
+    text-align: center;
+}
+
+html[data-estilo="minimalista"] .sidebar-header h1 {
+    margin: 0;
+    font-size: 1.02rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+html[data-estilo="minimalista"] .sidebar-user {
+    justify-content: center;
+    margin: 0;
+}
+
+html[data-estilo="minimalista"] .sidebar-user small {
+    max-width: 180px;
+    color: var(--min-gray-dim);
+    font-size: 0.78rem;
+}
+
+html[data-estilo="minimalista"] .sidebar-avatar {
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 50%;
+    background: var(--min-white);
+    color: var(--min-black);
+    font-weight: 600;
+}
+
+html[data-estilo="minimalista"] .sidebar-nav {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 2px;
+    padding: 0.2rem 0;
+}
+
+html[data-estilo="minimalista"] .sidebar-nav a {
+    display: flex;
+    align-items: center;
+    gap: 0.62rem;
+    min-height: 42px;
+    margin: 0 12px;
+    padding: 0 14px;
+    border-left: 2px solid transparent;
+    border-radius: 8px;
+    color: var(--min-gray);
+    font-size: 0.92rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+html[data-estilo="minimalista"] .sidebar-nav a::before {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--min-gray-dim);
+    content: "";
+    transition: background 0.2s ease;
+}
+
+html[data-estilo="minimalista"] .sidebar-nav a:hover {
+    background: rgba(242, 242, 243, 0.045);
+    color: var(--min-white);
+    text-decoration: none;
+}
+
+html[data-estilo="minimalista"] .sidebar-nav a:hover::before {
+    background: var(--min-gray);
+}
+
+html[data-estilo="minimalista"] .sidebar-nav a.active {
+    background: var(--min-panel-light);
+    border-left-color: var(--min-white);
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .sidebar-nav a.active::before {
+    background: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .sidebar-footer {
+    padding: 1rem 1.25rem;
+    border-top: 1px solid var(--min-border);
+}
+
+html[data-estilo="minimalista"] .sidebar-footer .btn {
+    padding: 0.66rem;
+    border: 1px solid var(--min-line);
+    background: transparent;
+    color: var(--min-white);
+    font-size: 0.86rem;
+    font-weight: 500;
+}
+
+html[data-estilo="minimalista"] .sidebar-footer .btn:hover {
+    border-color: var(--min-white);
+    background: var(--min-panel-light);
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .menu-toggle {
+    top: 1.4rem;
+    left: 1.5rem;
+    z-index: 130;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--min-border);
+    border-radius: 50%;
+    background: var(--min-panel);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.32);
+    color: var(--min-white);
+    font-size: 0;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+html[data-estilo="minimalista"] .app-layout.menu-open .menu-toggle {
+    left: calc(var(--sidebar-width) + 1.5rem);
+}
+
+html[data-estilo="minimalista"] .menu-toggle:hover {
+    border-color: var(--min-line);
+    background: var(--min-panel-light);
+}
+
+html[data-estilo="minimalista"] .menu-toggle span {
+    display: block;
+    position: relative;
+    width: 18px;
+    height: 2px;
+    margin: 0 auto;
+    border-radius: 999px;
+    background: var(--min-white);
+    color: transparent;
+    transition: background 0.25s ease, transform 0.25s ease;
+}
+
+html[data-estilo="minimalista"] .menu-toggle span::before,
+html[data-estilo="minimalista"] .menu-toggle span::after {
+    position: absolute;
+    left: 0;
+    width: 18px;
+    height: 2px;
+    border-radius: 999px;
+    background: var(--min-white);
+    content: "";
+    transition: transform 0.25s ease, top 0.25s ease;
+}
+
+html[data-estilo="minimalista"] .menu-toggle span::before { top: -6px; }
+html[data-estilo="minimalista"] .menu-toggle span::after { top: 6px; }
+html[data-estilo="minimalista"] .menu-toggle:hover span::before { top: -7px; }
+html[data-estilo="minimalista"] .menu-toggle:hover span::after { top: 7px; }
+html[data-estilo="minimalista"] .menu-toggle.open span { background: transparent; }
+html[data-estilo="minimalista"] .menu-toggle.open span::before { top: 0; transform: rotate(45deg); }
+html[data-estilo="minimalista"] .menu-toggle.open span::after { top: 0; transform: rotate(-45deg); }
+
+html[data-estilo="minimalista"] .menu-backdrop {
+    z-index: 110;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(3px);
+}
+
+/* Buscador global */
+
+html[data-estilo="minimalista"] .global-search {
+    top: 1.5rem;
+    z-index: 125;
+    width: min(400px, calc(100vw - 12rem));
+}
+
+html[data-estilo="minimalista"] .global-search-input {
+    min-height: 42px;
+    padding: 0.55rem 1.05rem;
+    border: 1px solid var(--min-border);
+    border-radius: 999px;
+    background: var(--min-panel);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+    color: var(--min-white);
+    font: inherit;
+    font-size: 0.9rem;
+}
+
+html[data-estilo="minimalista"] .global-search-input::placeholder {
+    color: var(--min-gray-dim);
+}
+
+html[data-estilo="minimalista"] .global-search-input:focus {
+    border-color: var(--min-line);
+    box-shadow: 0 0 0 3px rgba(242, 242, 243, 0.08), 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+html[data-estilo="minimalista"] .global-search-dropdown,
+html[data-estilo="minimalista"] .notif-panel {
+    border: 1px solid var(--min-border);
+    border-radius: 12px;
+    background: var(--min-panel);
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.5);
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .global-search-item,
+html[data-estilo="minimalista"] .notif-item {
+    border-bottom-color: var(--min-border);
+    border-radius: 8px;
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .global-search-item:hover,
+html[data-estilo="minimalista"] .notif-item:hover {
+    background: var(--min-panel-light);
+}
+
+html[data-estilo="minimalista"] .global-search-item .avatar,
+html[data-estilo="minimalista"] .notif-item .avatar {
+    background: var(--min-white);
+    color: var(--min-black);
+}
+
+html[data-estilo="minimalista"] .global-search-info strong,
+html[data-estilo="minimalista"] .notif-item-info strong {
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .global-search-info span,
+html[data-estilo="minimalista"] .notif-item-info span,
+html[data-estilo="minimalista"] .global-search-empty,
+html[data-estilo="minimalista"] .notif-vacio {
+    color: var(--min-gray-dim);
+}
+
+html[data-estilo="minimalista"] .global-search-chat {
+    border-color: var(--min-line);
+    background: transparent;
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .global-search-chat:hover {
+    border-color: var(--min-white);
+    background: var(--min-panel-light);
+    color: var(--min-white);
+}
+
+/* Notificaciones */
+
+html[data-estilo="minimalista"] .notif-bell {
+    top: 1.4rem;
+    right: 1.6rem;
+    z-index: 125;
+}
+
+html[data-estilo="minimalista"] .notif-toggle {
+    width: 42px;
+    height: 42px;
+    border: 1px solid var(--min-border);
+    border-radius: 50%;
+    background: var(--min-panel);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+    color: var(--min-white);
+    font-size: 1rem;
+}
+
+html[data-estilo="minimalista"] .notif-toggle:hover {
+    border-color: var(--min-line);
+    background: var(--min-panel-light);
+}
+
+html[data-estilo="minimalista"] .notif-badge {
+    background: var(--min-white);
+    color: var(--min-black);
+}
+
+html[data-estilo="minimalista"] .notif-panel-head {
+    border-bottom-color: var(--min-border);
+}
+
+html[data-estilo="minimalista"] .notif-panel-head strong {
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .notif-marcar-todas {
+    color: var(--min-gray);
+}
+
+/* --------------------------------------------------------------------------
+   Tarjetas, controles y contenido funcional
+   -------------------------------------------------------------------------- */
+
+html[data-estilo="minimalista"] .main-content .card,
+html[data-estilo="minimalista"] .auth-card,
+html[data-estilo="minimalista"] .aviso-modal,
+html[data-estilo="minimalista"] .estilos-recarga-card {
+    border: 1px solid var(--min-border) !important;
+    border-radius: 12px !important;
+    background: var(--min-panel) !important;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.24);
+    color: var(--min-white) !important;
+}
+
+html[data-estilo="minimalista"] .main-content .card:hover {
+    border-color: var(--min-line) !important;
+    box-shadow: 0 20px 42px rgba(0, 0, 0, 0.3);
+}
+
+html[data-estilo="minimalista"] .main-content,
+html[data-estilo="minimalista"] .main-content p,
+html[data-estilo="minimalista"] .main-content li,
+html[data-estilo="minimalista"] .main-content td,
+html[data-estilo="minimalista"] .main-content label {
+    color: var(--min-gray);
+}
+
+html[data-estilo="minimalista"] .main-content h1,
+html[data-estilo="minimalista"] .main-content h2,
+html[data-estilo="minimalista"] .main-content h3,
+html[data-estilo="minimalista"] .main-content h4,
+html[data-estilo="minimalista"] .main-content strong {
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .main-content .page-description,
+html[data-estilo="minimalista"] .main-content .form-hint,
+html[data-estilo="minimalista"] .main-content .filter-note,
+html[data-estilo="minimalista"] .main-content .empty-state p,
+html[data-estilo="minimalista"] .main-content .loading-message {
+    color: var(--min-gray-dim) !important;
+}
+
+html[data-estilo="minimalista"] input:not([type="checkbox"]):not([type="radio"]):not([type="color"]),
+html[data-estilo="minimalista"] textarea,
+html[data-estilo="minimalista"] select,
+html[data-estilo="minimalista"] .form-control {
+    border: 1px solid var(--min-border) !important;
+    border-radius: 8px !important;
+    background: var(--min-panel-light) !important;
+    color: var(--min-white) !important;
+    font: inherit;
+    font-size: 0.92rem;
+}
+
+html[data-estilo="minimalista"] select option {
+    background: var(--min-panel);
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] input::placeholder,
+html[data-estilo="minimalista"] textarea::placeholder,
+html[data-estilo="minimalista"] .form-control::placeholder {
+    color: var(--min-gray-dim) !important;
+}
+
+html[data-estilo="minimalista"] input:focus,
+html[data-estilo="minimalista"] textarea:focus,
+html[data-estilo="minimalista"] select:focus,
+html[data-estilo="minimalista"] .form-control:focus {
+    outline: none;
+    border-color: var(--min-line) !important;
+    box-shadow: 0 0 0 3px rgba(242, 242, 243, 0.1) !important;
+}
+
+html[data-estilo="minimalista"] .btn,
+html[data-estilo="minimalista"] .btn-solid,
+html[data-estilo="minimalista"] .btn-clean,
+html[data-estilo="minimalista"] .side-link,
+html[data-estilo="minimalista"] .follow-btn,
+html[data-estilo="minimalista"] .global-search-chat {
+    border-radius: 10px !important;
+    transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+html[data-estilo="minimalista"] .btn-primary,
+html[data-estilo="minimalista"] .btn-solid,
+html[data-estilo="minimalista"] .main-content .btn-primary,
+html[data-estilo="minimalista"] .btn-primary.btn-outline {
+    border: 1px solid var(--min-white) !important;
+    background: var(--min-white) !important;
+    color: var(--min-black) !important;
+}
+
+html[data-estilo="minimalista"] .btn-primary:hover,
+html[data-estilo="minimalista"] .btn-solid:hover,
+html[data-estilo="minimalista"] .main-content .btn-primary:hover {
+    border-color: var(--min-gray) !important;
+    background: var(--min-gray) !important;
+    color: var(--min-black) !important;
+    opacity: 1;
+    transform: translateY(-1px);
+}
+
+html[data-estilo="minimalista"] .btn-outline,
+html[data-estilo="minimalista"] .btn-secondary,
+html[data-estilo="minimalista"] .btn-clean,
+html[data-estilo="minimalista"] .follow-btn,
+html[data-estilo="minimalista"] .global-search-chat {
+    border: 1px solid var(--min-line) !important;
+    background: transparent !important;
+    color: var(--min-white) !important;
+}
+
+html[data-estilo="minimalista"] .btn-outline:hover,
+html[data-estilo="minimalista"] .btn-secondary:hover,
+html[data-estilo="minimalista"] .btn-clean:hover,
+html[data-estilo="minimalista"] .follow-btn:hover,
+html[data-estilo="minimalista"] .global-search-chat:hover {
+    border-color: var(--min-white) !important;
+    background: var(--min-panel-light) !important;
+    color: var(--min-white) !important;
+    opacity: 1;
+}
+
+html[data-estilo="minimalista"] .btn-danger {
+    border-color: var(--danger-color) !important;
+    background: transparent !important;
+    color: var(--danger-color) !important;
+}
+
+html[data-estilo="minimalista"] .btn-danger:hover {
+    background: rgba(229, 72, 77, 0.12) !important;
+}
+
+html[data-estilo="minimalista"] .btn-danger-clean,
+html[data-estilo="minimalista"] .btn-success-clean {
+    border: 1px solid var(--min-line) !important;
+    background: transparent !important;
+}
+
+html[data-estilo="minimalista"] .btn-danger-clean { color: var(--danger-color) !important; }
+html[data-estilo="minimalista"] .btn-success-clean { color: var(--success-color) !important; }
+
+html[data-estilo="minimalista"] .badge,
+html[data-estilo="minimalista"] .badge-materia,
+html[data-estilo="minimalista"] .badge-primary,
+html[data-estilo="minimalista"] .badge-verified,
+html[data-estilo="minimalista"] .badge-success {
+    border: 1px solid var(--min-border) !important;
+    border-radius: 999px !important;
+    background: var(--min-panel-light) !important;
+    color: var(--min-gray) !important;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+html[data-estilo="minimalista"] .badge-cursado,
+html[data-estilo="minimalista"] .badge-solved {
+    border-color: rgba(95, 208, 160, 0.35) !important;
+    background: rgba(95, 208, 160, 0.1) !important;
+    color: var(--success-color) !important;
+}
+
+html[data-estilo="minimalista"] .badge-interacted {
+    border-color: var(--min-white) !important;
+    background: transparent !important;
+    color: var(--min-white) !important;
+}
+
+html[data-estilo="minimalista"] .progress-bar,
+html[data-estilo="minimalista"] .progress-track {
+    border: 1px solid var(--min-border);
+    border-radius: 999px !important;
+    background: var(--min-panel-light);
+}
+
+html[data-estilo="minimalista"] .progress-fill {
+    border-radius: inherit;
+    background: var(--min-white) !important;
+    transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
+}
+
+html[data-estilo="minimalista"] table {
+    border: 1px solid var(--min-border);
+    border-collapse: collapse;
+    background: var(--min-panel);
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] th {
+    background: var(--min-panel-light) !important;
+    color: var(--min-gray) !important;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+html[data-estilo="minimalista"] td,
+html[data-estilo="minimalista"] th {
+    border-color: var(--min-border) !important;
+}
+
+html[data-estilo="minimalista"] tr:hover td {
+    background: rgba(242, 242, 243, 0.03);
+}
+
+html[data-estilo="minimalista"] .tab-button,
+html[data-estilo="minimalista"] .hub-tabs button,
+html[data-estilo="minimalista"] .admin-tab {
+    border-color: var(--min-border) !important;
+    border-radius: 8px !important;
+    background: var(--min-panel) !important;
+    color: var(--min-gray) !important;
+    font-weight: 500;
+}
+
+html[data-estilo="minimalista"] .tab-button.active,
+html[data-estilo="minimalista"] .hub-tabs button.active,
+html[data-estilo="minimalista"] .admin-tab.active {
+    border-color: var(--min-white) !important;
+    background: var(--min-panel-light) !important;
+    color: var(--min-white) !important;
+}
+
+html[data-estilo="minimalista"] .estilo-opcion {
+    border-color: var(--min-border) !important;
+    background: var(--min-panel) !important;
+    color: var(--min-white) !important;
+}
+
+html[data-estilo="minimalista"] .estilo-opcion.activo {
+    border-color: var(--min-white) !important;
+    box-shadow: 0 0 0 1px rgba(242, 242, 243, 0.25), 0 12px 26px rgba(0, 0, 0, 0.28);
+}
+
+/* Modales y avisos */
+
+html[data-estilo="minimalista"] .aviso-modal-overlay {
+    z-index: 7000;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+}
+
+html[data-estilo="minimalista"] .aviso-modal-head,
+html[data-estilo="minimalista"] .aviso-modal-foot {
+    border-color: var(--min-border);
+}
+
+html[data-estilo="minimalista"] .aviso-modal-body p,
+html[data-estilo="minimalista"] .aviso-modal-body h4 {
+    color: var(--min-gray);
+}
+
+html[data-estilo="minimalista"] .avatar-modal-backdrop {
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+}
+
+html[data-estilo="minimalista"] .avatar-modal-content {
+    border: 1px solid var(--min-border);
+    border-radius: 12px;
+    background: var(--min-panel);
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .toast {
+    border: 1px solid var(--min-border);
+    border-radius: 10px;
+    background: var(--min-panel);
+    color: var(--min-white);
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
+}
+
+/* --------------------------------------------------------------------------
+   Panel de inicio (dashboard)
+   -------------------------------------------------------------------------- */
+
+html[data-estilo="minimalista"] .inicio-container .card,
+html[data-estilo="minimalista"] .inicio-container .sidebar-section .side-card {
+    border: 1px solid var(--min-border);
+    border-radius: 12px;
+    background: var(--min-panel);
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.22);
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .inicio-container .avatar {
+    background: var(--min-panel-light);
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .inicio-container .side-card h4,
+html[data-estilo="minimalista"] .inicio-container .sidebar-section h4 {
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .inicio-container .side-card p,
+html[data-estilo="minimalista"] .inicio-container .side-link {
+    color: var(--min-gray);
+}
+
+html[data-estilo="minimalista"] .inicio-container .side-link:hover {
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .inicio-container .post-header {
+    border-bottom-color: var(--min-border);
+}
+
+html[data-estilo="minimalista"] .inicio-container .post-title,
+html[data-estilo="minimalista"] .inicio-container .post-body {
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .inicio-container .post-footer {
+    border-top-color: var(--min-border);
+    color: var(--min-gray);
+}
+
+html[data-estilo="minimalista"] .inicio-container .post-status {
+    color: var(--min-gray-dim);
+}
+
+html[data-estilo="minimalista"] .inicio-container .create-post input,
+html[data-estilo="minimalista"] .inicio-container .create-post textarea {
+    background: var(--min-panel-light);
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .inicio-container .create-post-actions select {
+    background: var(--min-panel-light);
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .inicio-container .create-post-actions select option {
+    background: var(--min-panel);
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .inicio-container .btn-clean,
+html[data-estilo="minimalista"] .inicio-container .action-links .btn-action {
+    border: 1px solid var(--min-line);
+    background: transparent;
+    color: var(--min-gray);
+}
+
+html[data-estilo="minimalista"] .inicio-container .btn-clean:hover,
+html[data-estilo="minimalista"] .inicio-container .action-links .btn-action:hover {
+    border-color: var(--min-white);
+    background: var(--min-panel-light);
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .inicio-container .btn-action.voted {
+    border-color: var(--min-white);
+    background: var(--min-white);
+    color: var(--min-black);
+}
+
+html[data-estilo="minimalista"] .inicio-container .user-data strong {
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .inicio-container .user-data span,
+html[data-estilo="minimalista"] .inicio-container .user-data-line {
+    color: var(--min-gray-dim);
+}
+
+html[data-estilo="minimalista"] .inicio-container .maps-banner,
+html[data-estilo="minimalista"] .inicio-container .banner-content {
+    border-color: var(--min-border);
+}
+
+html[data-estilo="minimalista"] .inicio-container .banner-content h2 {
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .inicio-container .banner-content p {
+    color: var(--min-gray);
+}
+
+html[data-estilo="minimalista"] .inicio-container .embed-box,
+html[data-estilo="minimalista"] .inicio-container .embed-box.prof-box {
+    border: 1px solid var(--min-border);
+    background: var(--min-panel-light);
+}
+
+html[data-estilo="minimalista"] .inicio-container .embed-box code {
+    background: var(--min-black);
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .inicio-container .embed-box p {
+    color: var(--min-gray);
+}
+
+html[data-estilo="minimalista"] .inicio-container .embed-box strong {
+    color: var(--min-white);
+}
+
+/* --------------------------------------------------------------------------
+   Mensajería
+   -------------------------------------------------------------------------- */
+
+html[data-estilo="minimalista"] .messages-container {
+    --hub-accent: var(--min-white);
+    --hub-accent-dark: var(--min-gray);
+    --hub-accent-soft: var(--min-panel-light);
+    --hub-border: var(--min-border);
+    --hub-muted: var(--min-gray);
+    background: var(--min-panel) !important;
+    border-color: var(--min-border) !important;
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .chat-sidebar {
+    background: var(--min-panel);
+    border-right-color: var(--min-border);
+}
+
+html[data-estilo="minimalista"] .chat-item {
+    background: var(--min-panel) !important;
+    border-bottom-color: var(--min-border);
+    color: var(--min-gray);
+}
+
+html[data-estilo="minimalista"] .chat-item:hover,
+html[data-estilo="minimalista"] .chat-item.active {
+    background: var(--min-panel-light) !important;
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .chat-window {
+    background: var(--min-bg);
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .chat-header {
+    border-bottom-color: var(--min-border);
+    background: var(--min-panel);
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .chat-header-user strong {
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .chat-input-bar {
+    background: var(--min-panel);
+    border-top-color: var(--min-border);
+}
+
+html[data-estilo="minimalista"] .chat-empty {
+    background: var(--min-bg) !important;
+    color: var(--min-gray-dim);
+}
+
+html[data-estilo="minimalista"] .chat-body {
+    background: var(--min-bg) !important;
+}
+
+html[data-estilo="minimalista"] .chat-header-user h3 {
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .chat-header-user span {
+    color: var(--min-gray);
+}
+
+html[data-estilo="minimalista"] .chat-item-header span {
+    color: var(--min-gray-dim);
+}
+
+html[data-estilo="minimalista"] .chat-item .avatar {
+    background: var(--min-panel-light);
+    border: 1px solid var(--min-border);
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .message.received {
+    background: var(--min-panel-light);
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .message.sent {
+    background: var(--min-white);
+    color: var(--min-black);
+}
+
+html[data-estilo="minimalista"] .message-attachment,
+html[data-estilo="minimalista"] .message.received .message-attachment {
+    background: var(--min-panel) !important;
+    border-color: var(--min-border) !important;
+}
+
+html[data-estilo="minimalista"] .message.received .attachment-nombre {
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .message.received .attachment-icon {
+    background: var(--min-white);
+    color: var(--min-black);
+}
+
+html[data-estilo="minimalista"] .message.received .adjunto-descargar {
+    border-color: var(--min-white);
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .message.sent .message-attachment {
+    background: rgba(0, 0, 0, 0.07) !important;
+    border-color: rgba(0, 0, 0, 0.24);
+}
+
+html[data-estilo="minimalista"] .message.sent .attachment-icon {
+    filter: invert(1);
+    background: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .message.sent .adjunto-descargar {
+    border-color: var(--min-black);
+    color: var(--min-black);
+}
+
+html[data-estilo="minimalista"] .message.sent .attachment-nombre {
+    color: var(--min-black);
+}
+
+html[data-estilo="minimalista"] .message.sent .adjunto-descargar {
+    color: var(--min-black);
+}
+
+html[data-estilo="minimalista"] .message.sent .attachment-icon {
+    filter: invert(1);
+}
+
+html[data-estilo="minimalista"] .adjunto-pendiente,
+html[data-estilo="minimalista"] .attachment-peso {
+    color: var(--min-gray-dim);
+}
+
+html[data-estilo="minimalista"] .messages-container .btn-solid,
+html[data-estilo="minimalista"] .messages-container .btn-primary {
+    border: 1px solid var(--min-white);
+    background: var(--min-white);
+    color: var(--min-black);
+}
+
+html[data-estilo="minimalista"] .messages-container .btn-solid:hover,
+html[data-estilo="minimalista"] .messages-container .btn-primary:hover {
+    background: var(--min-gray);
+    border-color: var(--min-gray);
+    color: var(--min-black);
+}
+
+/* --------------------------------------------------------------------------
+   Acceso, registro y onboarding
+   -------------------------------------------------------------------------- */
+
+html[data-estilo="minimalista"] body.login-page .auth-layout,
+html[data-estilo="minimalista"] body.register-page .auth-layout {
+    position: relative;
+    z-index: 5;
+    background:
+        radial-gradient(ellipse at 20% 10%, rgba(242, 242, 243, 0.05), transparent 45%),
+        var(--min-bg) !important;
+}
+
+html[data-estilo="minimalista"] .auth-card {
+    max-width: 440px;
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .auth-card label,
+html[data-estilo="minimalista"] .auth-card p {
+    color: var(--min-gray);
+}
+
+html[data-estilo="minimalista"] .auth-card strong {
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .landing-header {
+    border-color: var(--min-border);
+    background: var(--min-panel);
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .landing-hero p {
+    color: var(--min-gray);
+}
+
+/* --------------------------------------------------------------------------
+   Bienvenida monocroma (mockup minimalista)
+   -------------------------------------------------------------------------- */
+
+.minimalista-welcome-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    opacity: 1;
+    transition: opacity 0.3s ease, visibility 0.3s;
+}
+
+.minimalista-welcome-overlay.fade-out {
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.minimalista-welcome-card {
+    position: relative;
+    width: min(340px, 100%);
+    padding: 40px 40px 34px;
+    border: 1px solid var(--min-border);
+    border-radius: 14px;
+    background: var(--min-panel);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+    color: var(--min-white);
+    text-align: center;
+    animation: mm-card-rise 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes mm-card-rise {
+    from {
+        opacity: 0;
+        transform: translateY(18px) scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.minimalista-avatar {
+    display: flex;
+    width: 60px;
+    height: 60px;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    border-radius: 50%;
+    background: var(--min-white);
+    color: var(--min-black);
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+
+.minimalista-welcome-title {
+    margin: 18px 0 6px;
+    color: var(--min-white);
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.minimalista-welcome-status {
+    display: block;
+    margin-bottom: 22px;
+    color: var(--min-gray-dim);
+    font-size: 0.78rem;
+}
+
+.minimalista-welcome-sub {
+    margin: 0 0 24px;
+    color: var(--min-gray);
+    font-size: 0.85rem;
+    line-height: 1.55;
+}
+
+.minimalista-btn-continue {
+    width: 100%;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 10px;
+    background: var(--min-white);
+    color: var(--min-black);
+    font: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.minimalista-btn-continue:hover {
+    background: var(--min-gray);
+}
+
+/* ==========================================================================
+   PÁGINAS · Contenedores de Perfil, Mensajes, Inicio, Certificados,
+   Comunidad, Empresarial, Círculos, Admin y Docente
+   ========================================================================== */
+
+/* --- Encabezados de módulo y secciones compartidas ------------------------ */
+
+html[data-estilo="minimalista"] .module-heading {
+    margin: 2px 0 18px;
+}
+
+html[data-estilo="minimalista"] .module-heading p {
+    color: var(--min-gray-dim) !important;
+    margin: 4px 0 0;
+}
+
+html[data-estilo="minimalista"] .section-header,
+html[data-estilo="minimalista"] .subsection-heading {
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .sub-heading,
+html[data-estilo="minimalista"] .subsection-heading {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin: 18px 0 10px;
+}
+
+html[data-estilo="minimalista"] .section-title {
+    color: var(--min-white);
+    font-size: 1.05rem;
+}
+
+html[data-estilo="minimalista"] .empty-state-box,
+html[data-estilo="minimalista"] .ruta-banner,
+html[data-estilo="minimalista"] .admin-header,
+html[data-estilo="minimalista"] .docente-header {
+    padding: 18px 20px;
+}
+
+html[data-estilo="minimalista"] .empty-state-box p,
+html[data-estilo="minimalista"] .admin-title p,
+html[data-estilo="minimalista"] .header-info p {
+    color: var(--min-gray-dim) !important;
+}
+
+html[data-estilo="minimalista"] .admin-title h1,
+html[data-estilo="minimalista"] .header-info h1 {
+    margin: 0;
+}
+
+html[data-estilo="minimalista"] .admin-header,
+html[data-estilo="minimalista"] .docente-header,
+html[data-estilo="minimalista"] .section-header,
+html[data-estilo="minimalista"] .company-header,
+html[data-estilo="minimalista"] .session-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+html[data-estilo="minimalista"] .section-header {
+    border-bottom: 1px solid var(--min-border);
+    padding: 14px 0;
+    margin-bottom: 14px;
+}
+
+html[data-estilo="minimalista"] .section-header h2,
+html[data-estilo="minimalista"] .section-header h3 {
+    margin: 0;
+    font-size: 1rem;
+}
+
+/* --- Distribución de página ---------------------------------------------- */
+
+html[data-estilo="minimalista"] .perfil-container,
+html[data-estilo="minimalista"] .ruta-container,
+html[data-estilo="minimalista"] .admin-container,
+html[data-estilo="minimalista"] .docente-container {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+html[data-estilo="minimalista"] .main-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: 18px;
+    align-items: start;
+}
+
+html[data-estilo="minimalista"] .feed-column {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+html[data-estilo="minimalista"] .profile-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 18px;
+    margin-top: 18px;
+}
+
+html[data-estilo="minimalista"] .profile-grid > .card {
+    padding: 20px;
+    min-width: 0;
+}
+
+html[data-estilo="minimalista"] .profile-grid > .card h3.section-heading {
+    margin-top: 0;
+}
+
+html[data-estilo="minimalista"] .circulos-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 22px;
+    align-items: start;
+}
+
+html[data-estilo="minimalista"] .ruta-section {
+    margin-bottom: 26px;
+}
+
+html[data-estilo="minimalista"] .ruta-section-title {
+    margin-bottom: 14px;
+}
+
+html[data-estilo="minimalista"] .ruta-section-title small {
+    color: var(--min-gray-dim);
+    font-size: 0.78rem;
+    font-weight: 400;
+}
+
+html[data-estilo="minimalista"] .ruta-footer-note {
+    color: var(--min-gray-dim) !important;
+    font-size: 0.82rem;
+}
+
+/* --- PERFIL / USUARIO ----------------------------------------------------- */
+
+html[data-estilo="minimalista"] .profile-main-info {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+html[data-estilo="minimalista"] .profile-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 1px solid var(--min-line);
+    object-fit: cover;
+}
+
+html[data-estilo="minimalista"] .profile-name {
+    margin: 0;
+}
+
+html[data-estilo="minimalista"] .profile-sub {
+    color: var(--min-gray-dim) !important;
+    margin: 2px 0 0;
+}
+
+html[data-estilo="minimalista"] .profile-header-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+}
+
+html[data-estilo="minimalista"] .purpose-box {
+    border: 1px solid var(--min-border);
+    background: var(--min-panel-light);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin: 12px 0;
+}
+
+html[data-estilo="minimalista"] .purpose-box strong {
+    color: var(--min-white);
+    display: block;
+    margin-bottom: 4px;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+html[data-estilo="minimalista"] .purpose-box p {
+    color: var(--min-gray);
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+html[data-estilo="minimalista"] .stats-summary,
+html[data-estilo="minimalista"] .red-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 12px 0;
+}
+
+html[data-estilo="minimalista"] .stat-box,
+html[data-estilo="minimalista"] .red-stat {
+    border: 1px solid var(--min-border);
+    background: var(--min-panel-light);
+    border-radius: 10px;
+    padding: 12px 10px;
+    text-align: center;
+}
+
+html[data-estilo="minimalista"] .stat-box .number,
+html[data-estilo="minimalista"] .red-stat .number {
+    display: block;
+    color: var(--min-white);
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+html[data-estilo="minimalista"] .stat-box .label,
+html[data-estilo="minimalista"] .red-stat .label {
+    display: block;
+    color: var(--min-gray-dim);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 2px;
+}
+
+html[data-estilo="minimalista"] .activity-list {
+    list-style: none;
+    margin: 10px 0 0;
+    padding: 0;
+}
+
+html[data-estilo="minimalista"] .activity-item {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--min-border);
+    color: var(--min-gray);
+    font-size: 0.86rem;
+}
+
+html[data-estilo="minimalista"] .activity-item:last-child {
+    border-bottom: none;
+}
+
+html[data-estilo="minimalista"] .certificate-item {
+    border: 1px solid var(--min-border);
+    background: var(--min-panel-light);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin: 10px 0;
+}
+
+html[data-estilo="minimalista"] .certificate-item.active {
+    border-color: var(--min-line);
+    box-shadow: inset 0 0 0 1px var(--min-line);
+}
+
+html[data-estilo="minimalista"] .cert-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+html[data-estilo="minimalista"] .cert-title {
+    color: var(--min-white);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+html[data-estilo="minimalista"] .cert-desc {
+    color: var(--min-gray-dim);
+    font-size: 0.8rem;
+    margin: 6px 0 0;
+}
+
+html[data-estilo="minimalista"] .discover-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+    margin-top: 12px;
+    align-items: start;
+}
+
+html[data-estilo="minimalista"] .discover-person {
+    border: 1px solid var(--min-border);
+    border-radius: 10px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--min-panel-light);
+}
+
+html[data-estilo="minimalista"] .discover-person .user-link {
+    flex-shrink: 0;
+}
+
+html[data-estilo="minimalista"] .discover-person .avatar,
+html[data-estilo="minimalista"] .discover-person .avatar-foto {
+    width: 40px;
+    height: 40px;
+    font-size: 0.85rem;
+    background-color: var(--min-panel);
+    border: 1px solid var(--min-border);
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .discover-info strong {
+    white-space: normal;
+    line-height: 1.25;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .discover-person .follow-btn {
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+html[data-estilo="minimalista"] .discover-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+html[data-estilo="minimalista"] .discover-info strong {
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .public-item {
+    padding: 12px 4px;
+    border-bottom: 1px solid var(--min-border);
+}
+
+html[data-estilo="minimalista"] .public-item:last-child {
+    border-bottom: none;
+}
+
+html[data-estilo="minimalista"] .item-meta {
+    color: var(--min-gray-dim);
+    font-size: 0.78rem;
+}
+
+html[data-estilo="minimalista"] .prof-detail-list li {
+    margin-bottom: 6px;
+}
+
+html[data-estilo="minimalista"] .materia-chip,
+html[data-estilo="minimalista"] .materia-tag {
+    display: inline-block;
+    padding: 4px 10px;
+    border: 1px solid var(--min-border);
+    border-radius: 999px;
+    background: var(--min-panel-light);
+    color: var(--min-gray);
+    font-size: 0.74rem;
+    margin: 2px;
+}
+
+html[data-estilo="minimalista"] .avatar-expanded-box {
+    display: block;
+    max-width: 70vw;
+    max-height: 70vh;
+    margin: 0 auto;
+    border: 1px solid var(--min-line);
+    border-radius: 16px;
+    background: var(--min-panel-light);
+}
+
+html[data-estilo="minimalista"] .proposito-modal-overlay,
+html[data-estilo="minimalista"] .hub-modal-overlay,
+html[data-estilo="minimalista"] .dup-overlay,
+html[data-estilo="minimalista"] .sesion-modal-overlay,
+html[data-estilo="minimalista"] .empresa-modal-backdrop,
+html[data-estilo="minimalista"] .modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    background: rgba(9, 9, 10, 0.72);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+html[data-estilo="minimalista"] .proposito-modal,
+html[data-estilo="minimalista"] .hub-modal,
+html[data-estilo="minimalista"] .dup-modal,
+html[data-estilo="minimalista"] .sesion-modal,
+html[data-estilo="minimalista"] .empresa-modal,
+html[data-estilo="minimalista"] .modal,
+html[data-estilo="minimalista"] .docente-asistencia-modal {
+    width: 100%;
+    max-width: 560px;
+    max-height: 86vh;
+    overflow-y: auto;
+    border: 1px solid var(--min-line);
+    border-radius: 16px;
+    background: var(--min-panel);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+    padding: 26px 28px;
+    box-sizing: border-box;
+}
+
+html[data-estilo="minimalista"] .dup-modal,
+html[data-estilo="minimalista"] .empresa-modal {
+    max-width: 640px;
+}
+
+html[data-estilo="minimalista"] .proposito-modal h3,
+html[data-estilo="minimalista"] .proposito-modal h4,
+html[data-estilo="minimalista"] .hub-modal h3,
+html[data-estilo="minimalista"] .hub-modal h4,
+html[data-estilo="minimalista"] .sesion-modal h3,
+html[data-estilo="minimalista"] .sesion-modal h4,
+html[data-estilo="minimalista"] .empresa-modal h3,
+html[data-estilo="minimalista"] .modal h3 {
+    color: var(--min-white);
+    margin-top: 0;
+}
+
+html[data-estilo="minimalista"] .proposito-modal-sub,
+html[data-estilo="minimalista"] .modal-sub {
+    color: var(--min-gray);
+    font-size: 0.9rem;
+    margin: 6px 0 16px;
+}
+
+html[data-estilo="minimalista"] .proposito-modal-msg,
+html[data-estilo="minimalista"] .modal-msg {
+    min-height: 1em;
+    font-size: 0.85rem;
+    color: var(--danger-color);
+    margin: 6px 0 10px;
+}
+
+html[data-estilo="minimalista"] .proposito-modal-actions,
+html[data-estilo="minimalista"] .modal-actions,
+html[data-estilo="minimalista"] .resena-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+html[data-estilo="minimalista"] .ag-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+html[data-estilo="minimalista"] .ag-row label {
+    color: var(--min-gray);
+    font-size: 0.82rem;
+    display: block;
+    margin-bottom: 6px;
+}
+
+/* --- MENSAJES (complementos) ---------------------------------------------- */
+
+html[data-estilo="minimalista"] .chat-search-box {
+    padding: 14px 12px;
+    border-bottom: 1px solid var(--min-border);
+}
+
+html[data-estilo="minimalista"] .chat-item-info {
+    overflow: hidden;
+    min-width: 0;
+}
+
+html[data-estilo="minimalista"] .chat-item-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+html[data-estilo="minimalista"] .chat-item-header strong {
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .chat-item-preview {
+    color: var(--min-gray-dim);
+    font-size: 0.8rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+html[data-estilo="minimalista"] .chat-header-user small,
+html[data-estilo="minimalista"] .chat-header-user span {
+    color: var(--min-gray-dim);
+}
+
+html[data-estilo="minimalista"] .adjunto-pendiente {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    color: var(--min-gray);
+}
+
+html[data-estilo="minimalista"] .adjunto-quitar {
+    background: none;
+    border: none;
+    color: var(--min-gray-dim);
+    cursor: pointer;
+    font-weight: 700;
+}
+
+html[data-estilo="minimalista"] .message-texto {
+    margin: 0;
+    color: var(--min-white);
+    line-height: 1.5;
+}
+
+html[data-estilo="minimalista"] .message.sent .message-texto {
+    color: var(--min-black);
+}
+
+html[data-estilo="minimalista"] .message-time {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.7rem;
+    color: var(--min-gray-dim);
+}
+
+html[data-estilo="minimalista"] .message.sent .message-time {
+    color: rgba(0, 0, 0, 0.55);
+}
+
+/* --- INICIO ----------------------------------------------------------------- */
+
+html[data-estilo="minimalista"] .post-card {
+    padding: 18px 20px;
+}
+
+html[data-estilo="minimalista"] .user-block {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+html[data-estilo="minimalista"] .badges-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+html[data-estilo="minimalista"] .post-title {
+    color: var(--min-white);
+    font-size: 1.02rem;
+    margin: 12px 0 6px;
+}
+
+html[data-estilo="minimalista"] .post-desc {
+    color: var(--min-gray);
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+html[data-estilo="minimalista"] .post-meta {
+    color: var(--min-gray-dim);
+    font-size: 0.78rem;
+}
+
+html[data-estilo="minimalista"] .foro-autor {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+html[data-estilo="minimalista"] .foro-autor-line {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+html[data-estilo="minimalista"] .post-actions {
+    display: flex;
+    gap: 14px;
+}
+
+html[data-estilo="minimalista"] .btn-link,
+html[data-estilo="minimalista"] .foro-action {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font: inherit;
+    padding: 0;
+    color: var(--min-gray);
+}
+
+html[data-estilo="minimalista"] .btn-link:hover,
+html[data-estilo="minimalista"] .foro-action:hover {
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .solved-box {
+    border: 1px solid rgba(95, 208, 160, 0.35);
+    background: rgba(95, 208, 160, 0.06);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin: 10px 0;
+}
+
+html[data-estilo="minimalista"] .solved-box strong {
+    color: var(--success-color);
+    font-size: 0.8rem;
+}
+
+html[data-estilo="minimalista"] .solved-box p {
+    color: var(--min-gray);
+    margin: 4px 0 0;
+    font-size: 0.86rem;
+}
+
+html[data-estilo="minimalista"] .progress-container {
+    margin: 14px 0 4px;
+}
+
+html[data-estilo="minimalista"] .progress-labels {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 0.78rem;
+    color: var(--min-gray);
+    margin-bottom: 6px;
+}
+
+html[data-estilo="minimalista"] .progress-bar {
+    height: 6px;
+    background: var(--min-panel-light);
+    border: 1px solid var(--min-border);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+html[data-estilo="minimalista"] .prof-card {
+    border-color: var(--min-line) !important;
+}
+
+html[data-estilo="minimalista"] .follow-btn.siguiendo,
+html[data-estilo="minimalista"] .follow-btnloSigo {
+    border-color: var(--min-white);
+    background: var(--min-panel-light);
+    color: var(--min-white);
+}
+
+/* --- CERTIFICADOS ----------------------------------------------------------- */
+
+html[data-estilo="minimalista"] .ruta-block {
+    padding: 16px 18px;
+    margin: 12px 0;
+}
+
+html[data-estilo="minimalista"] .ruta-block-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+html[data-estilo="minimalista"] .ruta-block-title {
+    margin: 0;
+}
+
+html[data-estilo="minimalista"] .ruta-block-range {
+    color: var(--min-gray-dim);
+    font-size: 0.78rem;
+}
+
+html[data-estilo="minimalista"] .ruta-block-desc {
+    color: var(--min-gray);
+    font-size: 0.86rem;
+    margin: 8px 0 0;
+}
+
+html[data-estilo="minimalista"] .ruta-materias {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+html[data-estilo="minimalista"] .ruta-actions {
+    margin-top: 12px;
+}
+
+/* --- COMUNIDAD -------------------------------------------------------------- */
+
+html[data-estilo="minimalista"] .apunte-card,
+html[data-estilo="minimalista"] .tip-card {
+    padding: 16px 18px;
+}
+
+html[data-estilo="minimalista"] .apunte-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+html[data-estilo="minimalista"] .file-icon {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    border-radius: 10px;
+    border: 1px solid var(--min-line);
+    background: var(--min-panel-light);
+    color: var(--min-white);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+
+html[data-estilo="minimalista"] .apunte-details strong {
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .apunte-details small {
+    color: var(--min-gray-dim);
+}
+
+html[data-estilo="minimalista"] .tip-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+html[data-estilo="minimalista"] .tip-title {
+    margin: 10px 0 4px;
+    color: var(--min-white);
+    font-size: 0.98rem;
+}
+
+html[data-estilo="minimalista"] .tip-text {
+    color: var(--min-gray);
+    margin: 0;
+    font-size: 0.88rem;
+}
+
+html[data-estilo="minimalista"] .vote-btn {
+    background: var(--min-panel-light);
+    border: 1px solid var(--min-border);
+    color: var(--min-gray);
+    border-radius: 999px;
+    padding: 4px 12px;
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.8rem;
+}
+
+html[data-estilo="minimalista"] .vote-btn.votado,
+html[data-estilo="minimalista"] .vote-btnitemVotado {
+    border-color: var(--min-white);
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .hub-respuesta {
+    border: 1px solid var(--min-border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin: 10px 0;
+    background: var(--min-panel-light);
+}
+
+html[data-estilo="minimalista"] .respuesta-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+}
+
+html[data-estilo="minimalista"] .respuesta-autor {
+    color: var(--min-white);
+    font-weight: 600;
+    font-size: 0.86rem;
+}
+
+html[data-estilo="minimalista"] .respuesta-texto {
+    color: var(--min-gray);
+    margin: 0;
+    font-size: 0.86rem;
+}
+
+html[data-estilo="minimalista"] .dup-vacio {
+    color: var(--min-gray-dim);
+    font-size: 0.86rem;
+}
+
+html[data-estilo="minimalista"] .dup-notice {
+    border: 1px solid var(--min-line);
+    background: var(--min-panel-light);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 12px;
+}
+
+html[data-estilo="minimalista"] .dup-titulo {
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .dup-por {
+    color: var(--min-gray-dim);
+    font-size: 0.78rem;
+}
+
+html[data-estilo="minimalista"] .dup-sections {
+    display: grid;
+    gap: 18px;
+    margin-top: 14px;
+}
+
+html[data-estilo="minimalista"] .dup-col h4 {
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .file-pick-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+html[data-estilo="minimalista"] .file-pick-nombre {
+    color: var(--min-gray);
+    font-size: 0.82rem;
+}
+
+/* --- EMPRESARIAL ------------------------------------------------------------ */
+
+html[data-estilo="minimalista"] .filter-bar,
+html[data-estilo="minimalista"] .top-action-bar {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+}
+
+html[data-estilo="minimalista"] .company-card {
+    padding: 20px;
+}
+
+html[data-estilo="minimalista"] .company-header {
+    align-items: flex-start;
+}
+
+html[data-estilo="minimalista"] .company-name {
+    margin: 0 0 2px;
+}
+
+html[data-estilo="minimalista"] .company-location {
+    color: var(--min-gray-dim);
+    font-size: 0.8rem;
+}
+
+html[data-estilo="minimalista"] .rating-box {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+html[data-estilo="minimalista"] .stars {
+    color: var(--warning-color);
+    letter-spacing: 1px;
+}
+
+html[data-estilo="minimalista"] .rating-number {
+    color: var(--min-white);
+    font-weight: 700;
+}
+
+html[data-estilo="minimalista"] .rating-count {
+    color: var(--min-gray-dim);
+    font-size: 0.76rem;
+}
+
+html[data-estilo="minimalista"] .company-desc {
+    color: var(--min-gray);
+    margin: 12px 0 0;
+    font-size: 0.9rem;
+}
+
+html[data-estilo="minimalista"] .company-desc strong {
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .tags-group {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+}
+
+html[data-estilo="minimalista"] .company-footer {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    border-top: 1px solid var(--min-border);
+    margin-top: 14px;
+    padding-top: 12px;
+}
+
+html[data-estilo="minimalista"] .experience-box {
+    border: 1px solid var(--min-border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin: 8px 0;
+    background: var(--min-panel-light);
+}
+
+html[data-estilo="minimalista"] .experience-author {
+    color: var(--min-white);
+    font-size: 0.86rem;
+}
+
+html[data-estilo="minimalista"] .experience-text {
+    color: var(--min-gray);
+    margin: 6px 0 0;
+    font-size: 0.86rem;
+}
+
+html[data-estilo="minimalista"] .review-item {
+    border: 1px solid var(--min-border);
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin: 12px 0;
+    background: var(--min-panel-light);
+}
+
+html[data-estilo="minimalista"] .review-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+html[data-estilo="minimalista"] .review-stars {
+    color: var(--warning-color);
+}
+
+html[data-estilo="minimalista"] .review-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+html[data-estilo="minimalista"] .review-author {
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .review-date {
+    color: var(--min-gray-dim);
+    font-size: 0.76rem;
+}
+
+html[data-estilo="minimalista"] .review-field {
+    color: var(--min-gray);
+    font-size: 0.86rem;
+    margin: 8px 0 0;
+}
+
+html[data-estilo="minimalista"] .review-field strong {
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .review-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+html[data-estilo="minimalista"] .my-experience-note {
+    color: var(--min-gray);
+    font-size: 0.86rem;
+    margin: 0 0 10px;
+}
+
+html[data-estilo="minimalista"] .link-action {
+    background: none;
+    border: none;
+    color: var(--min-white);
+    cursor: pointer;
+    font: inherit;
+    text-decoration: underline;
+}
+
+html[data-estilo="minimalista"] .empty-experiences {
+    color: var(--min-gray-dim);
+}
+
+html[data-estilo="minimalista"] .empresa-modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    border-bottom: 1px solid var(--min-border);
+    margin: -26px -28px 18px;
+    padding: 20px 28px;
+}
+
+html[data-estilo="minimalista"] .empresa-modal-title {
+    margin: 0;
+}
+
+html[data-estilo="minimalista"] .empresa-modal-sub {
+    color: var(--min-gray-dim);
+    font-size: 0.8rem;
+    display: block;
+}
+
+html[data-estilo="minimalista"] .empresa-modal-close {
+    background: none;
+    border: none;
+    color: var(--min-gray-dim);
+    font-size: 1.6rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+html[data-estilo="minimalista"] .empresa-modal-close:hover {
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .resena-title {
+    color: var(--min-white);
+    margin: 14px 0 8px;
+}
+
+html[data-estilo="minimalista"] .resena-form .field-row {
+    margin-bottom: 12px;
+}
+
+html[data-estilo="minimalista"] .resena-label {
+    display: block;
+    color: var(--min-gray);
+    font-size: 0.82rem;
+    margin-bottom: 6px;
+}
+
+html[data-estilo="minimalista"] .star-picker {
+    display: flex;
+    gap: 4px;
+}
+
+html[data-estilo="minimalista"] .star-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--min-line);
+    cursor: pointer;
+    padding: 2px;
+}
+
+html[data-estilo="minimalista"] .star-btn.is-selected {
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .star-picker-label {
+    color: var(--min-gray-dim);
+    font-size: 0.78rem;
+    display: block;
+    margin-top: 6px;
+}
+
+/* --- CÍRCULOS --------------------------------------------------------------- */
+
+html[data-estilo="minimalista"] .rules-card {
+    padding: 18px;
+}
+
+html[data-estilo="minimalista"] .rules-card h2 {
+    font-size: 1rem;
+    margin-top: 0;
+}
+
+html[data-estilo="minimalista"] .group-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px 4px;
+    border-bottom: 1px solid var(--min-border);
+}
+
+html[data-estilo="minimalista"] .group-item:last-child {
+    border-bottom: none;
+}
+
+html[data-estilo="minimalista"] .group-name {
+    color: var(--min-white);
+    font-weight: 600;
+}
+
+html[data-estilo="minimalista"] .group-description {
+    color: var(--min-gray-dim);
+    font-size: 0.82rem;
+}
+
+html[data-estilo="minimalista"] .group-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.78rem;
+    color: var(--min-gray-dim);
+    margin-top: 6px;
+}
+
+html[data-estilo="minimalista"] .group-link {
+    background: none;
+    border: none;
+    color: var(--min-white);
+    cursor: pointer;
+    font: inherit;
+    padding: 0;
+}
+
+html[data-estilo="minimalista"] .session-card {
+    padding: 18px;
+}
+
+html[data-estilo="minimalista"] .session-title {
+    margin: 10px 0 6px;
+    font-size: 1.05rem;
+}
+
+html[data-estilo="minimalista"] .session-info {
+    color: var(--min-gray);
+    font-size: 0.86rem;
+}
+
+html[data-estilo="minimalista"] .session-desc {
+    color: var(--min-gray-dim);
+    font-size: 0.84rem;
+    margin: 6px 0 0;
+}
+
+html[data-estilo="minimalista"] .session-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+}
+
+html[data-estilo="minimalista"] .attendees-count {
+    color: var(--min-gray-dim);
+    font-size: 0.8rem;
+}
+
+html[data-estilo="minimalista"] .session-actions {
+    display: flex;
+    gap: 8px;
+}
+
+html[data-estilo="minimalista"] .organizer-label {
+    font-size: 0.76rem;
+    color: var(--min-gray-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+html[data-estilo="minimalista"] .sesion-field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+html[data-estilo="minimalista"] .sesion-field-row label,
+html[data-estilo="minimalista"] .ag-row label,
+html[data-estilo="minimalista"] .form-group label {
+    color: var(--min-gray);
+    font-size: 0.82rem;
+    display: block;
+    margin-bottom: 6px;
+}
+
+/* --- ADMIN / DOCENTE -------------------------------------------------------- */
+
+html[data-estilo="minimalista"] .kpi-grid,
+html[data-estilo="minimalista"] .docente-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 14px;
+    margin: 18px 0;
+}
+
+html[data-estilo="minimalista"] .kpi-card,
+html[data-estilo="minimalista"] .docente-kpi {
+    border: 1px solid var(--min-border);
+    border-radius: 12px;
+    background: var(--min-panel);
+    padding: 16px 18px;
+}
+
+html[data-estilo="minimalista"] .kpi-card.alert {
+    border-color: rgba(229, 72, 77, 0.4);
+}
+
+html[data-estilo="minimalista"] .kpi-value,
+html[data-estilo="minimalista"] .docente-kpi .val {
+    font-size: 1.7rem;
+    font-weight: 800;
+    color: var(--min-white);
+    letter-spacing: -0.02em;
+}
+
+html[data-estilo="minimalista"] .kpi-label,
+html[data-estilo="minimalista"] .docente-kpi .lbl {
+    color: var(--min-gray);
+    font-size: 0.86rem;
+    margin-top: 2px;
+}
+
+html[data-estilo="minimalista"] .kpi-sub {
+    color: var(--min-gray-dim);
+    font-size: 0.76rem;
+    margin-top: 2px;
+}
+
+html[data-estilo="minimalista"] .report-form {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr) auto;
+    gap: 12px;
+    align-items: end;
+    padding: 18px 20px;
+}
+
+html[data-estilo="minimalista"] .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+html[data-estilo="minimalista"] .table-responsive {
+    overflow-x: auto;
+}
+
+html[data-estilo="minimalista"] .admin-table,
+html[data-estilo="minimalista"] .docente-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+html[data-estilo="minimalista"] .btn-baja {
+    border: 1px solid rgba(229, 72, 77, 0.5);
+    background: transparent;
+    color: var(--danger-color);
+}
+
+html[data-estilo="minimalista"] .btn-baja:hover {
+    background: rgba(229, 72, 77, 0.12);
+    color: var(--danger-color);
+}
+
+html[data-estilo="minimalista"] .btn-reactivar {
+    border: 1px solid rgba(95, 208, 160, 0.5);
+    background: transparent;
+    color: var(--success-color);
+}
+
+html[data-estilo="minimalista"] .btn-reactivar:hover {
+    background: rgba(95, 208, 160, 0.12);
+    color: var(--success-color);
+}
+
+html[data-estilo="minimalista"] .docente-badge {
+    border: 1px solid var(--min-line);
+    color: var(--min-white);
+    background: var(--min-panel-light);
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.76rem;
+}
+
+html[data-estilo="minimalista"] .docente-section {
+    padding: 18px 20px;
+}
+
+html[data-estilo="minimalista"] .docente-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+html[data-estilo="minimalista"] .docente-section-header h2 {
+    margin: 0;
+    font-size: 1rem;
+}
+
+html[data-estilo="minimalista"] .docente-meta {
+    color: var(--min-gray-dim) !important;
+    font-size: 0.82rem;
+    margin: 10px 0 0;
+}
+
+html[data-estilo="minimalista"] .docente-link {
+    color: var(--min-white);
+}
+
+/* --- ONBOARDING ------------------------------------------------------------- */
+
+html[data-estilo="minimalista"] .ono-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 16px 0;
+}
+
+html[data-estilo="minimalista"] .ono-section {
+    border: 1px solid var(--min-border);
+    border-radius: 12px;
+    background: var(--min-panel);
+    padding: 18px;
+}
+
+html[data-estilo="minimalista"] .ono-section h3,
+html[data-estilo="minimalista"] .ono-section h4 {
+    color: var(--min-white);
+    margin-top: 0;
+}
+
+html[data-estilo="minimalista"] .ono-espera {
+    color: var(--min-gray-dim);
+    text-align: center;
+    padding: 18px;
+}
+
+html[data-estilo="minimalista"] .alert {
+    border: 1px solid var(--min-border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    color: var(--min-white);
+    background: var(--min-panel-light);
+}
+
+html[data-estilo="minimalista"] .alert-error {
+    border-color: rgba(229, 72, 77, 0.5);
+    color: var(--danger-color);
+}
+
+/* --- BADGES Y CHIPS --------------------------------------------------------- */
+
+html[data-estilo="minimalista"] .badge,
+html[data-estilo="minimalista"] .hub-badge,
+html[data-estilo="minimalista"] .badge-ruta,
+html[data-estilo="minimalista"] .badge-proximo,
+html[data-estilo="minimalista"] .badge-encurso,
+html[data-estilo="minimalista"] .badge-cursado,
+html[data-estilo="minimalista"] .badge-time,
+html[data-estilo="minimalista"] .badge-hora,
+html[data-estilo="minimalista"] .badge-cupo,
+html[data-estilo="minimalista"] .badge-materia,
+html[data-estilo="minimalista"] .badge-verified,
+html[data-estilo="minimalista"] .badge-info,
+html[data-estilo="minimalista"] .badge-blue,
+html[data-estilo="minimalista"] .badge-green,
+html[data-estilo="minimalista"] .badge-gray,
+html[data-estilo="minimalista"] .badge-solucion {
+    background: var(--min-panel-light);
+    border: 1px solid var(--min-border);
+    color: var(--min-gray);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 999px;
+    display: inline-block;
+    line-height: 1.4;
+}
+
+html[data-estilo="minimalista"] .badge-success,
+html[data-estilo="minimalista"] .badge-green,
+html[data-estilo="minimalista"] .badge-ruta {
+    border-color: rgba(95, 208, 160, 0.35);
+    color: var(--success-color);
+}
+
+html[data-estilo="minimalista"] .badge-solved,
+html[data-estilo="minimalista"] .badge-solucion {
+    border-color: rgba(95, 208, 160, 0.5);
+    color: var(--success-color);
+}
+
+html[data-estilo="minimalista"] .badge-warning,
+html[data-estilo="minimalista"] .badge-encurso {
+    border-color: rgba(245, 193, 92, 0.35);
+    color: var(--warning-color);
+}
+
+html[data-estilo="minimalista"] .badge-danger,
+html[data-estilo="minimalista"] .badge-cupo {
+    border-color: rgba(229, 72, 77, 0.4);
+    color: var(--danger-color);
+}
+
+html[data-estilo="minimalista"] .badge-materia,
+html[data-estilo="minimalista"] .badge-verified {
+    border-color: var(--min-line);
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .badge-info,
+html[data-estilo="minimalista"] .badge-blue {
+    border-color: var(--min-line);
+    color: var(--min-gray);
+}
+
+html[data-estilo="minimalista"] .badge-gray,
+html[data-estilo="minimalista"] .badge-time,
+html[data-estilo="minimalista"] .badge-hora,
+html[data-estilo="minimalista"] .badge-proximo {
+    color: var(--min-gray-dim);
+}
+
+html[data-estilo="minimalista"] .badge-proximo {
+    border-style: dashed;
+}
+
+/* --- Utilidades ------------------------------------------------------------- */
+
+html[data-estilo="minimalista"] .user-link {
+    color: var(--min-white);
+    text-decoration: none;
+}
+
+html[data-estilo="minimalista"] .btn-solid:disabled,
+html[data-estilo="minimalista"] .btn-clean:disabled,
+html[data-estilo="minimalista"] .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    border-color: var(--min-border);
+    color: var(--min-gray-dim);
+}
+
+html[data-estilo="minimalista"] .color-swatch {
+    width: 14px;
+    height: 14px;
+    border-radius: 999px;
+    border: 1px solid var(--min-line);
+    flex: 0 0 14px;
+}
+
+html[data-estilo="minimalista"] .estilo-preview {
+    border: 1px solid var(--min-border);
+    border-radius: 10px;
+}
+
+html[data-estilo="minimalista"] .estilo-nombre {
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .estilo-desc {
+    color: var(--min-gray-dim) !important;
+    font-size: 0.78rem;
+}
+
+html[data-estilo="minimalista"] .estilo-check {
+    color: var(--success-color);
+}
+
+html[data-estilo="minimalista"] .err {
+    color: var(--danger-color) !important;
+    font-size: 0.85rem;
+}
+
+/* --- Formas, contenedores de página y sobras finales ----------------------- */
+
+html[data-estilo="minimalista"] .circulos-container,
+html[data-estilo="minimalista"] .empresarial-container {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+html[data-estilo="minimalista"] .input-search,
+html[data-estilo="minimalista"] .search-input,
+html[data-estilo="minimalista"] .select-filter,
+html[data-estilo="minimalista"] .select-materia,
+html[data-estilo="minimalista"] .sesion-input,
+html[data-estilo="minimalista"] .sesion-textarea,
+html[data-estilo="minimalista"] .resena-input {
+    border: 1px solid var(--min-border);
+    border-radius: 8px;
+    background: var(--min-panel-light);
+    color: var(--min-white);
+    font: inherit;
+}
+
+html[data-estilo="minimalista"] .select-filter,
+html[data-estilo="minimalista"] .select-materia,
+html[data-estilo="minimalista"] .sesion-input,
+html[data-estilo="minimalista"] select.form-control,
+html[data-estilo="minimalista"] .select-filter option,
+html[data-estilo="minimalista"] .select-materia option,
+html[data-estilo="minimalista"] .sesion-input option {
+    background: var(--min-panel);
+    color: var(--min-white);
+}
+
+html[data-estilo="minimalista"] .ruta-badges,
+html[data-estilo="minimalista"] .badges-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+html[data-estilo="minimalista"] .dup-section-title {
+    color: var(--min-white);
+    font-size: 0.95rem;
+}
+
+html[data-estilo="minimalista"] .dup-question {
+    border-bottom: 1px solid var(--min-border);
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+html[data-estilo="minimalista"] .dup-col .dup-respuestas h4,
+html[data-estilo="minimalista"] .dup-col .dup-tips h4,
+html[data-estilo="minimalista"] .dup-col .dup-recursos h4 {
+    color: var(--min-white);
+    font-size: 0.9rem;
+}
+
+html[data-estilo="minimalista"] .empresa-modal-body {
+    padding: 4px 0;
+}
+
+html[data-estilo="minimalista"] .empresa-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    border-top: 1px solid var(--min-border);
+    margin: 18px -28px -26px;
+    padding: 14px 28px;
+    border-radius: 0 0 16px 16px;
+}
+
+html[data-estilo="minimalista"] .experiencias-section,
+html[data-estilo="minimalista"] .resena-form-wrap {
+    margin-top: 12px;
+}
+
+html[data-estilo="minimalista"] .attachment-info,
+html[data-estilo="minimalista"] .adjunto-area {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+html[data-estilo="minimalista"] .attachment-info .attachment-nombre,
+html[data-estilo="minimalista"] .attachment-info .attachment-peso,
+html[data-estilo="minimalista"] .adjunto-area span,
+html[data-estilo="minimalista"] .adjunto-area strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+html[data-estilo="minimalista"] .discover-empty,
+html[data-estilo="minimalista"] .empty-note,
+html[data-estilo="minimalista"] .admin-empty,
+html[data-estilo="minimalista"] .docente-empty,
+html[data-estilo="minimalista"] .empty-circles,
+html[data-estilo="minimalista"] .empty-companies {
+    color: var(--min-gray-dim) !important;
+}
+
+html[data-estilo="minimalista"] .usuarios-buscar {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+html[data-estilo="minimalista"] [hidden],
+html[data-estilo="minimalista"] .sesion-modal-overlay[hidden],
+html[data-estilo="minimalista"] .proposito-modal-overlay[hidden],
+html[data-estilo="minimalista"] .hub-modal-overlay[hidden],
+html[data-estilo="minimalista"] .dup-overlay[hidden],
+html[data-estilo="minimalista"] .empresa-modal-backdrop[hidden],
+html[data-estilo="minimalista"] .modal-overlay[hidden] {
+    display: none !important;
+}

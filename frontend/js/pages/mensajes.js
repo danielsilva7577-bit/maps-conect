@@ -9,7 +9,9 @@ const Mensajes = {
         conversaciones: [],
         seleccionada: null,
         eventSource: null,
-        adjunto: null
+        adjunto: null,
+        typingTimer: null,
+        isTyping: false
     },
 
     async init() {
@@ -45,9 +47,11 @@ const Mensajes = {
         });
 
         document.getElementById('enviar-mensaje')?.addEventListener('click', () => this.enviar());
-        document.getElementById('mensaje-input')?.addEventListener('keydown', e => {
+        const msgInput = document.getElementById('mensaje-input');
+        msgInput?.addEventListener('keydown', e => {
             if (e.key === 'Enter') this.enviar();
         });
+        msgInput?.addEventListener('input', () => this.handleTypingInput());
         document.getElementById('btn-adjuntar')?.addEventListener('click', () => {
             document.getElementById('adjunto-input')?.click();
         });
@@ -63,6 +67,19 @@ const Mensajes = {
 
         document.getElementById('adjunto-quitar')?.addEventListener('click',
             () => this.limpiarAdjunto());
+
+        window.addEventListener('nuevo-mensaje-global', (e) => {
+            const notif = e.detail;
+            if (!notif) return;
+            const convId = notif.conversacionId;
+            const m = notif.mensaje;
+            if (m && String(this.state.seleccionada) === String(convId)) {
+                this.appendMensaje(m);
+                this.marcarLeido(convId);
+            }
+            const preview = (m && (m.texto || m.contenido)) || (m && m.adjuntoNombre) || 'Nuevo mensaje';
+            this.actualizarPreviewConversacion(convId, preview, 'Ahora');
+        });
     },
 
     renderAdjuntoPendiente() {
@@ -78,6 +95,31 @@ const Mensajes = {
         this.state.adjunto = null;
         const chip = document.getElementById('adjunto-pendiente');
         if (chip) chip.hidden = true;
+    },
+
+    handleTypingInput() {
+        const convId = this.state.seleccionada;
+        if (!convId) return;
+
+        if (!this.state.isTyping) {
+            this.state.isTyping = true;
+            this.notificarTyping(true);
+        }
+
+        clearTimeout(this.state.typingTimer);
+        this.state.typingTimer = setTimeout(() => {
+            this.state.isTyping = false;
+            this.notificarTyping(false);
+        }, 2200);
+    },
+
+    notificarTyping(escribiendo) {
+        const convId = this.state.seleccionada;
+        if (!convId) return;
+        API.request(`/mensajes/${encodeURIComponent(convId)}/typing`, {
+            method: 'POST',
+            body: JSON.stringify({ escribiendo })
+        }).catch(() => {});
     },
 
     async loadConversaciones() {
@@ -110,9 +152,13 @@ const Mensajes = {
             const tiempo = this.field(c, 'tiempo') || this.field(c, 'fechaRelativa');
             const preview = this.field(c, 'preview');
             const nombre = this.nombreConv(c);
+            const online = Boolean(c.enLinea);
             return `
             <div class="chat-item${active}" data-id="${this.esc(id)}">
-                ${Utils.avatarHtml(nombre, c.foto, `avatar${profCls}`, nombre)}
+                <div class="chat-avatar-wrap">
+                    ${Utils.avatarHtml(nombre, c.foto, `avatar${profCls}`, nombre)}
+                    <span class="status-dot ${online ? 'online' : ''}" title="${online ? 'En línea' : 'Desconectado'}"></span>
+                </div>
                 <div class="chat-item-info">
                     <div class="chat-item-header">
                         <strong>${this.esc(nombre)}</strong>
@@ -172,15 +218,62 @@ const Mensajes = {
         if (!token) return;
 
         const source = new EventSource(`${API_BASE_URL}/mensajes/${encodeURIComponent(id)}/stream?token=${encodeURIComponent(token)}`);
-        source.addEventListener('mensaje', () => {
+        source.addEventListener('mensaje', (e) => {
             if (String(this.state.seleccionada) !== String(id)) return;
+            try {
+                const m = JSON.parse(e.data);
+                if (m && (m.id || m.texto || m.contenido)) {
+                    this.appendMensaje(m);
+                    this.marcarLeido(id);
+                    const preview = m.texto || m.contenido || m.adjuntoNombre || '';
+                    this.actualizarPreviewConversacion(id, preview, m.tiempo || 'Ahora');
+                    if (window.Layout && Layout.refreshNotificaciones) Layout.refreshNotificaciones();
+                    return;
+                }
+            } catch (err) {
+                // Si e.data no contiene el objeto serializado directamente, ejecuta fallback
+            }
             this.refrescarConversacion(id);
             this.marcarLeido(id);
-            this.loadConversaciones();
+            this.actualizarPreviewConversacion(id);
             if (window.Layout && Layout.refreshNotificaciones) Layout.refreshNotificaciones();
         });
+
+        source.addEventListener('typing', (e) => {
+            if (String(this.state.seleccionada) !== String(id)) return;
+            try {
+                const payload = JSON.parse(e.data);
+                const meId = Auth.getUser() && Auth.getUser().id;
+                if (payload && String(payload.idUsuario) !== String(meId)) {
+                    this.mostrarTyping(Boolean(payload.escribiendo), payload.nombre);
+                }
+            } catch (_) {}
+        });
+
         // Sin cierre manual: EventSource reconecta automáticamente ante fallos transitorios.
         this.state.eventSource = source;
+    },
+
+    mostrarTyping(escribiendo, nombre) {
+        const body = document.getElementById('chat-body');
+        if (!body) return;
+
+        let el = document.getElementById('chat-typing-indicator');
+        if (escribiendo) {
+            if (!el) {
+                el = document.createElement('div');
+                el.id = 'chat-typing-indicator';
+                el.className = 'typing-indicator-wrap';
+                el.innerHTML = `
+                    <span>${this.esc(nombre || 'Escribiendo')} está escribiendo</span>
+                    <div class="typing-dots"><span></span><span></span><span></span></div>
+                `;
+                body.appendChild(el);
+                body.scrollTop = body.scrollHeight;
+            }
+        } else {
+            if (el) el.remove();
+        }
     },
 
     async refrescarConversacion(id) {
@@ -209,12 +302,20 @@ const Mensajes = {
             ? `<a class="btn-clean" href="usuario.html?id=${encodeURIComponent(idUsuario)}">Ver Perfil Académico</a>`
             : '';
 
+        const online = Boolean(data.enLinea);
         host.innerHTML = `
             <div class="chat-header-user">
-                ${Utils.avatarHtml(nombre, data.foto, `avatar${profCls}`, nombre)}
+                <div class="chat-avatar-wrap">
+                    ${Utils.avatarHtml(nombre, data.foto, `avatar${profCls}`, nombre)}
+                    <span class="status-dot ${online ? 'online' : ''}"></span>
+                </div>
                 <div>
                     <h3>${this.esc(nombre)}</h3>
                     ${sub ? `<span>${this.esc(sub)}</span>` : ''}
+                    <div class="chat-status-text ${online ? 'online' : 'offline'}">
+                        <span class="status-dot ${online ? 'online' : ''}"></span>
+                        <span>${online ? 'En línea' : 'Desconectado'}</span>
+                    </div>
                 </div>
             </div>
             <div>${verPerfil}</div>
@@ -237,10 +338,56 @@ const Mensajes = {
         host.scrollTop = host.scrollHeight;
     },
 
+    appendMensaje(m) {
+        const host = document.getElementById('chat-body');
+        if (!host || !m) return;
+
+        const empty = document.getElementById('chat-empty');
+        if (empty) empty.remove();
+
+        const id = this.field(m, 'id');
+        if (id && host.querySelector(`[data-id="${id}"]`)) {
+            return; // Ya está en pantalla, no duplicar
+        }
+
+        const typingEl = document.getElementById('chat-typing-indicator');
+        if (typingEl) typingEl.remove();
+
+        const temp = document.createElement('div');
+        temp.innerHTML = this.messageEl(m).trim();
+        const el = temp.firstElementChild;
+        if (el) {
+            host.appendChild(el);
+            host.scrollTop = host.scrollHeight;
+        }
+    },
+
+    actualizarPreviewConversacion(convId, previewTexto, tiempo) {
+        if (!convId) return;
+        const idStr = String(convId);
+        const idx = this.state.conversaciones.findIndex(c => String(this.field(c, 'id')) === idStr);
+        if (idx !== -1) {
+            const conv = this.state.conversaciones[idx];
+            if (previewTexto) conv.preview = previewTexto;
+            if (tiempo) conv.tiempo = tiempo;
+            if (idx > 0) {
+                this.state.conversaciones.splice(idx, 1);
+                this.state.conversaciones.unshift(conv);
+            }
+            this.renderConversaciones();
+        } else {
+            this.loadConversaciones();
+        }
+    },
+
     messageEl(m) {
+        const id = this.field(m, 'id');
         const texto = this.field(m, 'texto') || this.field(m, 'contenido');
-        const tiempo = this.field(m, 'tiempo') || this.field(m, 'fechaRelativa');
-        const enviado = m.enviado === true || m.enviado === 'true' || m.propio === true;
+        const tiempo = this.field(m, 'tiempo') || this.field(m, 'fechaRelativa') || 'Ahora';
+        const meId = Auth.getUser() && Auth.getUser().id;
+        const enviado = (m.autorId != null && meId != null)
+            ? String(m.autorId) === String(meId)
+            : (m.enviado === true || m.enviado === 'true' || m.propio === true);
         const cls = enviado ? 'sent' : 'received';
         const adjunto = m.adjuntoNombre
             ? `
@@ -260,7 +407,7 @@ const Mensajes = {
             </div>`
             : '';
         return `
-        <div class="message ${cls}">
+        <div class="message ${cls}" data-id="${this.esc(id)}">
             ${adjunto}
             ${texto ? `<p class="message-texto">${this.esc(texto)}</p>` : ''}
             ${tiempo ? `<span class="message-time">${this.esc(tiempo)}</span>` : ''}
@@ -271,30 +418,51 @@ const Mensajes = {
         const input = document.getElementById('mensaje-input');
         if (!input) return;
         const texto = input.value.trim();
-        if ((!texto && !this.state.adjunto) || !this.state.seleccionada) return;
+        const adjunto = this.state.adjunto;
+        const convId = this.state.seleccionada;
+        if ((!texto && !adjunto) || !convId) return;
+
+        // Limpieza y feedback visual inmediato (sin recarga ni retraso)
+        input.value = '';
+        this.limpiarAdjunto();
+        input.focus();
+
+        if (this.state.isTyping) {
+            clearTimeout(this.state.typingTimer);
+            this.state.isTyping = false;
+            this.notificarTyping(false);
+        }
 
         try {
-            if (this.state.adjunto) {
-                await this.enviarAdjunto(texto);
+            let nuevoMensaje;
+            if (adjunto) {
+                nuevoMensaje = await this.enviarAdjunto(texto, adjunto);
             } else {
-                await API.request(`/mensajes/${encodeURIComponent(this.state.seleccionada)}`, {
+                const res = await API.request(`/mensajes/${encodeURIComponent(convId)}`, {
                     method: 'POST',
                     body: JSON.stringify({ texto })
                 });
+                nuevoMensaje = res && res.data ? res.data : res;
             }
-            input.value = '';
-            this.limpiarAdjunto();
-            await this.seleccionar(this.state.seleccionada);
+
+            if (nuevoMensaje) {
+                // Inserción instantánea en la vista sin parpadeos ni recargas
+                this.appendMensaje(nuevoMensaje);
+                const preview = texto || nuevoMensaje.adjuntoNombre || 'Adjunto';
+                this.actualizarPreviewConversacion(convId, preview, 'Ahora');
+            }
         } catch (e) {
             const msg = (e && e.data && e.data.message) || (e && e.message) || 'No se pudo enviar el mensaje';
             Utils.toast(msg, 'error');
+            if (input && !adjunto) input.value = texto;
         }
     },
 
-    async enviarAdjunto(texto) {
+    async enviarAdjunto(texto, archivo) {
+        const file = archivo || this.state.adjunto;
         const token = localStorage.getItem('token');
         const formData = new FormData();
-        formData.append('archivo', this.state.adjunto);
+        formData.append('archivo', file);
         if (texto) formData.append('texto', texto);
 
         const response = await fetch(`${API_BASE_URL}/mensajes/${encodeURIComponent(this.state.seleccionada)}/adjunto`, {

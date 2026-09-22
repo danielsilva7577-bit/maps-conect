@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * DTO con los datos publicos del usuario (id, email, nombre, rol, foto).
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,5 +19,7 @@ public class UsuarioDTO {
     private String nombre;
     private String rol;
     private Boolean activo;
+    private String foto;
 
 }
+

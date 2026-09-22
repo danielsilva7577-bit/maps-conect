@@ -25,7 +25,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 function mostrarBienvenida() {
-    if (document.documentElement.getAttribute('data-estilo') === 'observatorio') {
+    if (document.documentElement.getAttribute('data-estilo') === 'biblioteca') {
+        const mostrar = () => window.Biblioteca?.mostrarBienvenida?.();
+        if (window.Biblioteca?.mostrarBienvenida) {
+            mostrar();
+        } else {
+            // El modulo se carga de forma diferida desde estilos.js.
+            document.addEventListener('biblioteca:listo', mostrar, { once: true });
+        }
+        return;
+    }
+
+if (document.documentElement.getAttribute('data-estilo') === 'observatorio') {
         const mostrar = () => window.Observatorio?.mostrarBienvenida?.();
         if (window.Observatorio?.mostrarBienvenida) {
             mostrar();
@@ -33,6 +44,18 @@ function mostrarBienvenida() {
             // El módulo del observatorio se carga de forma diferida desde
             // estilos.js; espera su evento sin bloquear el dashboard.
             document.addEventListener('observatorio:listo', mostrar, { once: true });
+        }
+        return;
+    }
+
+    if (document.documentElement.getAttribute('data-estilo') === 'minimalista') {
+        const mostrar = () => window.Minimalista?.mostrarBienvenida?.();
+        if (window.Minimalista?.mostrarBienvenida) {
+            mostrar();
+        } else {
+            // El módulo del minimalista se carga de forma diferida desde
+            // estilos.js; espera su evento sin bloquear el dashboard.
+            document.addEventListener('minimalista:listo', mostrar, { once: true });
         }
         return;
     }

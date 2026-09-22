@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro | MAPS Connect</title>
     <script>try{if(localStorage.getItem('tema-maps')==='oscuro'){document.documentElement.classList.add('dark-mode')}}catch(e){}</script>
-    <script src="js/estilos.js?v=21"></script>
+    <script src="js/estilos.js?v=26"></script>
     <link rel="stylesheet" href="css/base.css?v=8">
     <link rel="stylesheet" href="css/layout.css?v=5">
     <link rel="stylesheet" href="css/components.css?v=8">
@@ -26,6 +26,7 @@
             text-align: center;
             font-size: 0.95rem;
             margin-bottom: 0;
+            transition: all 0.2s ease;
         }
         .rol-selector label input {
             margin-right: 0.4rem;
@@ -33,6 +34,7 @@
         .rol-selector label.rol-activo {
             border-color: var(--primary-color);
             background: #eff6ff;
+            font-weight: 600;
         }
     </style>
 </head>
@@ -49,34 +51,38 @@
                         <input type="radio" name="rol" value="estudiante" checked>
                         Estudiante
                     </label>
+                    <label id="rol-card-profesor">
+                        <input type="radio" name="rol" value="profesor">
+                        Profesor
+                    </label>
                 </div>
             </div>
             <div class="form-group" id="group-identificador">
                 <label for="matricula" id="label-identificador">Matrícula</label>
-                <input type="text" id="matricula" class="form-control" required placeholder="A12345678">
-                <div class="form-hint" id="hint-identificador">Identificador único institucional</div>
+                <input type="text" id="matricula" class="form-control" required placeholder="ej. AL01234567">
+                <div class="form-hint" id="hint-identificador">Matrícula de estudiante Tecmilenio</div>
             </div>
             <div class="form-group">
                 <label for="nombre">Nombre(s)</label>
-                <input type="text" id="nombre" class="form-control" required>
+                <input type="text" id="nombre" class="form-control" required placeholder="Tu nombre">
             </div>
             <div class="form-group">
                 <label for="apellido">Apellido(s)</label>
-                <input type="text" id="apellido" class="form-control" required>
+                <input type="text" id="apellido" class="form-control" required placeholder="Tus apellidos">
             </div>
             <div class="form-group">
                 <label for="email">Correo institucional</label>
-                <input type="email" id="email" class="form-control" required placeholder="usuario@tecmilenio.mx">
-                <div class="form-hint">Debe ser un correo @tecmilenio.mx o @servicios.tecmilenio.mx</div>
+                <input type="email" id="email" class="form-control" required placeholder="tu_correo@tecmilenio.mx">
+                <div class="form-hint">Usa tu correo @tecmilenio.mx o @servicios.tecmilenio.mx</div>
             </div>
             <div class="form-group">
                 <label for="contrasena">Contraseña</label>
-                <input type="password" id="contrasena" class="form-control" required minlength="6">
-                <div class="form-hint">Mínimo 6 caracteres</div>
+                <input type="password" id="contrasena" class="form-control" required minlength="8" placeholder="••••••••">
+                <div class="form-hint">Mínimo 8 caracteres (al menos una mayúscula, una minúscula y un número)</div>
             </div>
             <div class="form-group">
                 <label for="confirmar-contrasena">Confirmar contraseña</label>
-                <input type="password" id="confirmar-contrasena" class="form-control" required minlength="6">
+                <input type="password" id="confirmar-contrasena" class="form-control" required minlength="8" placeholder="••••••••">
             </div>
             <div class="form-group">
                 <div class="terminos-checkbox">
@@ -96,12 +102,12 @@
         </p>
     </div>
 </div>
-<script src="js/api.js?v=5"></script>
-<script src="js/auth.js?v=7"></script>
-<script src="js/utils.js?v=5"></script>
+<script src="js/api.js?v=9"></script>
+<script src="js/auth.js?v=9"></script>
+<script src="js/utils.js?v=9"></script>
 <script src="js/tema.js?v=2"></script>
 <script src="js/colores.js?v=1"></script>
 <script src="js/aviso-privacidad.js?v=1"></script>
-<script src="js/pages/registro.js?v=6"></script>
+<script src="js/pages/registro.js?v=9"></script>
 </body>
 </html>

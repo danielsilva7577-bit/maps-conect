@@ -1,5 +1,8 @@
 package com.tecmilenio.mapsconect.exception;
 
+/**
+ * Excepcion de recurso no encontrado (404).
+ */
 public class ResourceNotFoundException extends RuntimeException {
     
     public ResourceNotFoundException(String message) {
@@ -11,3 +14,4 @@ public class ResourceNotFoundException extends RuntimeException {
     }
 
 }
+

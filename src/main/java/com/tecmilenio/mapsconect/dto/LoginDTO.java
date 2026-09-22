@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
+/**
+ * DTO para la peticion de inicio de sesion (email y contrasena).
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,3 +25,4 @@ public class LoginDTO {
     private String contrasena;
 
 }
+
