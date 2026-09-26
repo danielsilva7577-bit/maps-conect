@@ -6,7 +6,7 @@
 .module-heading p { margin-top: 0.25rem; color: var(--gray-600); }
 .circulos-container .card, .circulos-container .btn, .circulos-container .badge, .circulos-container input { border-radius: 0; }
 .top-action-bar { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
-.search-input { flex: 1; min-width: 250px; padding: 0.625rem 0.75rem; border: 1px solid var(--gray-300); background: white; font: inherit; font-size: 0.9rem; }
+.search-input { flex: 1; min-width: 0; padding: 0.625rem 0.75rem; border: 1px solid var(--gray-300); background: white; font: inherit; font-size: 16px; }
 .search-input:focus { outline: none; border-color: var(--sidebar-bg); }
 .circulos-container .btn-solid { display: inline-block; border: 1px solid var(--sidebar-bg); background: var(--sidebar-bg); padding: 0.55rem 1rem; color: white; font: inherit; font-size: 0.9rem; font-weight: 700; cursor: pointer; text-align: center; }
 .circulos-container .btn-solid:hover { background: #043b10; color: white; text-decoration: none; }

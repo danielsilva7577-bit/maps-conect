@@ -15,7 +15,8 @@
 
 .btn {
     display: inline-block;
-    padding: 0.625rem 1.25rem;
+    padding: 0.7rem 1.25rem;
+    min-height: 2.75rem;
     border: none;
     border-radius: var(--border-radius);
     font-size: 0.95rem;
@@ -23,6 +24,7 @@
     text-decoration: none;
     text-align: center;
     transition: opacity 0.2s;
+    touch-action: manipulation;
 }
 
 .btn:hover {
@@ -72,7 +74,7 @@
     padding: 0.625rem 0.75rem;
     border: 1px solid var(--gray-300);
     border-radius: var(--border-radius);
-    font-size: 1rem;
+    font-size: 16px;
 }
 
 .form-control:focus {
@@ -122,4 +124,40 @@
 .badge-success {
     background: #d1fae5;
     color: #065f46;
+}
+
+select,
+input[type="search"],
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    font-size: 16px;
+}
+
+@media (max-width: 768px) {
+    /* Tamaño mínimo de toque (44px) para botones y enlaces de acción en móvil */
+    .btn-solid,
+    .btn-clean,
+    .group-link {
+        touch-action: manipulation;
+        min-height: 2.75rem;
+    }
+
+    .btn-action,
+    .side-link {
+        display: inline-flex;
+        align-items: center;
+        min-height: 2.75rem;
+        touch-action: manipulation;
+    }
+}
+
+@media (max-width: 400px) {
+    .card {
+        padding: 1.125rem;
+    }
+
+    .module-heading h1 {
+        font-size: 1.4rem;
+    }
 }
