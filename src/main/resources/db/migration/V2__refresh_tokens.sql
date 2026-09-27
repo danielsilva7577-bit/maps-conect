@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS refresh_tokens (
     id             BIGINT       NOT NULL AUTO_INCREMENT,
     token          VARCHAR(255) NOT NULL,
-    id_usuario     INT          NOT NULL,
+    id_usuario     INT UNSIGNED NOT NULL,
     fecha_expira   DATETIME     NOT NULL,
     revocado       TINYINT(1)   NOT NULL DEFAULT 0,
     fecha_creacion DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
