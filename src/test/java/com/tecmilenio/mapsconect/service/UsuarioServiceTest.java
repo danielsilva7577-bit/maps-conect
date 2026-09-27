@@ -6,11 +6,13 @@ import com.tecmilenio.mapsconect.dto.TokenDTO;
 import com.tecmilenio.mapsconect.entity.Estudiante;
 import com.tecmilenio.mapsconect.entity.Profesor;
 import com.tecmilenio.mapsconect.entity.Usuario;
+import com.tecmilenio.mapsconect.entity.RefreshToken;
 import com.tecmilenio.mapsconect.repository.EstudianteRepository;
 import com.tecmilenio.mapsconect.repository.EstudianteMateriaRepository;
 import com.tecmilenio.mapsconect.repository.ProfesorCertificadoRepository;
 import com.tecmilenio.mapsconect.repository.ProfesorMateriaRepository;
 import com.tecmilenio.mapsconect.repository.ProfesorRepository;
+import com.tecmilenio.mapsconect.repository.RefreshTokenRepository;
 import com.tecmilenio.mapsconect.repository.UsuarioRepository;
 import com.tecmilenio.mapsconect.security.JwtTokenProvider;
 import com.tecmilenio.mapsconect.security.LoginRateLimiter;
@@ -53,6 +55,7 @@ class UsuarioServiceTest {
     @Mock private ProfesorMateriaRepository profesorMateriaRepository;
     @Mock private ProfesorCertificadoRepository profesorCertificadoRepository;
     @Mock private EstudianteMateriaRepository estudianteMateriaRepository;
+    @Mock private RefreshTokenRepository refreshTokenRepository;
 
     @InjectMocks private UsuarioService usuarioService;
 
@@ -65,6 +68,10 @@ class UsuarioServiceTest {
         // El rate limiter siempre retorna null (sin bloqueo) en tests unitarios.
         // lenient: no todos los tests llaman a login(), así que este stub es opcional.
         lenient().when(loginRateLimiter.tiempoRestanteBloqueo(anyString())).thenReturn(null);
+        // refreshTokenRepository.save siempre retorna un token vacío — la mayoría de
+        // tests solo verifican el access token, no el refresh token generado.
+        lenient().when(refreshTokenRepository.save(any(RefreshToken.class)))
+                .thenReturn(RefreshToken.builder().token("refresh-token-stub").build());
     }
 
     // ── LOGIN ──────────────────────────────────────────────────────────────
@@ -256,6 +263,31 @@ class UsuarioServiceTest {
         assertThat(result).isNotNull();
         assertThat(result.getUsuario().getRol()).isEqualTo("PROFESOR");
         verify(profesorRepository).save(any(Profesor.class));
+    }
+
+    @Test
+    void registrar_profesor_nominaDuplicada_lanzaConflictoException() {
+        // Arrange
+        String profEmail = "prof2@tecmilenio.mx";
+        when(usuarioRepository.existsByEmail(profEmail)).thenReturn(false);
+        when(profesorRepository.existsByNumeroNomina("NOM-123")).thenReturn(true);
+
+        RegistroDTO dto = RegistroDTO.builder()
+                .email(profEmail)
+                .nombre("Carlos")
+                .apellido("Gómez")
+                .contrasena("DemoMaps2026!")
+                .rol("PROFESOR")
+                .numeroNomina("NOM-123")
+                .build();
+
+        // Act / Assert
+        assertThatThrownBy(() -> usuarioService.registrar(dto))
+                .isInstanceOf(com.tecmilenio.mapsconect.exception.ConflictoException.class)
+                .hasMessage("El número de nómina ya está registrado");
+
+        verify(usuarioRepository, never()).save(any());
+        verify(profesorRepository, never()).save(any());
     }
 
     @Test

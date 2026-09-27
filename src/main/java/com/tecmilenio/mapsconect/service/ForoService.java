@@ -36,6 +36,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import lombok.RequiredArgsConstructor;
+
 /**
  * Servicio del foro académico.
  *
@@ -50,6 +52,7 @@ import java.util.stream.Collectors;
  * @see ForoService
  */
 @Service
+@RequiredArgsConstructor
 public class ForoService {
 
     private static final DateTimeFormatter FECHA = DateTimeFormatter.ofPattern("d 'de' MMMM");
@@ -59,35 +62,25 @@ public class ForoService {
             "por", "para", "se", "del", "su", "al", "como", "mas", "más", "pero", "sus", "me",
             "mi", "tu", "si", "ya", "lo", "le", "o", "u", "ni", "este", "esta", "esto");
 
-    @Autowired
-    private PublicacionRepository publicacionRepository;
+    private final PublicacionRepository publicacionRepository;
 
-    @Autowired
-    private EstudianteRepository estudianteRepository;
+    private final EstudianteRepository estudianteRepository;
 
-    @Autowired
-    private MateriaRepository materiaRepository;
+    private final MateriaRepository materiaRepository;
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+    private final UsuarioRepository usuarioRepository;
 
-    @Autowired
-    private SeguimientoRepository seguimientoRepository;
+    private final SeguimientoRepository seguimientoRepository;
 
-    @Autowired
-    private RecursoAcademicoRepository recursoAcademicoRepository;
+    private final RecursoAcademicoRepository recursoAcademicoRepository;
 
-    @Autowired
-    private RespuestaRepository respuestaRepository;
+    private final RespuestaRepository respuestaRepository;
 
-    @Autowired
-    private TipService tipService;
+    private final TipService tipService;
 
-    @Autowired
-    private CarreraContextoService carreraContextoService;
+    private final CarreraContextoService carreraContextoService;
 
-    @Autowired
-    private NotificacionService notificacionService;
+    private final NotificacionService notificacionService;
 
     @PersistenceContext
     private EntityManager entityManager;

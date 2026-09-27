@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
@@ -166,6 +167,7 @@ public class CirculosController {
                 .body(ApiResponse.success(mapearDesdeEntidad(sesion, usuario), "Sesión de repaso creada"));
     }
 
+    @Transactional
     @PostMapping("/sesiones/{id}/inscribirse")
     public ResponseEntity<ApiResponse<SesionRepasoDTO>> inscribirse(
             @PathVariable Integer id, Authentication authentication) {
@@ -206,6 +208,7 @@ public class CirculosController {
         return ResponseEntity.ok(ApiResponse.success(dto, "Asistencia confirmada"));
     }
 
+    @Transactional
     @DeleteMapping("/sesiones/{id}/inscribirse")
     public ResponseEntity<ApiResponse<SesionRepasoDTO>> salirse(
             @PathVariable Integer id, Authentication authentication) {
@@ -257,9 +260,6 @@ public class CirculosController {
     }
 
     private SesionRepasoDTO mapearSesion(Object[] fila, int idUsuario) {
-        Date fecha = (Date) fila[6];
-        Time hora = (Time) fila[7];
-
         return SesionRepasoDTO.builder()
                 .id(((Number) fila[0]).intValue())
                 .titulo((String) fila[1])
@@ -267,8 +267,8 @@ public class CirculosController {
                 .materia((String) fila[3])
                 .modalidad((String) fila[4])
                 .ubicacion((String) fila[5])
-                .fecha(fecha.toLocalDate().toString())
-                .horaInicio(hora.toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm")))
+                .fecha(aFechaString(fila[6]))
+                .horaInicio(aHoraString(fila[7]))
                 .duracionMin(((Number) fila[8]).intValue())
                 .cupoMax(((Number) fila[9]).intValue())
                 .estado((String) fila[10])
@@ -300,6 +300,22 @@ public class CirculosController {
                 .inscrito(false)
                 .organizadorYo(true)
                 .build();
+    }
+
+    private String aFechaString(Object obj) {
+        if (obj == null) return null;
+        if (obj instanceof LocalDate ld) return ld.toString();
+        if (obj instanceof java.sql.Date d) return d.toLocalDate().toString();
+        if (obj instanceof java.util.Date d) return new java.sql.Date(d.getTime()).toLocalDate().toString();
+        return String.valueOf(obj);
+    }
+
+    private String aHoraString(Object obj) {
+        if (obj == null) return null;
+        if (obj instanceof LocalTime lt) return lt.format(DateTimeFormatter.ofPattern("HH:mm"));
+        if (obj instanceof java.sql.Time t) return t.toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm"));
+        String str = String.valueOf(obj);
+        return str.length() >= 5 ? str.substring(0, 5) : str;
     }
 
     private LocalDate parseFecha(String fecha) {

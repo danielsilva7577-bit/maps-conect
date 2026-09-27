@@ -49,10 +49,16 @@ public class MensajesController {
     @Autowired
     private MensajeService mensajeService;
 
-    @Operation(summary = "Listar conversaciones", description = "Devuelve la lista de conversaciones del usuario autenticado.")
+    @Operation(summary = "Listar conversaciones",
+               description = "Devuelve la lista paginada de conversaciones del usuario autenticado. "
+                           + "Por defecto devuelve las 30 más recientes (page=0, size=30).")
     @GetMapping
-    public ResponseEntity<ApiResponse<List<ConversacionDTO>>> listarConversaciones(Authentication authentication) {
-        List<ConversacionDTO> conversaciones = mensajeService.listarConversaciones(authentication.getName());
+    public ResponseEntity<ApiResponse<List<ConversacionDTO>>> listarConversaciones(
+            @RequestParam(defaultValue = "0")  int page,
+            @RequestParam(defaultValue = "30") int size,
+            Authentication authentication) {
+        List<ConversacionDTO> conversaciones =
+                mensajeService.listarConversaciones(authentication.getName(), page, size);
         return ResponseEntity.ok(ApiResponse.success(conversaciones, "Conversaciones obtenidas"));
     }
 
@@ -81,12 +87,18 @@ public class MensajesController {
                 .body(ApiResponse.success(conversacion, "Conversación creada"));
     }
 
-    @Operation(summary = "Obtener conversación", description = "Devuelve el detalle de una conversación (mensajes incluidos).")
+    @Operation(summary = "Obtener conversación",
+               description = "Devuelve el detalle de una conversación con mensajes paginados. "
+                           + "page=0 devuelve los 50 más recientes; incrementar para ver anteriores.")
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<DetalleConversacionDTO>> obtenerConversacion(
-            @PathVariable Integer id, Authentication authentication) {
+            @PathVariable Integer id,
+            @RequestParam(defaultValue = "0")  int page,
+            @RequestParam(defaultValue = "50") int size,
+            Authentication authentication) {
 
-        DetalleConversacionDTO detalle = mensajeService.obtenerDetalle(authentication.getName(), id);
+        DetalleConversacionDTO detalle =
+                mensajeService.obtenerDetalle(authentication.getName(), id, page, size);
         return ResponseEntity.ok(ApiResponse.success(detalle, "Conversación obtenida"));
     }
 

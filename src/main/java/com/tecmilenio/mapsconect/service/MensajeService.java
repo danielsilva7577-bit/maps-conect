@@ -12,6 +12,9 @@ import com.tecmilenio.mapsconect.repository.MensajeRepository;
 import com.tecmilenio.mapsconect.repository.UsuarioRepository;
 import com.tecmilenio.mapsconect.util.ArchivoSeguro;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,7 +25,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -56,9 +58,6 @@ public class MensajeService {
 
     private final Map<Integer, List<SseEmitter>> emisoresPorConversacion = new ConcurrentHashMap<>();
 
-    // Canales de notificación por usuario (bell global, independiente de la conversación abierta).
-    private final Map<Integer, List<SseEmitter>> emisoresNotificacionPorUsuario = new ConcurrentHashMap<>();
-
     @Autowired
     private ConversacionRepository conversacionRepository;
 
@@ -69,16 +68,42 @@ public class MensajeService {
     private UsuarioRepository usuarioRepository;
 
     @Autowired
+    @org.springframework.context.annotation.Lazy
     private NotificacionService notificacionService;
 
-    public List<ConversacionDTO> listarConversaciones(String email) {
-        Usuario usuario = obtenerUsuario(email);
-        List<Conversacion> conversaciones = conversacionRepository
-                .findByUsuario1IdOrUsuario2IdOrderByFechaInicioDesc(usuario.getId(), usuario.getId());
+    @Autowired
+    private com.tecmilenio.mapsconect.storage.AlmacenamientoService almacenamientoService;
 
-        return conversaciones.stream()
+    @Autowired
+    @org.springframework.context.annotation.Lazy
+    private com.tecmilenio.mapsconect.messaging.MensajeriaDistribuidaService mensajeriaDistribuidaService;
+
+    /**
+     * Lista las conversaciones del usuario con paginación.
+     *
+     * @param email email del usuario autenticado
+     * @param page  página (0-indexed)
+     * @param size  conversaciones por página (max 100)
+     */
+    public List<ConversacionDTO> listarConversaciones(String email, int page, int size) {
+        Usuario usuario = obtenerUsuario(email);
+        int safeSize = Math.min(size, 100);
+        PageRequest pageable = PageRequest.of(page, safeSize);
+
+        return conversacionRepository
+                .findByUsuario1IdOrUsuario2IdOrderByFechaInicioDesc(usuario.getId(), usuario.getId(), pageable)
+                .stream()
                 .map(conv -> mapearConversacion(conv, usuario))
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Lista todas las conversaciones del usuario sin paginar.
+     * Uso interno (resumenNotificaciones, marcarTodasLeidas).
+     */
+    private List<Conversacion> listarTodasConversacionesEntidad(Integer idUsuario) {
+        return conversacionRepository
+                .findByUsuario1IdOrUsuario2IdOrderByFechaInicioDesc(idUsuario, idUsuario);
     }
 
     @Transactional
@@ -120,16 +145,34 @@ public class MensajeService {
         return conversacionRepository.save(conversacion).getId();
     }
 
-    public DetalleConversacionDTO obtenerDetalle(String email, Integer idConversacion) {
+    /**
+     * Devuelve el detalle de una conversación con sus mensajes paginados.
+     *
+     * <p>Los mensajes se ordenan cronológicamente dentro de la página.
+     * Por defecto carga los últimos 50 (page=0 en orden inverso).
+     * Para scroll infinito hacia atrás el cliente pide page=1, page=2, etc.</p>
+     *
+     * @param email          email del usuario autenticado
+     * @param idConversacion id de la conversación
+     * @param page           página de mensajes (0 = más recientes)
+     * @param size           mensajes por página (máx. 100)
+     */
+    public DetalleConversacionDTO obtenerDetalle(String email, Integer idConversacion, int page, int size) {
         Usuario usuario = obtenerUsuario(email);
         Conversacion conversacion = obtenerConversacionAccesible(idConversacion, usuario);
 
         Usuario otro = esParticipante(conversacion, usuario.getId()) == 1
                 ? conversacion.getUsuario2() : conversacion.getUsuario1();
 
-        List<Mensaje> mensajes = mensajeRepository.findByIdConversacionOrderByIdAsc(idConversacion);
+        int safeSize = Math.min(size, 100);
+        // Pedimos en orden DESC para obtener los más recientes primero,
+        // luego invertimos para presentar cronológicamente al cliente.
+        PageRequest pageable = PageRequest.of(page, safeSize, Sort.by(Sort.Direction.DESC, "id"));
+        Page<Mensaje> paginaMensajes = mensajeRepository
+                .findByIdConversacionOrderByIdAsc(idConversacion, pageable);
 
-        List<MensajeDTO> mensajesDTO = mensajes.stream()
+        List<MensajeDTO> mensajesDTO = paginaMensajes.getContent().stream()
+                .sorted((a, b) -> a.getId().compareTo(b.getId()))   // orden cronológico
                 .map(m -> mapearMensaje(m, usuario))
                 .collect(Collectors.toList());
 
@@ -142,7 +185,18 @@ public class MensajeService {
                 .esProf(otro.getRol() == Usuario.Rol.PROFESOR)
                 .enLinea(notificacionService.estaEnLinea(otro.getId()))
                 .mensajes(mensajesDTO)
+                .pagina(page)
+                .hayMas(paginaMensajes.hasNext())
+                .totalMensajes(paginaMensajes.getTotalElements())
                 .build();
+    }
+
+    /**
+     * Sobrecarga sin paginación explícita: carga los últimos 50 mensajes.
+     * Mantiene compatibilidad con el código interno que llama a obtenerDetalle(email, id).
+     */
+    public DetalleConversacionDTO obtenerDetalle(String email, Integer idConversacion) {
+        return obtenerDetalle(email, idConversacion, 0, 50);
     }
 
     public MensajeDTO enviarMensaje(String email, Integer idConversacion, String texto) {
@@ -162,8 +216,7 @@ public class MensajeService {
         Mensaje guardado = mensajeRepository.save(mensaje);
         MensajeDTO dto = mapearMensaje(guardado, usuario);
 
-        notificarConversacion(idConversacion, dto);
-        notificarDestinatario(idOtro, idConversacion, usuario, dto);
+        mensajeriaDistribuidaService.publicarMensajeChat(idConversacion, dto, idOtro);
         return dto;
     }
 
@@ -195,16 +248,13 @@ public class MensajeService {
         Mensaje guardado = mensajeRepository.save(mensaje);
 
         try {
-            Path destino = carpetaAdjuntos().resolve(String.valueOf(guardado.getId()));
-            Files.createDirectories(destino.getParent());
-            archivo.transferTo(destino);
+            almacenamientoService.guardar("adjuntos/" + guardado.getId(), archivo.getBytes(), mensaje.getAdjuntoTipo());
         } catch (IOException e) {
-            throw new IllegalArgumentException("No se pudo guardar el archivo adjunto");
+            throw new IllegalArgumentException("No se pudo guardar el archivo adjunto: " + e.getMessage());
         }
 
         MensajeDTO dto = mapearMensaje(guardado, usuario);
-        notificarConversacion(idConversacion, dto);
-        notificarDestinatario(idOtro, idConversacion, usuario, dto);
+        mensajeriaDistribuidaService.publicarMensajeChat(idConversacion, dto, idOtro);
         return dto;
     }
 
@@ -220,29 +270,25 @@ public class MensajeService {
         }
 
         try {
-            Path origen = carpetaAdjuntos().resolve(String.valueOf(mensaje.getId()));
-            byte[] bytes = Files.readAllBytes(origen);
+            byte[] bytes = almacenamientoService.descargar("adjuntos/" + mensaje.getId());
             return new AdjuntoDescarga(bytes, mensaje.getAdjuntoNombre(), mensaje.getAdjuntoTipo() != null ? mensaje.getAdjuntoTipo() : "application/octet-stream");
         } catch (IOException e) {
             throw new ResourceNotFoundException("El archivo adjunto no está disponible");
         }
     }
 
+    /**
+     * Marca como leídos todos los mensajes recibidos de una conversación.
+     *
+     * <p>Usa un UPDATE masivo directo en BD ({@code @Modifying}) en lugar de
+     * cargar toda la lista en RAM y hacer saveAll. Es atómico y mucho más
+     * eficiente en conversaciones largas.</p>
+     */
+    @Transactional
     public void marcarLeidos(String email, Integer idConversacion) {
         Usuario usuario = obtenerUsuario(email);
         obtenerConversacionAccesible(idConversacion, usuario);
-
-        List<Mensaje> mensajes = mensajeRepository.findByIdConversacionOrderByIdAsc(idConversacion);
-        boolean cambio = false;
-        for (Mensaje m : mensajes) {
-            if (!m.getIdEmisor().equals(usuario.getId()) && !m.getLeido()) {
-                m.setLeido(true);
-                cambio = true;
-            }
-        }
-        if (cambio) {
-            mensajeRepository.saveAll(mensajes);
-        }
+        mensajeRepository.marcarLeidosMasivo(idConversacion, usuario.getId());
     }
 
     public SseEmitter suscribirse(Integer idConversacion, String email) {
@@ -258,6 +304,29 @@ public class MensajeService {
         Usuario usuario = obtenerUsuario(email);
         obtenerConversacionAccesible(idConversacion, usuario);
 
+        mensajeriaDistribuidaService.publicarTyping(idConversacion, email, escribiendo);
+    }
+
+    public void despacharMensajeLocal(Integer idConversacion, MensajeDTO mensaje) {
+        emitirEvento(emisoresPorConversacion, idConversacion, "mensaje", mensaje);
+    }
+
+    public void despacharNotificacionDestinatarioLocal(Integer idUsuario, Integer idConversacion, MensajeDTO mensaje) {
+        Map<String, Object> payload = new LinkedHashMap<>();
+        payload.put("tipo", "mensaje");
+        payload.put("conversacionId", idConversacion);
+        payload.put("emisorId", mensaje.getAutorId());
+        payload.put("emisorNombre", mensaje.getAutorNombre());
+        payload.put("mensaje", mensaje);
+        payload.put("enlace", "mensajes.html?conv=" + idConversacion);
+
+        notificacionService.emitirEventoDirecto(idUsuario, "mensaje", payload);
+    }
+
+    public void despacharTypingLocal(Integer idConversacion, String email, boolean escribiendo) {
+        Usuario usuario = usuarioRepository.findByEmail(email).orElse(null);
+        if (usuario == null) return;
+
         Map<String, Object> payload = new LinkedHashMap<>();
         payload.put("idConversacion", idConversacion);
         payload.put("idUsuario", usuario.getId());
@@ -267,48 +336,44 @@ public class MensajeService {
         emitirEvento(emisoresPorConversacion, idConversacion, "typing", payload);
     }
 
-    private void notificarConversacion(Integer idConversacion, MensajeDTO mensaje) {
-        emitirEvento(emisoresPorConversacion, idConversacion, "mensaje", mensaje);
-    }
-
     /**
      * Envía un evento SSE a todos los emitters activos de un canal.
-     * emitter ya fue desconectado, se descarta para no romper el hilo del
-     * envío (Tomcat lanza excepción al usar un AsyncContext terminado) y se
-     * evita así que un mensaje falle por una conexión colgada.
+     *
+     * <p>Acumula los emitters que fallaron en una lista separada ({@code muertos})
+     * y los elimina <em>después</em> del loop de envío — igual que
+     * {@code NotificacionService#emitirEventoDirecto} — evitando así la
+     * modificación de la colección durante la iteración.</p>
      */
     private void emitirEvento(Map<Integer, List<SseEmitter>> canal, Integer clave, String nombre, Object data) {
         List<SseEmitter> emisores = canal.get(clave);
-        if (emisores == null) {
+        if (emisores == null || emisores.isEmpty()) {
             return;
         }
+
+        List<SseEmitter> muertos = new ArrayList<>();
         for (SseEmitter emitter : emisores) {
             try {
                 emitter.send(SseEmitter.event().name(nombre).data(data));
             } catch (Exception e) {
-                emisores.remove(emitter);
-                try {
-                    emitter.completeWithError(e);
-                } catch (Exception ignorada) {
-                    // ya cerrado
-                }
+                muertos.add(emitter);
             }
         }
+
+        // Limpiar fuera del loop para no modificar mientras iteramos
+        for (SseEmitter muerto : muertos) {
+            emisores.remove(muerto);
+            try {
+                muerto.completeWithError(new IllegalStateException("Emitter desconectado"));
+            } catch (Exception ignorada) {
+                // ya cerrado
+            }
+        }
+
         if (emisores.isEmpty()) {
             canal.remove(clave);
         }
     }
 
-    /**
-     * Canal SSE global por usuario: alimenta el centro de notificaciones (campana).
-     */
-    public SseEmitter notificacionesStream(String email) {
-        Usuario usuario = obtenerUsuario(email);
-
-        SseEmitter emitter = crearEmitterConCleanup(emisoresNotificacionPorUsuario, usuario.getId());
-
-        return emitter;
-    }
 
     /**
      * Crea un SseEmitter con cleanup automático (onCompletion/onError/onTimeout)
@@ -350,11 +415,11 @@ public class MensajeService {
 
     /**
      * Resumen de no leídos por conversación, para el badge y el panel de la campana.
+     * Carga todas las conversaciones del usuario (sin límite) para calcular el total global.
      */
     public Map<String, Object> resumenNotificaciones(String email) {
         Usuario usuario = obtenerUsuario(email);
-        List<Conversacion> conversaciones = conversacionRepository
-                .findByUsuario1IdOrUsuario2IdOrderByFechaInicioDesc(usuario.getId(), usuario.getId());
+        List<Conversacion> conversaciones = listarTodasConversacionesEntidad(usuario.getId());
 
         List<Map<String, Object>> items = new ArrayList<>();
         long totalNoLeidos = 0;
@@ -383,22 +448,6 @@ public class MensajeService {
         return resumen;
     }
 
-    /**
-     * Empuja un evento al canal de notificaciones del destinatario cuando llega
-     * un mensaje nuevo.
-     */
-    private void notificarDestinatario(Integer idDestinatario, Integer idConversacion,
-                                       Usuario emisor, MensajeDTO mensaje) {
-        Map<String, Object> payload = new LinkedHashMap<>();
-        payload.put("tipo", "mensaje");
-        payload.put("conversacionId", idConversacion);
-        payload.put("emisorId", emisor.getId());
-        payload.put("emisorNombre", emisor.getNombreCompleto());
-        payload.put("mensaje", mensaje);
-        payload.put("enlace", "mensajes.html?conv=" + idConversacion);
-
-        notificacionService.emitirEvento(idDestinatario, "mensaje", payload);
-    }
 
     @Transactional
     public void marcarTodasLeidas(String email) {
@@ -484,10 +533,6 @@ public class MensajeService {
                 .adjuntoTipo(mensaje.getAdjuntoTipo())
                 .adjuntoTamano(mensaje.getAdjuntoTamano())
                 .build();
-    }
-
-    private Path carpetaAdjuntos() {
-        return Paths.get(System.getProperty("user.dir"), "uploads", "adjuntos").toAbsolutePath().normalize();
     }
 
     public static class AdjuntoDescarga {

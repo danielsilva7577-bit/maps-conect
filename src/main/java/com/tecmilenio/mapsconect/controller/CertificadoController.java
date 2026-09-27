@@ -6,6 +6,7 @@ import com.tecmilenio.mapsconect.dto.CertificadoDTO;
 import com.tecmilenio.mapsconect.dto.CertificadoRequestDTO;
 import com.tecmilenio.mapsconect.service.CertificadoService;
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,6 +60,7 @@ public class CertificadoController {
      * @param request datos del certificado a crear
      * @return 201 Created con el certificado creado
      */
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @PostMapping
     public ResponseEntity<ApiResponse<CertificadoDTO>> crear(
             @Valid @RequestBody CertificadoRequestDTO request) {
@@ -76,6 +78,7 @@ public class CertificadoController {
      * @param idMateria     ID de la materia a vincular
      * @return 200 OK con el certificado actualizado
      */
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @PostMapping("/{idCertificado}/materias/{idMateria}")
     public ResponseEntity<ApiResponse<CertificadoDTO>> vincularMateria(
             @PathVariable Integer idCertificado,

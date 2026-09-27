@@ -29,4 +29,15 @@ public interface ResenaEmpresarialRepository extends JpaRepository<ResenaEmpresa
         ORDER BY r.fecha_resena DESC
         """, nativeQuery = true)
     List<Object[]> listarConAutor(@Param("idEmpresa") Integer idEmpresa);
+
+    @Query(value = """
+        SELECT r.id_empresa, r.calificacion, r.proyecto_desarrollado, r.aprendizajes,
+               r.recomendaciones, r.fecha_resena, u.nombre_completo, u.id_usuario,
+               e.semestre_actual
+        FROM resenas_empresarial r
+        JOIN estudiantes e ON e.id_estudiante = r.id_estudiante
+        JOIN usuarios u ON u.id_usuario = e.id_usuario
+        ORDER BY r.calificacion DESC, r.fecha_resena DESC
+        """, nativeQuery = true)
+    List<Object[]> listarTodasConAutor();
 }

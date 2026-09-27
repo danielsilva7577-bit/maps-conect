@@ -36,11 +36,20 @@ public class NotificacionService {
     // Canales de notificación por usuario (bell global, independiente de la conversación abierta).
     private final Map<Integer, List<SseEmitter>> emisoresPorUsuario = new ConcurrentHashMap<>();
 
-    @Autowired
-    private NotificacionRepository notificacionRepository;
+    private final NotificacionRepository notificacionRepository;
+
+    private final UsuarioRepository usuarioRepository;
+
+    private final com.tecmilenio.mapsconect.messaging.MensajeriaDistribuidaService mensajeriaDistribuidaService;
 
     @Autowired
-    private UsuarioRepository usuarioRepository;
+    public NotificacionService(NotificacionRepository notificacionRepository,
+                               UsuarioRepository usuarioRepository,
+                               @org.springframework.context.annotation.Lazy com.tecmilenio.mapsconect.messaging.MensajeriaDistribuidaService mensajeriaDistribuidaService) {
+        this.notificacionRepository = notificacionRepository;
+        this.usuarioRepository = usuarioRepository;
+        this.mensajeriaDistribuidaService = mensajeriaDistribuidaService;
+    }
 
     /**
      * Canal SSE global por usuario: alimenta el centro de notificaciones (campana).
@@ -77,8 +86,8 @@ public class NotificacionService {
     }
 
     /**
-     * Crea una notificación persistida para un usuario y la empuja en vivo por
-     * SSE si tiene la campana abierta.
+     * Crea una notificación persistida para un usuario y la empuja al cluster
+     * para entrega en vivo por SSE.
      *
      * @param tipo    identificador del área: mensaje, foro, duda, sesion, asesoria, ...
      * @param idOrigen identificador del elemento origen (publicación, sesión, ...) o null.
@@ -103,15 +112,33 @@ public class NotificacionService {
         payload.put("preview", preview == null ? "" : preview);
         payload.put("enlace", enlace);
         payload.put("tiempo", HORA.format(LocalDateTime.now()));
-        emitirEvento(idUsuario, tipo, payload);
+        mensajeriaDistribuidaService.publicarNotificacion(idUsuario, payload);
     }
 
     /**
-     * Emite un evento en vivo por SSE sin persistirlo. Se usa para eventos que
-     * ya se derivan de datos existentes (p. ej. mensajes de chat), para no
-     * duplicar la notificación en el resumen.
+     * Emite un evento en vivo por SSE publicándolo en el cluster.
      */
     public void emitirEvento(Integer idUsuario, String nombreEvento, Map<String, Object> payload) {
+        Map<String, Object> copy = new LinkedHashMap<>(payload);
+        copy.put("tipo", nombreEvento);
+        mensajeriaDistribuidaService.publicarNotificacion(idUsuario, copy);
+    }
+
+    /**
+     * Despacha una notificación a los sockets SSE locales en este nodo.
+     */
+    public void despacharNotificacionLocal(Integer idUsuario, Object payload) {
+        String nombreEvento = "notificacion";
+        if (payload instanceof Map<?, ?> map && map.get("tipo") != null) {
+            nombreEvento = map.get("tipo").toString();
+        }
+        emitirEventoDirecto(idUsuario, nombreEvento, payload);
+    }
+
+    /**
+     * Entrega un evento SSE directamente a los emisores locales de esta instancia.
+     */
+    public void emitirEventoDirecto(Integer idUsuario, String nombreEvento, Object payload) {
         List<SseEmitter> emisores = emisoresPorUsuario.get(idUsuario);
         if (emisores == null || emisores.isEmpty()) {
             return;

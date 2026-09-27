@@ -379,6 +379,8 @@ const Layout = {
             toggle?.classList.toggle('open', isOpen);
             toggle.setAttribute('aria-expanded', String(isOpen));
             toggle.setAttribute('aria-label', isOpen ? 'Cerrar menú' : 'Abrir menú');
+            const iconSpan = toggle?.querySelector('span[aria-hidden="true"]');
+            if (iconSpan) iconSpan.textContent = isOpen ? '✕' : '☰';
         };
 
         toggle?.addEventListener('click', () => setMenuState(!sidebar?.classList.contains('open')));

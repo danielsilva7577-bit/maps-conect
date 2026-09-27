@@ -6,19 +6,23 @@
 }
 
 .sidebar {
-    width: var(--sidebar-width);
+    width: min(var(--sidebar-width), 85vw);
     background: var(--sidebar-bg);
     color: var(--sidebar-text-hover);
     position: fixed;
     top: 0;
     left: 0;
     height: 100vh;
+    height: 100dvh;
     z-index: 100;
     display: flex;
     flex-direction: column;
     transform: translateX(-100%);
     transition: transform 0.3s ease;
     box-shadow: 0 0 1.25rem rgba(0, 0, 0, 0.2);
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    -webkit-overflow-scrolling: touch;
 }
 
 .sidebar.open {
@@ -78,15 +82,18 @@
     list-style: none;
     padding: 1rem 0;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     flex: 1;
 }
 
 .sidebar-nav a {
     display: block;
-    padding: 0.75rem 1.25rem;
+    padding: 0.875rem 1.25rem;
+    min-height: 2.75rem;
     color: var(--sidebar-text);
     text-decoration: none;
     border-left: 3px solid transparent;
+    touch-action: manipulation;
 }
 
 .sidebar-nav a:hover {
@@ -129,8 +136,8 @@
 
 .menu-toggle {
     position: fixed;
-    top: 1rem;
-    left: 1rem;
+    top: calc(1rem + env(safe-area-inset-top));
+    left: calc(1rem + env(safe-area-inset-left));
     z-index: 110;
     width: 2.75rem;
     height: 2.75rem;
@@ -140,12 +147,13 @@
     color: var(--sidebar-text-hover);
     font-size: 1.25rem;
     cursor: pointer;
+    touch-action: manipulation;
     box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.2);
     transition: left 0.3s ease;
 }
 
 .app-layout.menu-open .menu-toggle {
-    left: calc(var(--sidebar-width) + 1rem);
+    left: calc(min(var(--sidebar-width), 85vw) + 1rem + env(safe-area-inset-left));
 }
 
 .menu-backdrop {
@@ -164,8 +172,9 @@
 
 .main-content {
     flex: 1;
-    padding: 4.75rem 1.5rem 1.5rem;
+    padding: calc(4.75rem + env(safe-area-inset-top)) calc(1.5rem + env(safe-area-inset-right)) calc(1.5rem + env(safe-area-inset-bottom)) calc(1.5rem + env(safe-area-inset-left));
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 /* ---------- Buscador global (topbar) ---------- */
@@ -318,11 +327,7 @@
     flex-shrink: 0;
 }
 
-@media (max-width: 768px) {
-    .global-search {
-        width: calc(100vw - 5.5rem);
-    }
-}
+
 
 .visually-hidden {
     position: absolute;
@@ -338,10 +343,11 @@
 
 .auth-layout {
     min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 1rem;
+    padding: calc(1rem + env(safe-area-inset-top)) calc(1rem + env(safe-area-inset-right)) calc(1rem + env(safe-area-inset-bottom)) calc(1rem + env(safe-area-inset-left));
 }
 
 /*fondo de pantalla de inicio de sesion y registro*/
@@ -411,11 +417,55 @@
     }
 
     .app-layout.menu-open .menu-toggle {
-        left: 1rem;
+        left: calc(1rem + env(safe-area-inset-left));
+    }
+
+    /* Evita que el botón de menú (flotante sobre el sidebar en móvil) tape el título */
+    .app-layout.menu-open .sidebar-header {
+        padding-left: calc(4.5rem + env(safe-area-inset-left));
     }
 
     .main-content {
-        padding: 4.75rem 1rem 1rem;
+        padding: calc(4.75rem + env(safe-area-inset-top)) calc(1rem + env(safe-area-inset-right)) calc(1rem + env(safe-area-inset-bottom)) calc(1rem + env(safe-area-inset-left));
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .global-search {
+        top: calc(0.85rem + env(safe-area-inset-top));
+        left: calc(4.25rem + env(safe-area-inset-left));
+        right: calc(3.85rem + env(safe-area-inset-right));
+        transform: none;
+        width: auto;
+    }
+
+    .global-search-input {
+        font-size: 14px;
+        padding: 0.5rem 0.65rem;
+    }
+
+    .notif-bell {
+        top: calc(0.9rem + env(safe-area-inset-top));
+        right: calc(0.75rem + env(safe-area-inset-right));
+    }
+}
+
+@media (max-width: 480px) {
+    .landing-hero h1 {
+        font-size: 1.75rem;
+    }
+
+    .auth-card {
+        max-width: 100%;
+        padding: 1.5rem 1.15rem;
+    }
+
+    .notif-panel {
+        position: fixed;
+        top: calc(4.25rem + env(safe-area-inset-top));
+        left: calc(0.75rem + env(safe-area-inset-left));
+        right: calc(0.75rem + env(safe-area-inset-right));
+        width: auto;
+        max-width: none;
     }
 }
 
@@ -568,9 +618,5 @@
     text-align: center;
 }
 
-@media (max-width: 768px) {
-    .notif-bell {
-        right: 0.75rem;
-    }
-}
+
 

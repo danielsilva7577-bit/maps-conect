@@ -20,4 +20,7 @@ public interface SeguimientoRepository extends JpaRepository<Seguimiento, Intege
 
     long countByIdSeguidor(Integer idSeguidor);
 
+    @org.springframework.data.jpa.repository.Query("SELECT s.idSeguido FROM Seguimiento s WHERE s.idSeguidor = :idSeguidor")
+    java.util.Set<Integer> findIdsSeguidosByIdSeguidor(@org.springframework.data.repository.query.Param("idSeguidor") Integer idSeguidor);
+
 }

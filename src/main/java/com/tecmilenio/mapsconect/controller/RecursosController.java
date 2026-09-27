@@ -75,6 +75,9 @@ public class RecursosController {
     @Autowired
     private CarreraContextoService carreraContextoService;
 
+    @Autowired
+    private com.tecmilenio.mapsconect.storage.AlmacenamientoService almacenamientoService;
+
     /**
      * Lista recursos académicos visibles, filtrados por las materias del
      * plan de estudios del usuario autenticado.
@@ -194,11 +197,10 @@ public class RecursosController {
             recursoRepository.save(guardado);
 
             try {
-                Path destino = carpetaRecursos().resolve(String.valueOf(guardado.getId()));
-                Files.createDirectories(destino.getParent());
-                archivo.transferTo(destino);
-            } catch (IOException e) {
-                throw new IllegalArgumentException("No se pudo guardar el archivo del apunte");
+                almacenamientoService.guardar("recursos/" + guardado.getId(), archivo.getBytes(), archivo.getContentType());
+            } catch (Exception e) {
+                recursoRepository.delete(guardado);
+                throw new IllegalArgumentException("No se pudo guardar el archivo del apunte en el servidor");
             }
 
             recurso = guardado;
@@ -235,8 +237,7 @@ public class RecursosController {
         }
 
         try {
-            Path origen = carpetaRecursos().resolve(String.valueOf(recurso.getId()));
-            byte[] bytes = Files.readAllBytes(origen);
+            byte[] bytes = almacenamientoService.descargar("recursos/" + recurso.getId());
 
             if (recurso.getContadorDescargas() != null) {
                 recurso.setContadorDescargas(recurso.getContadorDescargas() + 1);
@@ -354,10 +355,6 @@ public class RecursosController {
         if (nombre == null) return "";
         int idx = nombre.lastIndexOf('.');
         return idx >= 0 ? nombre.substring(idx + 1).toLowerCase() : "";
-    }
-
-    private Path carpetaRecursos() {
-        return Paths.get(System.getProperty("user.dir"), "uploads", "recursos").toAbsolutePath().normalize();
     }
 
     private void validarMateriaDeCarrera(Authentication authentication, Integer idMateria) {

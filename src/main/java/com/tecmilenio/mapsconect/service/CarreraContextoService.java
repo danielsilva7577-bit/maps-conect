@@ -16,6 +16,8 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
+import lombok.RequiredArgsConstructor;
+
 /**
  * Contexto de carrera del usuario autenticado.
  *
@@ -25,6 +27,7 @@ import java.util.Set;
  * Para profesores y administradores devuelve null (sin filtro: ven todo).
  */
 @Service
+@RequiredArgsConstructor
 public class CarreraContextoService {
 
     private static final Set<String> PALABRAS_IGNORAR = Set.of(
@@ -33,17 +36,13 @@ public class CarreraContextoService {
             "ing", "ingenieria", "ingenierias", "lic", "licenciatura", "tecnico", "tecnica",
             "profesional", "especialidad", "asociado", "desarrollo");
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+    private final UsuarioRepository usuarioRepository;
 
-    @Autowired
-    private EstudianteRepository estudianteRepository;
+    private final EstudianteRepository estudianteRepository;
 
-    @Autowired
-    private CarreraRepository carreraRepository;
+    private final CarreraRepository carreraRepository;
 
-    @Autowired
-    private PlanEstudiosRepository planEstudiosRepository;
+    private final PlanEstudiosRepository planEstudiosRepository;
 
     /**
      * Nombre de la carrera activa del estudiante. null si no es estudiante
@@ -133,6 +132,13 @@ public class CarreraContextoService {
         for (String token : tokensCarrera) {
             if (tokensTexto.contains(token)) {
                 return true;
+            }
+            for (String tt : tokensTexto) {
+                if (tt.length() >= 4 && token.length() >= 4) {
+                    if (tt.startsWith(token.substring(0, 4)) || token.startsWith(tt.substring(0, 4))) {
+                        return true;
+                    }
+                }
             }
         }
         return false;

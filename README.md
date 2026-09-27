@@ -19,7 +19,7 @@ MAPS Connect es una red colaborativa que permite:
 |------|-----------|
 | **Backend** | Java 21, Spring Boot 3.3.0 |
 | **Frontend** | HTML5, CSS3, JavaScript Vanilla |
-| **BD** | MySQL 8.0 (22 entidades, 3FN) |
+| **BD** | MySQL 8.0 (27 entidades, 3FN) |
 
 ## 🚀 Quick Start
 
@@ -66,6 +66,14 @@ export DB_NAME="maps_conect"                   # Nombre de la base (prod)
 | `CORS_ORIGINS` | dev/prod | `localhost:*` (dev) | Orígenes permitidos para CORS, separados por coma |
 | `DB_USER` / `DB_PASSWORD` | dev/prod | `root` / vacío | Credenciales MySQL |
 | `DB_HOST` / `DB_PORT` / `DB_NAME` | prod | — | Configuración MySQL en producción |
+| `STORAGE_TYPE` | dev/prod | `local` | Tipo de almacenamiento: `local` (disco en uploads/) o `s3` (AWS S3 / MinIO / Cloudflare R2) |
+| `STORAGE_S3_ENDPOINT` | prod | `https://s3.amazonaws.com` | Endpoint del proveedor S3 |
+| `STORAGE_S3_BUCKET` | prod | `maps-conect-storage` | Nombre del bucket para archivos y adjuntos |
+| `STORAGE_S3_REGION` | prod | `us-east-1` | Región AWS / S3 |
+| `STORAGE_S3_ACCESS_KEY` / `SECRET_KEY` | prod | — | Credenciales IAM para firma SigV4 |
+| `REDIS_ENABLED` | prod | `false` | Activa el bus distribuido Redis Pub/Sub para SSE en clusters multi-nodo |
+| `REDIS_HOST` / `REDIS_PORT` | prod | `localhost` / `6379` | Host y puerto del cluster/instancia Redis |
+| `REDIS_PASSWORD` | prod | — | Contraseña de autenticación para Redis |
 
 ```bash
 mvn spring-boot:run -Dspring-boot.run.arguments="--spring.profiles.active=dev"
@@ -86,20 +94,33 @@ El backend servirá la aplicación (páginas estáticas + API en el mismo puerto
 - Java 21+
 - Maven 3.8+
 - MySQL 8.0+
-- Usuarios demo (entre otros): `al07080560@tecmilenio.mx` / `DemoMaps2026!` (estudiante),
-  `al07080562@tecmilenio.mx` / `DemoMaps2026!` (estudiante de semestre 6, para Semestre Empresarial),
-  `al07080561@tecmilenio.mx` / `DemoMaps2026!` (docente)
+- Usuarios demo (contraseña universal: `DemoMaps2026!`):
 
-## 🧪 Páginas nuevas para verificación visual
+| Carrera / Rol | Correo Demo | Rol | Semestre | Contraseña |
+|---|---|---|---|---|
+| **Software (ISSC)** | `al07080560@tecmilenio.mx` *(o `al.software@tecmilenio.mx`)* | Estudiante | Semestre 3 / 5 | `DemoMaps2026!` |
+| **Industrial (INDS)** | `al.industrial@tecmilenio.mx` | Estudiante | Semestre 5 | `DemoMaps2026!` |
+| **Mecatrónica (IMTC)** | `al.mecatronica@tecmilenio.mx` | Estudiante | Semestre 6 | `DemoMaps2026!` |
+| **Administración (LADM)** | `al.administracion@tecmilenio.mx` | Estudiante | Semestre 4 | `DemoMaps2026!` |
+| **Comercio Internacional (LCIN)** | `al.comercio@tecmilenio.mx` | Estudiante | Semestre 5 | `DemoMaps2026!` |
+| **Mercadotecnia (LMKT)** | `al.mercadotecnia@tecmilenio.mx` | Estudiante | Semestre 6 | `DemoMaps2026!` |
+| **Psicología (LPSI)** | `al.psicologia@tecmilenio.mx` | Estudiante | Semestre 5 | `DemoMaps2026!` |
+| **Derecho (LDRC)** | `al.derecho@tecmilenio.mx` | Estudiante | Semestre 8 | `DemoMaps2026!` |
+| **Docente (General / Software)** | `al07080561@tecmilenio.mx` *(o `docente1.demo@tecmilenio.mx`)* | Profesor | — | `DemoMaps2026!` |
+| **Docentes por carrera** | `docente.industrial@tecmilenio.mx`, `docente.mecatronica@tecmilenio.mx`, etc. | Profesor | — | `DemoMaps2026!` |
+| **Administrador** | `admin@tecmilenio.mx` *(o `admin1.demo@tecmilenio.mx`)* | Administrador | — | `DemoMaps2026!` |
+
+## 🧪 Páginas nuevas para verificación visual en demostración
 
 Abrir `http://localhost:8080/api/pages/inicio.html`, iniciar sesión (Ctrl+F5 para tomar las
 versiones `?v=` del cache-busting) y revisar:
 
 | Página | URL | Qué verificar |
 |--------|-----|---------------|
-| Inicio | `inicio.html` | Con login de docente: banner "Bienvenido, Docente" y sin quick-question |
-| Semestre Empresarial | `empresarial.html` | Filtro por sector, chip "Sector:" y crear, editar o eliminar tu propia reseña (login sem 6) |
-| Mi Ruta MAPS | `certificados.html` | Ruta y catálogo con semestres/materias, botón "Añadir a mi ruta" (login sem 6) y ruta llena (login sem 3) |
+| **Inicio** | `inicio.html` | Feed personalizado por carrera. Con login de docente: banner de supervisión global. |
+| **Semestre Empresarial** | `empresarial.html` | Reseñas completas en empresas top (IBM, Ternium, Bosch, FEMSA, Ryder, PepsiCo, IMSS, BBVA). Ver tarjetas con experiencias destacadas, estrellas y modal de reseñas. |
+| **Círculos de Estudio** | `circulos.html` | Círculos permanentes de la carrera en el panel lateral ("Tus grupos permanentes"), sesiones de repaso agendadas para los próximos días con modal para unirse/crear sesiones. |
+| **Mi Ruta MAPS** | `certificados.html` | Ruta y catálogo con semestres/materias y botón "Añadir a mi ruta". |
 
 ## 🔐 Autenticación
 
@@ -132,6 +153,21 @@ maps-conect/
 | 6️⃣ Mensajes | Chat 1 a 1 estudiante-profesor |
 | 7️⃣ Empresarial | Reseñas y experiencias vinculación |
 | 8️⃣ Círculos | Grupos de estudio colaborativos |
+
+## 🚀 Escalabilidad Horizontal y Arquitectura Cluster
+
+MAPS Connect está preparado para ejecutarse tanto como nodo único (desarrollo local sin dependencias extras) como en un **cluster distribuido de alta disponibilidad** detrás de un balanceador de carga (Nginx, AWS ALB, Cloudflare, Kubernetes):
+
+1. **Almacenamiento Desacoplado (`com.tecmilenio.mapsconect.storage`)**:
+   - `local`: Guarda archivos de recursos y adjuntos en disco (`uploads/`) con protección path-traversal.
+   - `s3`: Compatible con Amazon S3, MinIO o Cloudflare R2 mediante firma nativa AWS SigV4 (sin dependencias pesadas). Permite que cualquier nodo atienda descargas y cargas de archivos sin discrepancias de estado.
+2. **Bus de Eventos Distribuido (`com.tecmilenio.mapsconect.messaging`)**:
+   - `local`: Emisión en memoria para conexiones SSE en una sola máquina.
+   - `redis`: Activa Redis Pub/Sub (`mapsconect:cluster:eventos`). Cuando un estudiante envía un mensaje o notificación en el nodo A, el evento se retransmite a través de Redis para que el nodo B lo empuje inmediatamente al navegador del destinatario vía Server-Sent Events (SSE).
+3. **Persistencia y Concurrencia**:
+   - Paginación filtrada directamente en motor SQL (`WHERE p.id_materia IN (...)`).
+   - Transacciones atómicas (`@Transactional`) para inscripciones concurrentes a sesiones de estudio evitando sobrecupos.
+   - Autenticación Stateless basada en JWT, permitiendo balancear peticiones HTTP tipo round-robin sin sticky sessions obligatorias.
 
 ## 🔗 Enlaces
 

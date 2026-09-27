@@ -220,15 +220,25 @@ public class UsuarioController {
             item.put("titulo", fila[0]);
             item.put("detalle", fila[1]);
             item.put("tipo", "duda");
-            String fecha = "";
-            if (fila[2] != null) {
-                java.sql.Timestamp ts = (java.sql.Timestamp) fila[2];
-                fecha = ts.toLocalDateTime().format(FORMATO_FECHA);
-            }
+            String fecha = formatearFechaAporte(fila[2]);
             item.put("meta", fecha + (fila[3] != null ? " • " + fila[3] + " respuestas" : ""));
             aportes.add(item);
         }
         return aportes;
+    }
+
+    private String formatearFechaAporte(Object o) {
+        if (o == null) return "";
+        if (o instanceof java.time.LocalDateTime lt) {
+            return lt.format(FORMATO_FECHA);
+        }
+        if (o instanceof java.sql.Timestamp ts) {
+            return ts.toLocalDateTime().format(FORMATO_FECHA);
+        }
+        if (o instanceof java.util.Date d) {
+            return new java.sql.Timestamp(d.getTime()).toLocalDateTime().format(FORMATO_FECHA);
+        }
+        return String.valueOf(o);
     }
 
     private List<Map<String, Object>> aportesProfesor(Integer idUsuario) {

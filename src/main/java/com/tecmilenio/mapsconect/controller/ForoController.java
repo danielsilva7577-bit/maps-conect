@@ -93,11 +93,17 @@ public class ForoController {
         int safeSize = Math.max(1, Math.min(size, 100));
         int offset = Math.max(0, page) * safeSize;
 
-        List<PublicacionDTO> publicaciones = publicacionRepository.findForoConDetallesPaginado(safeSize, offset).stream()
-                .filter(fila -> materiasCarrera == null
-                        || fila[5] == null
-                        || materiasCarrera.contains(((Number) fila[5]).intValue()))
-                .map(fila -> mapear(fila, yo.getId()))
+        java.util.Set<Integer> seguidos = seguimientoRepository.findIdsSeguidosByIdSeguidor(yo.getId());
+
+        List<Object[]> filas;
+        if (materiasCarrera != null && !materiasCarrera.isEmpty()) {
+            filas = publicacionRepository.findForoConDetallesPaginadoPorMaterias(materiasCarrera, safeSize, offset);
+        } else {
+            filas = publicacionRepository.findForoConDetallesPaginado(safeSize, offset);
+        }
+
+        List<PublicacionDTO> publicaciones = filas.stream()
+                .map(fila -> mapear(fila, yo.getId(), seguidos))
                 .collect(Collectors.toList());
         return ResponseEntity.ok(ApiResponse.success(publicaciones, "Foro obtenido"));
     }
@@ -158,7 +164,7 @@ public class ForoController {
                 .body(ApiResponse.success(creada, "Respuesta publicada correctamente"));
     }
 
-    private PublicacionDTO mapear(Object[] fila, Integer idYo) {
+    private PublicacionDTO mapear(Object[] fila, Integer idYo, java.util.Set<Integer> seguidos) {
         Integer id = ((Number) fila[0]).intValue();
         String titulo = (String) fila[1];
         String contenido = (String) fila[2];
@@ -169,8 +175,7 @@ public class ForoController {
         boolean resuelto = esVerdadero(fila[9]);
         String solucion = (String) fila[10];
         Integer autorId = fila[12] == null ? null : ((Number) fila[12]).intValue();
-        boolean siguiendo = autorId != null
-                && seguimientoRepository.existsByIdSeguidorAndIdSeguido(idYo, autorId);
+        boolean siguiendo = autorId != null && seguidos != null && seguidos.contains(autorId);
 
         String tiempo = aLocalDateTime(fila[4]) != null ? aLocalDateTime(fila[4]).format(FECHA) : "";
 

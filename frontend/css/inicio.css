@@ -93,6 +93,24 @@
     }
 }
 
+@media (max-width: 560px) {
+    .inicio-container .post-header,
+    .inicio-container .post-footer,
+    .inicio-container .create-post-actions {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+    .inicio-container .create-post-actions select,
+    .inicio-container .create-post-actions .btn-solid {
+        max-width: none;
+        width: 100%;
+    }
+    .inicio-container .progress-labels {
+        flex-direction: column;
+        gap: 0.125rem;
+    }
+}
+
 /* --- Caja de publicar --- */
 .inicio-container .create-post input {
     width: 100%;
@@ -100,7 +118,7 @@
     border: 1px solid #dcdfe6;
     margin-bottom: 12px;
     outline: none;
-    font-size: 0.9rem;
+    font-size: 16px;
 }
 
 .inicio-container .create-post-actions {

@@ -65,18 +65,31 @@ public class EmpresarialController {
             @RequestParam(required = false) String busqueda,
             @RequestParam(required = false) String modalidad,
             @RequestParam(required = false) Double calificacionMinima,
+            @RequestParam(required = false, defaultValue = "false") Boolean todas,
             Authentication authentication) {
 
         String carreraFiltrada = carreraContextoService.carreraDelUsuario(
                 authentication == null ? null : authentication.getName());
 
+        Set<String> tokensCarrera = (!Boolean.TRUE.equals(todas) && carreraFiltrada != null && !carreraFiltrada.isBlank())
+                ? carreraContextoService.tokensSignificativos(carreraFiltrada)
+                : null;
+
         List<Object[]> filas = (busqueda != null && !busqueda.isBlank())
                 ? empresaRepository.findEmpresasConFiltro(busqueda)
                 : empresaRepository.findEmpresasConPromedio();
 
+        Map<Integer, Map<String, Object>> experienciasPorEmpresa = cargarMejoresExperiencias();
+
         List<Map<String, Object>> empresas = new ArrayList<>();
         for (Object[] fila : filas) {
-            Map<String, Object> empresa = mapear(fila);
+            String carrerasAfines = fila.length > 5 && fila[5] != null ? (String) fila[5] : "";
+            if (tokensCarrera != null && !tokensCarrera.isEmpty()
+                    && !carreraContextoService.coincide(carrerasAfines, tokensCarrera)) {
+                continue;
+            }
+            Integer idEmpresa = ((Number) fila[0]).intValue();
+            Map<String, Object> empresa = mapear(fila, experienciasPorEmpresa.get(idEmpresa));
             if (calificacionMinima != null) {
                 Double cal = (Double) empresa.get("calificacion");
                 if (cal == null || cal < calificacionMinima) continue;
@@ -88,6 +101,7 @@ public class EmpresarialController {
         if (carreraFiltrada != null && !carreraFiltrada.isBlank()) {
             data.put("carreraFiltrada", carreraFiltrada);
         }
+        data.put("filtradoPorCarrera", tokensCarrera != null && !tokensCarrera.isEmpty());
         data.put("empresas", empresas);
         return ResponseEntity.ok(ApiResponse.success(data, "Empresas obtenidas"));
     }
@@ -249,7 +263,7 @@ public class EmpresarialController {
         return ResponseEntity.ok(ApiResponse.success(Map.of(), "Experiencia eliminada correctamente"));
     }
 
-    private Map<String, Object> mapear(Object[] fila) {
+    private Map<String, Object> mapear(Object[] fila, Map<String, Object> experiencia) {
         Integer id = ((Number) fila[0]).intValue();
         String nombre = (String) fila[1];
         String sector = (String) fila[2];
@@ -274,7 +288,6 @@ public class EmpresarialController {
         empresa.put("convenioActivo", Boolean.FALSE);
         empresa.put("tecnologias", List.of());
 
-        Map<String, Object> experiencia = experienciaDestacada(id);
         if (experiencia != null) {
             empresa.put("experienciaDestacada", experiencia);
         }
@@ -282,30 +295,26 @@ public class EmpresarialController {
         return empresa;
     }
 
-    private Map<String, Object> experienciaDestacada(Integer idEmpresa) {
-        Object[] mejor = null;
-        for (Object[] fila : resenaRepository.listarConAutor(idEmpresa)) {
-            if (mejor == null
-                    || ((Number) fila[1]).intValue() > ((Number) mejor[1]).intValue()) {
-                mejor = fila;
+    private Map<Integer, Map<String, Object>> cargarMejoresExperiencias() {
+        Map<Integer, Map<String, Object>> res = new HashMap<>();
+        for (Object[] fila : resenaRepository.listarTodasConAutor()) {
+            Integer idEmpresa = ((Number) fila[0]).intValue();
+            if (res.containsKey(idEmpresa)) {
+                continue;
             }
+            String texto = fila[3] != null && !fila[3].toString().isBlank()
+                    ? fila[3].toString()
+                    : fila[2] == null ? "" : fila[2].toString();
+            if (texto.isBlank()) {
+                continue;
+            }
+            Map<String, Object> exp = new HashMap<>();
+            exp.put("autor", fila[6]);
+            exp.put("semestre", fila[8] == null ? "" : fila[8].toString());
+            exp.put("texto", texto);
+            res.put(idEmpresa, exp);
         }
-        if (mejor == null) {
-            return null;
-        }
-
-        String texto = mejor[3] != null && !mejor[3].toString().isBlank()
-                ? mejor[3].toString()
-                : mejor[2] == null ? "" : mejor[2].toString();
-        if (texto.isBlank()) {
-            return null;
-        }
-
-        Map<String, Object> exp = new HashMap<>();
-        exp.put("autor", mejor[6]);
-        exp.put("semestre", mejor[8] == null ? "" : mejor[8].toString());
-        exp.put("texto", texto);
-        return exp;
+        return res;
     }
 
 }

@@ -97,7 +97,7 @@ class MensajesControllerTest {
                 .preview("Hola").tiempo("10:30").fechaUltimoMensaje("2024-01-01T10:30")
                 .build();
 
-        when(mensajeService.listarConversaciones(EMAIL)).thenReturn(List.of(dto));
+        when(mensajeService.listarConversaciones(eq(EMAIL), anyInt(), anyInt())).thenReturn(List.of(dto));
 
         mockMvc.perform(withAuth(get("/mensajes")))
                 .andExpect(status().isOk())
@@ -107,7 +107,7 @@ class MensajesControllerTest {
                 .andExpect(jsonPath("$.data[0].nombre").value("Prof. García"))
                 .andExpect(jsonPath("$.data[0].esProf").value(true));
 
-        verify(mensajeService).listarConversaciones(EMAIL);
+        verify(mensajeService).listarConversaciones(eq(EMAIL), anyInt(), anyInt());
     }
 
     // ─── CREAR CONVERSACIÓN ────────────────────────────────────────────────────

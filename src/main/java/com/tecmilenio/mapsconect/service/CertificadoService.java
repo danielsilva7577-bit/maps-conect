@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import lombok.RequiredArgsConstructor;
+
 /**
  * Servicio de certificados académicos MAPS Connect.
  *
@@ -35,18 +37,16 @@ import java.util.stream.Collectors;
  * {@link EntityManager} para evitar múltiples queries individuales.</p>
  */
 @Service
+@RequiredArgsConstructor
 public class CertificadoService {
 
     private static final int MAX_CERTIFICADOS_POR_ESTUDIANTE = 3;
 
-    @Autowired
-    private CertificadoRepository certificadoRepository;
+    private final CertificadoRepository certificadoRepository;
 
-    @Autowired
-    private CertificadoMateriaRepository certificadoMateriaRepository;
+    private final CertificadoMateriaRepository certificadoMateriaRepository;
 
-    @Autowired
-    private EstudianteCertificadoRepository estudianteCertificadoRepository;
+    private final EstudianteCertificadoRepository estudianteCertificadoRepository;
 
     @PersistenceContext
     private EntityManager entityManager;

@@ -10,7 +10,7 @@ import com.tecmilenio.mapsconect.service.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -41,10 +41,10 @@ import java.util.Map;
 @Tag(name = "Autenticación", description = "Registro, login y estado de perfil")
 @RestController
 @RequestMapping("/auth")
+@RequiredArgsConstructor
 public class AuthController {
 
-    @Autowired
-    private UsuarioService usuarioService;
+    private final UsuarioService usuarioService;
 
     @Operation(
             summary = "Registrar nuevo usuario",
@@ -65,7 +65,17 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<TokenDTO>> login(@Valid @RequestBody LoginDTO loginDTO,
             jakarta.servlet.http.HttpServletRequest request) {
-        TokenDTO token = usuarioService.login(loginDTO, request.getRemoteAddr());
+        String ip = request.getHeader("CF-Connecting-IP");
+        if (ip == null || ip.isBlank()) {
+            ip = request.getHeader("X-Forwarded-For");
+        }
+        if (ip != null && ip.contains(",")) {
+            ip = ip.substring(0, ip.indexOf(',')).trim();
+        }
+        if (ip == null || ip.isBlank()) {
+            ip = request.getRemoteAddr();
+        }
+        TokenDTO token = usuarioService.login(loginDTO, ip);
         return ResponseEntity.ok(ApiResponse.success(token, "Sesión iniciada correctamente"));
     }
 
@@ -104,6 +114,29 @@ public class AuthController {
 
         usuarioService.completarOnboardingProfesor(emailDeSesion(authentication), dto);
         return ResponseEntity.ok(ApiResponse.success(null, "Perfil de docente completado"));
+    }
+
+    @Operation(
+            summary = "Renovar access token",
+            description = "Intercambia un refresh token válido por un nuevo par de tokens (rotación). "
+                    + "El refresh token usado queda revocado inmediatamente."
+    )
+    @PostMapping("/refresh")
+    public ResponseEntity<ApiResponse<TokenDTO>> refresh(
+            @Valid @RequestBody com.tecmilenio.mapsconect.dto.RefreshRequestDTO request) {
+        TokenDTO tokens = usuarioService.renovarToken(request.getRefreshToken());
+        return ResponseEntity.ok(ApiResponse.success(tokens, "Token renovado correctamente"));
+    }
+
+    @Operation(
+            summary = "Cerrar sesión",
+            description = "Revoca todos los refresh tokens del usuario autenticado. "
+                    + "El access token sigue siendo válido hasta su expiración natural."
+    )
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponse<Void>> logout(Authentication authentication) {
+        usuarioService.logout(emailDeSesion(authentication));
+        return ResponseEntity.ok(ApiResponse.success(null, "Sesión cerrada correctamente"));
     }
 
     private String emailDeSesion(Authentication authentication) {

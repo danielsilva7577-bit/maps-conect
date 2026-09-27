@@ -5,6 +5,8 @@ import com.tecmilenio.mapsconect.entity.TipAcademico;
 import com.tecmilenio.mapsconect.entity.Usuario;
 import com.tecmilenio.mapsconect.entity.VotoTip;
 import com.tecmilenio.mapsconect.exception.ResourceNotFoundException;
+import com.tecmilenio.mapsconect.repository.MateriaRepository;
+import com.tecmilenio.mapsconect.entity.Materia;
 import com.tecmilenio.mapsconect.repository.TipRepository;
 import com.tecmilenio.mapsconect.repository.UsuarioRepository;
 import com.tecmilenio.mapsconect.repository.VotoTipRepository;
@@ -17,8 +19,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * Servicio de tips académicos.
@@ -35,28 +40,28 @@ import java.util.stream.Collectors;
  * {@link EntityManager}.</p>
  */
 @Service
+@RequiredArgsConstructor
 public class TipService {
 
     private static final DateTimeFormatter FECHA_TIP = DateTimeFormatter.ofPattern("d 'de' MMMM");
 
-    @Autowired
-    private TipRepository tipRepository;
+    private final TipRepository tipRepository;
 
-    @Autowired
-    private VotoTipRepository votoTipRepository;
+    private final VotoTipRepository votoTipRepository;
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+    private final UsuarioRepository usuarioRepository;
 
-    @Autowired
-    private CarreraContextoService carreraContextoService;
+    private final MateriaRepository materiaRepository;
+
+    private final CarreraContextoService carreraContextoService;
 
     @PersistenceContext
     private EntityManager entityManager;
 
     public List<TipDTO> listar() {
+        Map<Integer, String> materiasMap = cargarMapaMaterias();
         return tipRepository.findAllByOrderByTotalVotosDesc().stream()
-                .map(this::mapearADTO)
+                .map(t -> mapearADTO(t, materiasMap))
                 .collect(Collectors.toList());
     }
 
@@ -66,9 +71,10 @@ public class TipService {
      */
     public List<TipDTO> listarPara(String email) {
         Set<Integer> materiasCarrera = carreraContextoService.materiasDeCarrera(email);
+        Map<Integer, String> materiasMap = cargarMapaMaterias();
         return tipRepository.findAllByOrderByTotalVotosDesc().stream()
                 .filter(t -> materiasCarrera == null || materiasCarrera.contains(t.getIdMateria()))
-                .map(this::mapearADTO)
+                .map(t -> mapearADTO(t, materiasMap))
                 .collect(Collectors.toList());
     }
 
@@ -76,8 +82,9 @@ public class TipService {
         if (idMateria == null) {
             return List.of();
         }
+        Map<Integer, String> materiasMap = cargarMapaMaterias();
         return tipRepository.findByIdMateriaOrderByTotalVotosDesc(idMateria).stream()
-                .map(this::mapearADTO)
+                .map(t -> mapearADTO(t, materiasMap))
                 .collect(Collectors.toList());
     }
 
@@ -106,6 +113,7 @@ public class TipService {
         return mapearADTO(tipRepository.save(tip));
     }
 
+    @Transactional
     public TipDTO votar(String email, Integer idTip) {
         Usuario usuario = usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
@@ -123,7 +131,11 @@ public class TipService {
                 .fechaVoto(LocalDateTime.now())
                 .build());
 
-        return mapearADTO(tipRepository.findById(idTip).orElseThrow());
+        // El trigger MySQL incrementa total_votos en la tabla tips_academicos.
+        // Sincronizamos en memoria para que el DTO devuelto por la API refleje el nuevo conteo:
+        tip.setTotalVotos(tip.getTotalVotos() == null ? 1 : tip.getTotalVotos() + 1);
+
+        return mapearADTO(tip);
     }
 
     @Transactional
@@ -135,10 +147,25 @@ public class TipService {
                 .orElseThrow(() -> new IllegalArgumentException("No has votado este tip"));
 
         votoTipRepository.delete(voto);
+
+        tipRepository.findById(idTip).ifPresent(tip -> {
+            tip.setTotalVotos(Math.max(0, (tip.getTotalVotos() == null ? 1 : tip.getTotalVotos()) - 1));
+        });
+    }
+
+    private Map<Integer, String> cargarMapaMaterias() {
+        return materiaRepository.findAll().stream()
+                .collect(Collectors.toMap(Materia::getId, Materia::getNombre, (a, b) -> a));
     }
 
     private TipDTO mapearADTO(TipAcademico tip) {
-        String nombreMateria = obtenerNombreMateria(tip.getIdMateria());
+        return mapearADTO(tip, null);
+    }
+
+    private TipDTO mapearADTO(TipAcademico tip, Map<Integer, String> materiasMap) {
+        String nombreMateria = (materiasMap != null && tip.getIdMateria() != null)
+                ? materiasMap.get(tip.getIdMateria())
+                : obtenerNombreMateria(tip.getIdMateria());
 
         String titulo = tip.getContenido() == null ? "" : tip.getContenido().trim();
         if (titulo.contains("\n")) {

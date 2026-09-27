@@ -20,7 +20,7 @@ const Utils = {
     avatarHtml(nombre, foto, clase = 'avatar', alt = '') {
         const safe = this.esc(alt || nombre || 'usuario');
         if (foto) {
-            return `<img class="${this.esc(clase)} avatar-foto" src="${foto}" alt="${safe}">`;
+            return `<img class="${this.esc(clase)} avatar-foto" src="${this.esc(foto)}" alt="${safe}">`;
         }
         return `<span class="${this.esc(clase)}" aria-hidden="true">${this.esc(this.iniciales(nombre))}</span>`;
     },

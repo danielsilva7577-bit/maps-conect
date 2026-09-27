@@ -37,6 +37,7 @@ import com.tecmilenio.mapsconect.security.JwtAuthenticationFilter;
  */
 @Configuration
 @EnableWebSecurity
+@org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 public class SecurityConfig {
 
     /**
@@ -146,14 +147,21 @@ public class SecurityConfig {
             // Definición de rutas públicas vs autenticadas
             .authorizeHttpRequests(authz -> authz
                 // Rutas de autenticación: acceso público (no requieren token)
-                .requestMatchers("/auth/login", "/auth/registrar").permitAll()
+                .requestMatchers("/auth/login", "/auth/registrar", "/auth/refresh").permitAll()
                 // Health check: acceso público
                 .requestMatchers("/health").permitAll()
+                // Documentación OpenAPI y Swagger UI: acceso público
+                .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
                 // Recursos estáticos del frontend: acceso público
                 .requestMatchers(
                     "/", "/index.html", "/login.html", "/registro.html", "/onboarding.html",
                     "/pages/**", "/css/**", "/js/**", "/assets/**",
                     "/favicon.ico", "/robots.txt", "/sw.js").permitAll()
+                // Todo lo demás requiere autenticación válida
+                // Módulo administrativo: exclusivo para rol ADMINISTRADOR
+                .requestMatchers("/admin/**").hasRole("ADMINISTRADOR")
+                // Módulo docente: exclusivo para rol PROFESOR
+                .requestMatchers("/docente/**").hasRole("PROFESOR")
                 // Todo lo demás requiere autenticación válida
                 .anyRequest().authenticated()
             )

@@ -2,7 +2,11 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+    <meta name="theme-color" content="#087527">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Registro | MAPS Connect</title>
     <script>try{if(localStorage.getItem('tema-maps')==='oscuro'){document.documentElement.classList.add('dark-mode')}}catch(e){}</script>
     <script src="js/estilos.js?v=26"></script>
@@ -72,7 +76,7 @@
             </div>
             <div class="form-group">
                 <label for="email">Correo institucional</label>
-                <input type="email" id="email" class="form-control" required placeholder="tu_correo@tecmilenio.mx">
+                <input type="email" id="email" class="form-control" required placeholder="tu_correo@tecmilenio.mx" autocomplete="email" autocapitalize="none" autocorrect="off" spellcheck="false">
                 <div class="form-hint">Usa tu correo @tecmilenio.mx o @servicios.tecmilenio.mx</div>
             </div>
             <div class="form-group">

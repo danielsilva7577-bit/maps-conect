@@ -18,11 +18,14 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import lombok.RequiredArgsConstructor;
+
 /**
  * Construye los reportes institucionales a partir de los datos reales de la
  * plataforma y los convierte a CSV o PDF sin depender del navegador.
  */
 @Service
+@RequiredArgsConstructor
 public class ReporteInstitucionalService {
 
     private static final Charset WINDOWS_1252 = Charset.forName("windows-1252");
@@ -30,10 +33,6 @@ public class ReporteInstitucionalService {
     private static final DateTimeFormatter FECHA_HORA = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
     private final JdbcTemplate jdbcTemplate;
-
-    public ReporteInstitucionalService(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
     public Reporte generar(String tipoSolicitado, String cicloSolicitado) {
         TipoReporte tipo = TipoReporte.desde(tipoSolicitado);

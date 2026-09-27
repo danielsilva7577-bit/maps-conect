@@ -7,7 +7,7 @@
 .empresarial-container .card, .empresarial-container .btn, .empresarial-container .badge, .empresarial-container input, .empresarial-container select { border-radius: 0; }
 .filter-bar { display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 0.625rem; margin-bottom: 1.5rem; }
 .filter-note { display: inline-block; margin-top: 0.5rem; padding: 0.35rem 0.625rem; background: var(--accent-soft, #e8f5e9); border: 1px solid var(--accent-soft-border, #c8e6c9); color: var(--sidebar-bg); font-size: 0.83rem; }
-.input-search, .select-filter { min-width: 0; padding: 0.625rem 0.75rem; border: 1px solid var(--gray-300); background: white; font: inherit; font-size: 0.9rem; }
+.input-search, .select-filter { min-width: 0; padding: 0.625rem 0.75rem; border: 1px solid var(--gray-300); background: white; font: inherit; font-size: 16px; }
 .input-search:focus, .select-filter:focus { outline: none; border-color: var(--sidebar-bg); }
 .company-card { margin-bottom: 1.75rem; padding: 1.25rem; }
 .company-header, .company-footer { display: flex; justify-content: space-between; gap: 1rem; }
@@ -73,7 +73,7 @@
 .star-btn { border: none; background: transparent; font-size: 1.75rem; line-height: 1; color: var(--gray-300); cursor: pointer; padding: 0; }
 .star-btn.is-selected { color: var(--warning-color); }
 .star-picker-label { margin-left: 0.75rem; color: var(--gray-500); font-size: 0.82rem; }
-.resena-input { width: 100%; border: 1px solid var(--gray-300); background: white; padding: 0.625rem 0.75rem; font: inherit; font-size: 0.9rem; resize: vertical; border-radius: 0; }
+.resena-input { width: 100%; border: 1px solid var(--gray-300); background: white; padding: 0.625rem 0.75rem; font: inherit; font-size: 16px; resize: vertical; border-radius: 0; }
 .resena-input:focus { outline: none; border-color: var(--sidebar-bg); }
 .resena-actions { display: flex; justify-content: flex-end; margin-bottom: 0; }
 .resena-form .btn-solid:disabled { opacity: 0.6; cursor: not-allowed; }

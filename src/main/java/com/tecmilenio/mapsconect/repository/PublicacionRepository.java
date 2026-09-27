@@ -127,6 +127,29 @@ public interface PublicacionRepository extends JpaRepository<Publicacion, Intege
     List<Object[]> findForoConDetallesPaginado(@Param("limit") int limit, @Param("offset") int offset);
 
     @Query(value = """
+        SELECT p.id_publicacion, p.titulo, p.contenido, p.estado,
+               p.fecha_publicacion, p.id_materia,
+               u.nombre_completo AS autor,
+               m.nombre_materia AS materia,
+               (SELECT COUNT(*) FROM respuestas r WHERE r.id_publicacion = p.id_publicacion) AS respuestas,
+               CASE WHEN p.estado = 'resuelta' THEN TRUE ELSE FALSE END AS resuelto,
+               (SELECT r2.contenido FROM respuestas r2 WHERE r2.id_respuesta = p.id_respuesta_aceptada) AS solucion,
+               (SELECT e.semestre_actual FROM estudiantes e WHERE e.id_estudiante = p.id_estudiante) AS semestre,
+               u.id_usuario AS autor_id,
+               u.foto_url AS autor_foto
+        FROM publicaciones p
+        JOIN usuarios u ON u.id_usuario = (SELECT e.id_usuario FROM estudiantes e WHERE e.id_estudiante = p.id_estudiante)
+        LEFT JOIN materias m ON m.id_materia = p.id_materia
+        WHERE p.id_materia IS NULL OR p.id_materia IN (:materias)
+        ORDER BY p.fecha_publicacion DESC
+        LIMIT :limit OFFSET :offset
+        """, nativeQuery = true)
+    List<Object[]> findForoConDetallesPaginadoPorMaterias(
+            @Param("materias") java.util.Collection<Integer> materias,
+            @Param("limit") int limit,
+            @Param("offset") int offset);
+
+    @Query(value = """
         SELECT p.id_publicacion, p.titulo, p.contenido, m.nombre_materia AS materia, u.nombre_completo AS autor
         FROM publicaciones p
         JOIN usuarios u ON u.id_usuario = (SELECT e.id_usuario FROM estudiantes e WHERE e.id_estudiante = p.id_estudiante)

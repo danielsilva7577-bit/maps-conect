@@ -27,9 +27,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.tecmilenio.mapsconect.repository.RefreshTokenRepository;
+import com.tecmilenio.mapsconect.entity.RefreshToken;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * Servicio principal de usuarios.
@@ -47,34 +54,28 @@ import java.util.Map;
  * @see LoginRateLimiter
  */
 @Service
+@RequiredArgsConstructor
 public class UsuarioService {
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+    private final UsuarioRepository usuarioRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    @Autowired
-    private LoginRateLimiter loginRateLimiter;
+    private final LoginRateLimiter loginRateLimiter;
 
-    @Autowired
-    private EstudianteRepository estudianteRepository;
+    private final EstudianteRepository estudianteRepository;
 
-    @Autowired
-    private ProfesorRepository profesorRepository;
+    private final ProfesorRepository profesorRepository;
 
-    @Autowired
-    private ProfesorMateriaRepository profesorMateriaRepository;
+    private final ProfesorMateriaRepository profesorMateriaRepository;
 
-    @Autowired
-    private ProfesorCertificadoRepository profesorCertificadoRepository;
+    private final ProfesorCertificadoRepository profesorCertificadoRepository;
 
-    @Autowired
-    private EstudianteMateriaRepository estudianteMateriaRepository;
+    private final EstudianteMateriaRepository estudianteMateriaRepository;
+
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Transactional
     public TokenDTO registrar(RegistroDTO registroDTO) {
@@ -84,9 +85,16 @@ public class UsuarioService {
 
         Usuario.Rol rol = resolverRol(registroDTO.getRol());
 
-        if (rol == Usuario.Rol.PROFESOR && (registroDTO.getNumeroNomina() == null
-                || registroDTO.getNumeroNomina().trim().isEmpty())) {
-            throw new IllegalArgumentException("El número de nómina es obligatorio para docentes");
+        String nominaDocente = null;
+        if (rol == Usuario.Rol.PROFESOR) {
+            if (registroDTO.getNumeroNomina() == null
+                    || registroDTO.getNumeroNomina().trim().isEmpty()) {
+                throw new IllegalArgumentException("El número de nómina es obligatorio para docentes");
+            }
+            nominaDocente = registroDTO.getNumeroNomina().trim();
+            if (profesorRepository.existsByNumeroNomina(nominaDocente)) {
+                throw new com.tecmilenio.mapsconect.exception.ConflictoException("El número de nómina ya está registrado");
+            }
         }
 
         Usuario usuario = Usuario.builder()
@@ -99,40 +107,31 @@ public class UsuarioService {
 
         Usuario usuarioGuardado = usuarioRepository.save(usuario);
 
-        if (rol == Usuario.Rol.PROFESOR && !profesorRepository.existsByNumeroNomina(
-                registroDTO.getNumeroNomina().trim())) {
+        if (rol == Usuario.Rol.PROFESOR) {
             profesorRepository.save(Profesor.builder()
                     .idUsuario(usuarioGuardado.getId())
-                    .numeroNomina(registroDTO.getNumeroNomina().trim())
+                    .numeroNomina(nominaDocente)
                     .disponibleChat(true)
                     .build());
         }
 
-        String token = jwtTokenProvider.generateToken(usuarioGuardado.getEmail());
-
-        return TokenDTO.builder()
-                .token(token)
-                .tipo("Bearer")
-                .expiresIn(jwtTokenProvider.getExpiresInSeconds())
-                .usuario(mapearADTO(usuarioGuardado))
-                .build();
+        return construirTokenDTO(usuarioGuardado);
     }
 
     public TokenDTO login(LoginDTO loginDTO, String ipCliente) {
         String clave = (ipCliente == null || ipCliente.isBlank())
                 ? "EMAIL:" + loginDTO.getEmail().toLowerCase()
-                : ipCliente;
+                : ipCliente + ":" + loginDTO.getEmail().toLowerCase();
 
         Long bloqueado = loginRateLimiter.tiempoRestanteBloqueo(clave);
         if (bloqueado != null) {
-            throw new IllegalStateException(
-                    "Demasiados intentos fallidos. Intenta de nuevo en " + bloqueado + " segundos.");
+            throw new com.tecmilenio.mapsconect.exception.TooManyRequestsException(
+                    "Demasiados intentos fallidos. Intenta de nuevo en " + bloqueado + " segundos.", bloqueado);
         }
 
         Usuario usuario = usuarioRepository.findByEmail(loginDTO.getEmail()).orElse(null);
         boolean valido = usuario != null
-                && passwordEncoder.matches(loginDTO.getContrasena(),
-                        usuario == null ? "" : usuario.getContrasena());
+                && passwordEncoder.matches(loginDTO.getContrasena(), usuario.getContrasena());
 
         if (!valido) {
             loginRateLimiter.registrarFallo(clave);
@@ -145,14 +144,7 @@ public class UsuarioService {
         }
 
         loginRateLimiter.registrarExito(clave);
-        String token = jwtTokenProvider.generateToken(usuario.getEmail());
-
-        return TokenDTO.builder()
-                .token(token)
-                .tipo("Bearer")
-                .expiresIn(jwtTokenProvider.getExpiresInSeconds())
-                .usuario(mapearADTO(usuario))
-                .build();
+        return construirTokenDTO(usuario);
     }
 
     private void dormirUnPoco() {
@@ -305,11 +297,18 @@ public class UsuarioService {
         if (rol == null || rol.trim().isEmpty()) {
             return Usuario.Rol.ESTUDIANTE;
         }
-        try {
-            return Usuario.Rol.valueOf(rol.trim().toUpperCase());
-        } catch (IllegalArgumentException e) {
+        String rolNormalizado = rol.trim().toUpperCase();
+        // Solo ESTUDIANTE y PROFESOR pueden auto-registrarse.
+        // ADMINISTRADOR solo puede ser asignado manualmente por otro administrador,
+        // nunca a través del endpoint público de registro.
+        if (Usuario.Rol.ESTUDIANTE.name().equals(rolNormalizado)) {
             return Usuario.Rol.ESTUDIANTE;
         }
+        if (Usuario.Rol.PROFESOR.name().equals(rolNormalizado)) {
+            return Usuario.Rol.PROFESOR;
+        }
+        throw new IllegalArgumentException(
+                "Rol no permitido en el registro. Los roles válidos son: ESTUDIANTE, PROFESOR.");
     }
 
     private UsuarioDTO mapearADTO(Usuario usuario) {
@@ -321,6 +320,47 @@ public class UsuarioService {
                 .activo(usuario.getActivo())
                 .foto(usuario.getFotoUrl())
                 .build();
+    }
+
+    private TokenDTO construirTokenDTO(Usuario usuario) {
+        String accessToken = jwtTokenProvider.generateToken(usuario.getEmail());
+        String refreshTokenStr = UUID.randomUUID().toString();
+        refreshTokenRepository.save(RefreshToken.builder()
+                .token(refreshTokenStr)
+                .idUsuario(usuario.getId())
+                .fechaExpira(LocalDateTime.now().plusDays(30))
+                .build());
+        return TokenDTO.builder()
+                .token(accessToken)
+                .tipo("Bearer")
+                .expiresIn(jwtTokenProvider.getExpiresInSeconds())
+                .refreshToken(refreshTokenStr)
+                .refreshExpiresIn(2592000L)
+                .usuario(mapearADTO(usuario))
+                .build();
+    }
+
+    public TokenDTO renovarToken(String refreshToken) {
+        RefreshToken tokenEntidad = refreshTokenRepository.findByToken(refreshToken)
+                .orElseThrow(() -> new BadCredentialsException("Refresh token inválido o expirado"));
+
+        if (!tokenEntidad.estaVigente()) {
+            throw new BadCredentialsException("Refresh token inválido o expirado");
+        }
+
+        tokenEntidad.setRevocado(true);
+        refreshTokenRepository.save(tokenEntidad);
+
+        Usuario usuario = usuarioRepository.findById(tokenEntidad.getIdUsuario())
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
+
+        return construirTokenDTO(usuario);
+    }
+
+    @Transactional
+    public void logout(String email) {
+        Usuario usuario = obtenerUsuarioPorEmail(email);
+        refreshTokenRepository.revocarTodosPorUsuario(usuario.getId());
     }
 
 }

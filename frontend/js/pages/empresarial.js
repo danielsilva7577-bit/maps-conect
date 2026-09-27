@@ -28,11 +28,20 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 let empresasActuales = [];
 let empresasVisiblesCount = 6;
+let filtersActuales = {};
+let verTodasEmpresas = false;
 
 async function loadCompanies(content, filters = {}) {
+    filtersActuales = { ...filtersActuales, ...filters };
     const params = new URLSearchParams();
-    if (filters.busqueda) params.set('busqueda', filters.busqueda);
-    if (filters.calificacionMinima) params.set('calificacionMinima', filters.calificacionMinima);
+    if (filtersActuales.busqueda) params.set('busqueda', filtersActuales.busqueda);
+    if (filtersActuales.calificacionMinima) params.set('calificacionMinima', filtersActuales.calificacionMinima);
+    if (filtersActuales.todas !== undefined) {
+        verTodasEmpresas = Boolean(filtersActuales.todas);
+    }
+    if (verTodasEmpresas) {
+        params.set('todas', 'true');
+    }
 
     let response = {};
     try {
@@ -43,12 +52,13 @@ async function loadCompanies(content, filters = {}) {
 
     const companies = Array.isArray(response) ? response : (Array.isArray(response.empresas) ? response.empresas : []);
     const carreraFiltrada = response && !Array.isArray(response) ? response.carreraFiltrada || '' : '';
+    const filtradoPorCarrera = response && !Array.isArray(response) ? Boolean(response.filtradoPorCarrera) : false;
     empresasActuales = companies;
     empresasVisiblesCount = 6;
-    renderCompanies(content, companies, filters.sector || '', carreraFiltrada);
+    renderCompanies(content, companies, filtersActuales.sector || '', carreraFiltrada, filtradoPorCarrera);
 }
 
-function renderCompanies(content, companies, sectorSeleccionado = '', carreraFiltrada = '') {
+function renderCompanies(content, companies, sectorSeleccionado = '', carreraFiltrada = '', filtradoPorCarrera = false) {
     const sectores = [...new Set((companies || [])
         .map(c => (c.sector || '').trim())
         .filter(Boolean))]
@@ -66,12 +76,27 @@ function renderCompanies(content, companies, sectorSeleccionado = '', carreraFil
 
     content.innerHTML = `
         <div class="empresarial-container">
-            <header class="module-heading"><h1>Semestre Empresarial</h1><p>Explora empresas vinculadas y experiencias compartidas por la comunidad.</p>${carreraFiltrada ? `<p class="filter-note">Mostrando empresas afines a tu carrera: <strong>${escapeHtml(carreraFiltrada)}</strong></p>` : ''}</header>
+            <header class="module-heading">
+                <h1>Semestre Empresarial</h1>
+                <p>Explora empresas vinculadas y experiencias compartidas por la comunidad.</p>
+                ${carreraFiltrada ? `
+                    <div class="carrera-filter-badge" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;background:#f0f7ff;border:1px solid #cce3ff;padding:10px 16px;border-radius:8px;margin-top:12px;">
+                        <p class="filter-note" style="margin:0;color:#004085;">
+                            ${filtradoPorCarrera
+                                ? `Mostrando <strong>${companies.length}</strong> empresas afines a tu carrera: <strong>${escapeHtml(carreraFiltrada)}</strong>`
+                                : `Mostrando catálogo general de todas las carreras (tu carrera: <strong>${escapeHtml(carreraFiltrada)}</strong>)`}
+                        </p>
+                        <label style="display:inline-flex;align-items:center;gap:6px;font-size:0.88rem;cursor:pointer;color:#004085;font-weight:600;">
+                            <input type="checkbox" id="check-solo-mi-carrera" ${filtradoPorCarrera ? 'checked' : ''}>
+                            Solo empresas de mi carrera
+                        </label>
+                    </div>` : ''}
+            </header>
             <form class="filter-bar" id="company-filter-form">
                 <label class="visually-hidden" for="company-search">Buscar empresa</label>
-                <input class="input-search" id="company-search" name="busqueda" type="search" placeholder="Buscar por empresa, tecnología o proyecto...">
+                <input class="input-search" id="company-search" name="busqueda" type="search" value="${escapeHtml(filtersActuales.busqueda || '')}" placeholder="Buscar por empresa, tecnología o proyecto...">
                 <select class="select-filter" name="sector" aria-label="Filtrar por sector"><option value="">Todos los sectores</option>${sectorOptions}</select>
-                <select class="select-filter" name="calificacionMinima" aria-label="Filtrar por calificación"><option value="">Calificación: todas</option><option value="4.5">4.5 estrellas o más</option><option value="4.0">4.0 estrellas o más</option></select>
+                <select class="select-filter" name="calificacionMinima" aria-label="Filtrar por calificación"><option value="">Calificación: todas</option><option value="4.5"${filtersActuales.calificacionMinima === '4.5' ? ' selected' : ''}>4.5 estrellas o más</option><option value="4.0"${filtersActuales.calificacionMinima === '4.0' ? ' selected' : ''}>4.0 estrellas o más</option></select>
                 <button class="btn-solid" type="submit">Buscar</button>
             </form>
             <section id="company-results" aria-live="polite">
@@ -86,9 +111,13 @@ function renderCompanies(content, companies, sectorSeleccionado = '', carreraFil
         </div>
     `;
 
+    document.getElementById('check-solo-mi-carrera')?.addEventListener('change', (e) => {
+        loadCompanies(content, { todas: !e.target.checked });
+    });
+
     document.getElementById('btn-cargar-mas-empresas')?.addEventListener('click', () => {
         empresasVisiblesCount += 6;
-        renderCompanies(content, companies, sectorSeleccionado, carreraFiltrada);
+        renderCompanies(content, companies, sectorSeleccionado, carreraFiltrada, filtradoPorCarrera);
     });
 
     document.getElementById('company-filter-form')?.addEventListener('submit', event => {

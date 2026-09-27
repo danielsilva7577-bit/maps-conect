@@ -14,13 +14,17 @@ const API = {
         const url = `${API_BASE_URL}${endpoint}`;
         const token = localStorage.getItem('token');
 
+        const isFormData = typeof FormData !== 'undefined' && options.body instanceof FormData;
         const config = {
             headers: {
-                'Content-Type': 'application/json',
+                ...(!isFormData && { 'Content-Type': 'application/json' }),
                 ...(token && { Authorization: `Bearer ${token}` })
             },
             ...options
         };
+        if (isFormData && config.headers && config.headers['Content-Type']) {
+            delete config.headers['Content-Type'];
+        }
 
         const response = await fetch(url, config);
         const body = await response.json().catch(() => null);
