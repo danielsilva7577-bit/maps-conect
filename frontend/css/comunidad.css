@@ -50,15 +50,40 @@
 
 /* --- 1. BARRA DE BÚSQUEDA Y FILTRO SUPERIOR --- */
 .hub-filter-bar {
-    display: grid;
-    grid-template-columns: 2fr 1.2fr auto;
+    display: flex;
+    align-items: center;
     gap: 12px;
     margin-bottom: 20px;
+    width: 100%;
+}
+
+.hub-filter-bar .input-search {
+    flex: 1 1 auto;
+    min-width: 0;
+    width: 100%;
+}
+
+.hub-filter-bar .select-materia {
+    flex: 0 0 220px;
+    width: 220px;
+    max-width: 240px;
+}
+
+.hub-filter-bar .btn-solid {
+    flex: 0 0 auto;
+    white-space: nowrap;
 }
 
 @media (max-width: 768px) {
     .hub-filter-bar {
-        grid-template-columns: 1fr;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+    .hub-filter-bar .select-materia {
+        flex: 1 1 auto;
+        width: 100%;
+        max-width: 100%;
     }
 }
 
