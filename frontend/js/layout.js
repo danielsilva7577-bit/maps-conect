@@ -155,8 +155,14 @@ const Layout = {
         if (!sidebar) return;
 
         const user = Auth.getUser();
-        const items = [...NAV_ITEMS];
+        let items = [...NAV_ITEMS];
         const rol = String(user?.rol || '').toUpperCase();
+
+        // Ocultar certificados.html ("Mi Ruta / Trayectoria MAPS") para docentes y administradores
+        if (rol === 'PROFESOR' || rol === 'ADMINISTRADOR') {
+            items = items.filter(item => item.href !== 'certificados.html');
+        }
+
         if (rol === 'ADMINISTRADOR') {
             items.push({ href: 'admin.html', label: 'Panel Administrativo' });
         } else if (rol === 'PROFESOR') {

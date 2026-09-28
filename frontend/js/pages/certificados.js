@@ -14,8 +14,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!content) return;
 
     const user = Auth.getUser();
-    if (!user || user.rol === 'PROFESOR') {
-        renderVistaProfesor(content);
+    const rol = String(user?.rol || '').toUpperCase();
+    if (!user || rol === 'PROFESOR' || rol === 'ADMINISTRADOR') {
+        const dest = rol === 'ADMINISTRADOR' ? 'admin.html' : (rol === 'PROFESOR' ? 'docente.html' : 'inicio.html');
+        window.location.replace(dest);
         return;
     }
 
