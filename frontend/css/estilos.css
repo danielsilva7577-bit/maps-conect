@@ -9460,3 +9460,16 @@ html[data-estilo="invernadero"].dark-mode .message.sent { background: #2A3F2E; b
 html[data-estilo="invernadero"].dark-mode .toast { background: #1A2B20; color: #DCE3CE; border-color: #2F5340; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4); }
 
 html[data-estilo="invernadero"].dark-mode .welcome-overlay { background-color: rgba(10, 20, 13, 0.92); }
+html[data-estilo="cyber"] .filter-note {
+    background: rgba(0, 240, 255, 0.08) !important;
+    border: 1px solid rgba(0, 240, 255, 0.25) !important;
+    color: #94a3b8 !important;
+}
+html[data-estilo="cyber"] .filter-note strong { color: #00f0ff !important; }
+
+html[data-estilo="minimal"] .filter-note {
+    background: rgba(37, 99, 235, 0.08) !important;
+    border: 1px solid rgba(37, 99, 235, 0.25) !important;
+    color: #64748b !important;
+}
+html[data-estilo="minimal"] .filter-note strong { color: #2563eb !important; }
