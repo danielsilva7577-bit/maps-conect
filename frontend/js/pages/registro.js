@@ -6,39 +6,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('link-aviso-registro')?.addEventListener('click', () => AvisoPrivacidad.mostrar('Aviso de Privacidad'));
     document.getElementById('link-terminos-registro')?.addEventListener('click', () => AvisoPrivacidad.mostrar('Términos y Condiciones'));
 
-    // Selector de rol (Estudiante / Profesor)
-    const rolCards = document.querySelectorAll('input[name="rol"]');
-    const labelIdentificador = document.getElementById('label-identificador');
     const inputIdentificador = document.getElementById('matricula');
-    const hintIdentificador = document.getElementById('hint-identificador');
-
-    function actualizarCamposSegunRol(rol) {
-        document.querySelectorAll('#rol-selector label').forEach(lbl => lbl.classList.remove('rol-activo'));
-        const activeLabel = document.getElementById(`rol-card-${rol}`);
-        if (activeLabel) activeLabel.classList.add('rol-activo');
-
-        if (rol === 'profesor') {
-            labelIdentificador.textContent = 'Número de Nómina';
-            inputIdentificador.placeholder = 'ej. L01234567';
-            hintIdentificador.textContent = 'Nómina institucional de docente';
-        } else {
-            labelIdentificador.textContent = 'Matrícula';
-            inputIdentificador.placeholder = 'ej. AL01234567';
-            hintIdentificador.textContent = 'Matrícula de estudiante Tecmilenio';
-        }
-    }
-
-    rolCards.forEach(radio => {
-        radio.addEventListener('change', (e) => {
-            actualizarCamposSegunRol(e.target.value);
-        });
-    });
 
     document.getElementById('registro-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         Utils.clearAlert('alert-container');
 
-        const rolSeleccionado = document.querySelector('input[name="rol"]:checked')?.value || 'estudiante';
         const nombre = document.getElementById('nombre').value.trim();
         const apellido = document.getElementById('apellido').value.trim();
         const email = document.getElementById('email').value.trim();
@@ -77,15 +50,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         submitBtn.textContent = 'Creando cuenta...';
 
         try {
-            const esProfesor = rolSeleccionado === 'profesor';
             const payload = {
                 nombre,
                 apellido,
                 email,
                 contrasena,
-                rol: esProfesor ? 'PROFESOR' : 'ESTUDIANTE',
-                matricula: esProfesor ? undefined : identificador,
-                numeroNomina: esProfesor ? identificador : undefined
+                rol: 'ESTUDIANTE',
+                matricula: identificador
             };
 
             const response = await API.request('/auth/registrar', {
@@ -94,11 +65,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
 
             Auth.saveSession(response.token, response.usuario);
-            if (esProfesor) {
-                sessionStorage.setItem('pending-numeroNomina', identificador);
-            } else {
-                sessionStorage.setItem('pending-matricula', identificador);
-            }
+            sessionStorage.setItem('pending-matricula', identificador);
             window.location.href = Auth.resolvePath('onboarding.html');
         } catch (error) {
             let msg = error.message || 'No se pudo completar el registro.';
