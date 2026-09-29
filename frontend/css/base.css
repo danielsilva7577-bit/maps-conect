@@ -1,7 +1,7 @@
 /* MAPS Connect - Base */
 
 :root {
-    --primary-color: #ffffff;
+    --primary-color: #087527;
     --secondary-color: #7c3aed;
     --success-color: #10b981;
     --danger-color: #ef4444;
@@ -46,10 +46,10 @@
     --topbar-text: #ffffff;
 
     /* Botones */
-    --btn-primary-bg: var(--primary-color);
-    --btn-primary-text: #2db849;
-    --btn-outline-border: var(--primary-color);
-    --btn-outline-text: var(--primary-color);
+    --btn-primary-bg: #087527;
+    --btn-primary-text: #ffffff;
+    --btn-outline-border: #087527;
+    --btn-outline-text: #087527;
 }
 
 * {

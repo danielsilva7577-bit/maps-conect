@@ -14,7 +14,7 @@
  */
 const Estilos = {
     KEY: 'estilo-maps',
-    MIGRATION_KEY: 'observatorio-v1-aplicado',
+    MIGRATION_KEY: 'clasico-v2-forzado',
 
     STYLES: [
         {
@@ -182,12 +182,12 @@ TEXTOS_ESTILO: {
             // elija después otro estilo desde Ajustes.
             if (!localStorage.getItem(this.MIGRATION_KEY)) {
                 localStorage.setItem(this.MIGRATION_KEY, '1');
-                localStorage.setItem(this.KEY, 'observatorio');
-                return 'observatorio';
+                localStorage.setItem(this.KEY, 'clasico');
+                return 'clasico';
             }
-            return this.STYLES.some(estilo => estilo.id === preferido) ? preferido : 'observatorio';
+            return this.STYLES.some(estilo => estilo.id === preferido) ? preferido : 'clasico';
         } catch (e) {
-            return 'observatorio';
+            return 'clasico';
         }
     },
 
@@ -522,6 +522,7 @@ TEXTOS_ESTILO: {
 
     _limpiarFondo() {
 if (window.Observatorio?.desactivar) window.Observatorio.desactivar();
+        document.querySelectorAll('#observatorio-css, #biblioteca-css, #minimalista-css').forEach(el => el.remove());
         if (window.Biblioteca?.desactivar) window.Biblioteca.desactivar();
         if (window.Minimalista?.desactivar) window.Minimalista.desactivar();
         document.querySelectorAll('.cyber-bg-viewport, .medieval-bg-viewport, .saiyan-bg-viewport, .noir-bg-viewport, .alchemy-bg-viewport, .minimal-bg-viewport, .invernadero-bg-viewport, .greenhouse-canopy, .light-dapple, .atmosphere-overlay, .castle-vignette, .cyber-blade-transition, .med-blade-transition, .saiyan-aura-transition, .noir-blade-transition, .alchemy-blade-transition, .minimal-blade-transition, .invernadero-leaf-transition, .heraldic-transition, .observatory-scene, .observatory-comet-transition, .observatory-welcome-overlay, .biblioteca-scene, .biblioteca-page-transition, .biblioteca-welcome-overlay, .minimalista-page-transition, .minimalista-welcome-overlay').forEach(el => el.remove());
