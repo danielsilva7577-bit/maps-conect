@@ -130,7 +130,7 @@ ON DUPLICATE KEY UPDATE id_carrera=10, semestre_actual=7, proposito_vida=VALUES(
 SET @e_seb_der = (SELECT id_estudiante FROM estudiantes WHERE id_usuario = @u_seb_der);
 
 -- Cargar variables de usuarios principales
-SET @u_soft = (SELECT id_usuario FROM usuarios WHERE correo = 'lucia.mendez@tecmilenio.mx');
+SET @u_soft = COALESCE((SELECT id_usuario FROM usuarios WHERE correo = 'al07080560@tecmilenio.mx'), (SELECT id_usuario FROM usuarios WHERE correo = 'al.software@tecmilenio.mx'));
 SET @e_soft = (SELECT id_estudiante FROM estudiantes WHERE id_usuario = @u_soft);
 
 SET @u_ind = (SELECT id_usuario FROM usuarios WHERE correo = 'al.industrial@tecmilenio.mx');
@@ -163,11 +163,11 @@ SET @e_daniel = (SELECT id_estudiante FROM estudiantes WHERE id_usuario = @u_dan
 
 -- Software (Carrera 3)
 INSERT INTO comunidades_estudio (nombre_comunidad, id_creador, id_carrera, id_materia, privacidad, enlace_sala_virtual)
-VALUES ('Círculo de Arquitectura de Software y Algoritmos', @u_soft, 3, 2, 'publica', 'https://tecmilenio.zoom.us/j/c-software-arq')
+VALUES ('Círculo de Arquitectura de Software y Algoritmos', @u_soft, 3, 17, 'publica', 'https://tecmilenio.zoom.us/j/c-software-arq')
 ON DUPLICATE KEY UPDATE nombre_comunidad=VALUES(nombre_comunidad);
 
 INSERT INTO comunidades_estudio (nombre_comunidad, id_creador, id_carrera, id_materia, privacidad, enlace_sala_virtual)
-VALUES ('Laboratorio Web y Mobile Full-Stack', @u_gab, 3, 4, 'publica', 'https://tecmilenio.zoom.us/j/c-software-web')
+VALUES ('Laboratorio Web y Mobile Full-Stack', @u_gab, 3, 18, 'publica', 'https://tecmilenio.zoom.us/j/c-software-web')
 ON DUPLICATE KEY UPDATE nombre_comunidad=VALUES(nombre_comunidad);
 
 -- Industrial (Carrera 4)
@@ -519,7 +519,7 @@ INSERT INTO resenas_empresarial (id_estudiante, id_empresa, calificacion, proyec
 'Dominé el mapeo de la cadena de valor (VSM), control de piso en SAP y liderazgo de células Kaizen con operadores en planta.',
 'Lleguen con excelente manejo de Excel avanzado y nociones muy claras de seguridad industrial y uso de EPP.', NOW() - INTERVAL 50 DAY),
 
-(@e_val_ind, (SELECT id_empresa FROM empresas_vinculadas WHERE nombre_empresa = 'General Motors' LIMIT 1), 5,
+(@e_val_ind, (SELECT id_empresa FROM empresas_vinculadas WHERE nombre_empresa = 'Ford Motor Company' LIMIT 1), 5,
 'Balanceo de líneas de ensamble y reducción de tiempos muertos en la estación de montaje de motores y transmisiones.',
 'Aprendí a aplicar estudios de tiempos y movimientos bajo normas MOST, ergonomía industrial y análisis de causa raíz con 8Ds.',
 'Prepárense para trabajar en turnos de planta dinámicos; la proactividad para comunicarse con supervisores es clave.', NOW() - INTERVAL 35 DAY),
@@ -542,7 +542,7 @@ INSERT INTO resenas_empresarial (id_estudiante, id_empresa, calificacion, proyec
 'Aprendí a calibrar cámaras industriales Cognex, programar PLC Siemens S7-1500 en TIA Portal y protocolos de comunicación Profinet.',
 'Repasen bien inglés técnico para las juntas con ingenieros de Alemania y demuestren iniciativa en el código de seguridad.', NOW() - INTERVAL 40 DAY),
 
-(@e_car_mec, (SELECT id_empresa FROM empresas_vinculadas WHERE nombre_empresa = 'Kia México' LIMIT 1), 5,
+(@e_car_mec, (SELECT id_empresa FROM empresas_vinculadas WHERE nombre_empresa = 'Hyundai' LIMIT 1), 5,
 'Programación, calibración de trayectorias y mantenimiento predictivo en robots de soldadura por puntos Kuka en el área de carrocerías.',
 'Perfeccioné el diagnóstico de fallas en servodrives, sincronización cinemática multieje y redes de comunicación DeviceNet/EtherNet/IP.',
 'Es una planta de alta exigencia; tengan disciplina estricta en protocolos Lockout/Tagout (LOTO) y seguridad eléctrica.', NOW() - INTERVAL 25 DAY),
@@ -593,7 +593,7 @@ INSERT INTO resenas_empresarial (id_estudiante, id_empresa, calificacion, proyec
 'Aprendí a negociar tarifas con navieras, emitir cartas de crédito internacionales y coordinar inspecciones fitosanitarias de exportación.',
 'El dominio del inglés de negocios es indispensable para coordinarse con agentes aduanales en puertos de destino.', NOW() - INTERVAL 26 DAY),
 
-(@e_com, (SELECT id_empresa FROM empresas_vinculadas WHERE nombre_empresa = 'Danone México' LIMIT 1), 4,
+(@e_com, (SELECT id_empresa FROM empresas_vinculadas WHERE nombre_empresa = 'Grupo Bimbo' LIMIT 1), 4,
 'Seguimiento logístico de importación de materias primas lácteas y empaque especializado con control estricto de cadena de frío.',
 'Comprendí la tramitación de permisos sanitarios COFEPRIS, control de tiempos de estadía portuaria y reducción de costos de almacenaje.',
 'Tengan comunicación constante y asertiva con los transportistas; cualquier retraso en aduana impacta la vida de anaquel.', NOW() - INTERVAL 16 DAY),
@@ -611,7 +611,7 @@ INSERT INTO resenas_empresarial (id_estudiante, id_empresa, calificacion, proyec
 'Aprendí analítica de panel de hogares Nielsen, gestión de presupuesto en medios digitales y coordinación de activaciones con agencias creativas.',
 'Prepárense para un ritmo muy dinámico. Aprendan a justificar cada campaña con números de retorno (ROAS) y participación de mercado.', NOW() - INTERVAL 44 DAY),
 
-(@e_ren_mkt, (SELECT id_empresa FROM empresas_vinculadas WHERE nombre_empresa = 'Danone México' LIMIT 1), 5,
+(@e_ren_mkt, (SELECT id_empresa FROM empresas_vinculadas WHERE nombre_empresa = 'Grupo Bimbo' LIMIT 1), 5,
 'Investigación cualitativa y cuantitativa de tendencias de consumo saludable para el reposicionamiento de marca de yogures funcionales.',
 'Diseñé encuestas, coordiné sesiones de Focus Group online y analicé mapas de posicionamiento perceptual de la competencia.',
 'Desarrollen su capacidad de síntesis para presentar hallazgos de mercado en formatos visuales claros e inspiradores.', NOW() - INTERVAL 32 DAY),

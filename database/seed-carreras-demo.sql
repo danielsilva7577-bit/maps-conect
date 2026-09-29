@@ -34,6 +34,28 @@ SET @pwd_hash = '$2b$12$6ELKRVnF19kwrvOn3x.o9.25zkiOUOlKS.zw1dlEr9rn7UyKjSaCy';
 -- 1. USUARIOS Y ESTUDIANTES DEMO POR CARRERA
 -- =====================================================================
 
+-- Carrera 3: Software
+INSERT INTO usuarios (nombre_completo, correo, contrasena_hash, rol, puntos_reputacion, activo)
+VALUES ('Daniel Alejandro Silva', 'al.software@tecmilenio.mx', @pwd_hash, 'estudiante', 150, 1)
+ON DUPLICATE KEY UPDATE nombre_completo=VALUES(nombre_completo), activo=1;
+SET @u_soft = COALESCE((SELECT id_usuario FROM usuarios WHERE correo = 'al07080560@tecmilenio.mx'), (SELECT id_usuario FROM usuarios WHERE correo = 'al.software@tecmilenio.mx'));
+
+INSERT INTO estudiantes (id_usuario, id_carrera, matricula, semestre_actual, proposito_vida)
+VALUES (@u_soft, 3, 'AL07080560', 6, 'Desarrollar soluciones de software de alto impacto con arquitecturas modernas.')
+ON DUPLICATE KEY UPDATE id_carrera=3, semestre_actual=6;
+SET @e_soft = (SELECT id_estudiante FROM estudiantes WHERE id_usuario = @u_soft);
+
+-- Docente Software
+INSERT INTO usuarios (nombre_completo, correo, contrasena_hash, rol, puntos_reputacion, activo)
+VALUES ('Dr. Gabriel Navarro Montes', 'docente.software@tecmilenio.mx', @pwd_hash, 'profesor', 150, 1)
+ON DUPLICATE KEY UPDATE nombre_completo=VALUES(nombre_completo), activo=1;
+SET @u_doc_soft = COALESCE((SELECT id_usuario FROM usuarios WHERE correo = 'profesor.demo@tecmilenio.mx'), (SELECT id_usuario FROM usuarios WHERE correo = 'docente.software@tecmilenio.mx'));
+
+INSERT INTO profesores (id_usuario, numero_nomina, area_especialidad, biografia, horario_asesorias, disponible_chat)
+VALUES (@u_doc_soft, 'DOC-SOFT-01', 'Ingeniería de Software y Arquitectura Cloud', 'Especialista en arquitecturas distribuidas, microservicios y computación en la nube.', 'Lunes y Miércoles 14:00 - 16:00 hrs', 1)
+ON DUPLICATE KEY UPDATE area_especialidad=VALUES(area_especialidad), disponible_chat=1;
+SET @p_doc_soft = (SELECT id_profesor FROM profesores WHERE id_usuario = @u_doc_soft);
+
 -- Carrera 4: Industrial
 INSERT INTO usuarios (nombre_completo, correo, contrasena_hash, rol, puntos_reputacion, activo)
 VALUES ('Mateo Morales Vaca', 'al.industrial@tecmilenio.mx', @pwd_hash, 'estudiante', 65, 1)
@@ -478,11 +500,11 @@ INSERT INTO recursos_academicos (id_usuario, id_materia, titulo, descripcion, ur
 -- Círculos por Carrera (2 por carrera)
 -- Software (Carrera 3)
 INSERT INTO comunidades_estudio (nombre_comunidad, id_creador, id_carrera, id_materia, privacidad, enlace_sala_virtual)
-VALUES ('Círculo de Arquitectura de Software y Algoritmos', @u_soft, 3, 2, 'publica', 'https://tecmilenio.zoom.us/j/c-software-arq')
+VALUES ('Círculo de Arquitectura de Software y Algoritmos', @u_soft, 3, 17, 'publica', 'https://tecmilenio.zoom.us/j/c-software-arq')
 ON DUPLICATE KEY UPDATE nombre_comunidad=VALUES(nombre_comunidad);
 
 INSERT INTO comunidades_estudio (nombre_comunidad, id_creador, id_carrera, id_materia, privacidad, enlace_sala_virtual)
-VALUES ('Laboratorio Web y Mobile Full-Stack', (SELECT id_usuario FROM usuarios WHERE correo = 'al07080560@tecmilenio.mx'), 3, 4, 'publica', 'https://tecmilenio.zoom.us/j/c-software-web')
+VALUES ('Laboratorio Web y Mobile Full-Stack', (SELECT id_usuario FROM usuarios WHERE correo = 'al07080560@tecmilenio.mx'), 3, 18, 'publica', 'https://tecmilenio.zoom.us/j/c-software-web')
 ON DUPLICATE KEY UPDATE nombre_comunidad=VALUES(nombre_comunidad);
 
 -- Industrial (Carrera 4)
@@ -754,7 +776,7 @@ INSERT INTO resenas_empresarial (id_estudiante, id_empresa, calificacion, proyec
 'Entendí a fondo las certificaciones C-TPAT y OEA, manejo de inventarios fiscales en almacén y resolución rápida de incidencias aduanales.',
 'Estudien muy bien los Incoterms 2020 y las regulaciones y restricciones no arancelarias (RRNAs); es el día a día en patio.', NOW() - INTERVAL 42 DAY),
 
-(@e_com, (SELECT id_empresa FROM empresas_vinculadas WHERE nombre_empresa = 'Danone México' LIMIT 1), 4,
+(@e_com, (SELECT id_empresa FROM empresas_vinculadas WHERE nombre_empresa = 'Grupo Bimbo' LIMIT 1), 4,
 'Seguimiento logístico de importación de materias primas lácteas y empaque especializado con control estricto de cadena de frío.',
 'Comprendí la tramitación de permisos sanitarios COFEPRIS, control de tiempos de estadía portuaria y reducción de costos de almacenaje.',
 'Tengan comunicación constante y asertiva con los transportistas; cualquier retraso en aduana impacta la vida de anaquel.', NOW() - INTERVAL 16 DAY),
